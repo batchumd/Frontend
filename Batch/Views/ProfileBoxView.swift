@@ -29,18 +29,16 @@ class ProfileBoxView: UIView {
     }()
     
     lazy var stackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [profileImageView, nameAgeLabel, statsView])
+        let stackView = UIStackView(arrangedSubviews: [UIView(), profileImageView, nameAgeLabel, statsView, UIView()])
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.alignment = .center
-        for object in stackView.arrangedSubviews {
-            stackView.setCustomSpacing(18, after: object)
-        }
+        stackView.distribution = .equalSpacing
         return stackView
     }()
     
     lazy var statsView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [statBox(value: 10, name: "Played"), statBox(value: 2, name: "Won"), statBox(value: 2, name: "Hosted", highlight: true)])
+        let stackView = UIStackView(arrangedSubviews: [statBox(value: 10, name: "Played"), statBox(value: 2, name: "Won"), statBox(value: 245, name: "Points", highlight: true)])
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -58,13 +56,15 @@ class ProfileBoxView: UIView {
         addShadow()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(stackView)
-        stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 30).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -30).isActive = true
+        stackView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
         stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         profileImageView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 1/3).isActive = true
         profileImageView.heightAnchor.constraint(equalTo: profileImageView.widthAnchor).isActive = true
-        statsView.widthAnchor.constraint(equalTo: stackView.widthAnchor, constant: -80).isActive = true
+        statsView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 40).isActive = true
+        statsView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -40).isActive = true
+        statsView.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
     
     required init?(coder: NSCoder) {

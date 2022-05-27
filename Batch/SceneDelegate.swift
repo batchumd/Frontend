@@ -22,10 +22,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Make this scene's window be visible.
         self.window!.makeKeyAndVisible()
         let mainViewController = MainViewController()
-        let homeController = HomeController()
-        let messagesController = MessagesViewController()
-        let standingsViewController = StandingsViewController()
-        mainViewController.setViewControllers([homeController, messagesController, standingsViewController], animated: false)
         let navController = UINavigationController(rootViewController: mainViewController)
         navController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         navController.navigationBar.shadowImage = UIImage()

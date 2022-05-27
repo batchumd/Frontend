@@ -26,7 +26,15 @@
 		6390F90C275D7B4400793B0A /* CircularImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390F90B275D7B4400793B0A /* CircularImageView.swift */; };
 		63FE760E2836EE2400FE6A6E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE760D2836EE2400FE6A6E /* MainViewController.swift */; };
 		63FE7610283724E700FE6A6E /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE760F283724E700FE6A6E /* MessagesViewController.swift */; };
-		63FE76122837264500FE6A6E /* StandingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE76112837264500FE6A6E /* StandingsViewController.swift */; };
+		63FE76122837264500FE6A6E /* RankingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE76112837264500FE6A6E /* RankingsViewController.swift */; };
+		63FE76142838745D00FE6A6E /* Gilroy-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 63FE76132838745D00FE6A6E /* Gilroy-Bold.ttf */; };
+		63FE7616283AD9AA00FE6A6E /* inviteFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE7615283AD9AA00FE6A6E /* inviteFriendView.swift */; };
+		63FE7618283B2ED000FE6A6E /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE7617283B2ED000FE6A6E /* UserCell.swift */; };
+		63FE761A283C33F800FE6A6E /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE7619283C33F800FE6A6E /* HistoryViewController.swift */; };
+		63FE761C283C4DD700FE6A6E /* ViewControllerWithHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE761B283C4DD700FE6A6E /* ViewControllerWithHeader.swift */; };
+		63FE761F283C623700FE6A6E /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE761E283C623700FE6A6E /* User.swift */; };
+		63FE7621283C630000FE6A6E /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE7620283C630000FE6A6E /* Message.swift */; };
+		63FE7623283C662900FE6A6E /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE7622283C662900FE6A6E /* MessageCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,7 +59,15 @@
 		6390F90B275D7B4400793B0A /* CircularImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularImageView.swift; sourceTree = "<group>"; };
 		63FE760D2836EE2400FE6A6E /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		63FE760F283724E700FE6A6E /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
-		63FE76112837264500FE6A6E /* StandingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsViewController.swift; sourceTree = "<group>"; };
+		63FE76112837264500FE6A6E /* RankingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingsViewController.swift; sourceTree = "<group>"; };
+		63FE76132838745D00FE6A6E /* Gilroy-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Bold.ttf"; path = "../../../../Fonts/Gilroy-Bold.ttf"; sourceTree = "<group>"; };
+		63FE7615283AD9AA00FE6A6E /* inviteFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = inviteFriendView.swift; sourceTree = "<group>"; };
+		63FE7617283B2ED000FE6A6E /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
+		63FE7619283C33F800FE6A6E /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
+		63FE761B283C4DD700FE6A6E /* ViewControllerWithHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerWithHeader.swift; sourceTree = "<group>"; };
+		63FE761E283C623700FE6A6E /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		63FE7620283C630000FE6A6E /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		63FE7622283C662900FE6A6E /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +102,7 @@
 			children = (
 				637BEB6B27BB676B0074DD29 /* ExtensionsandElements */,
 				63027FB4275C27D9004C14A2 /* AppDelegate.swift */,
+				63FE761D283C61FA00FE6A6E /* Models */,
 				637BEB6627BB289E0074DD29 /* Controllers */,
 				63027FB6275C27D9004C14A2 /* SceneDelegate.swift */,
 				6390F902275C6DD600793B0A /* Views */,
@@ -104,6 +121,7 @@
 				6390F909275D6B6100793B0A /* Gilroy-ExtraBold.otf */,
 				6390F905275C7C1000793B0A /* Brown-Bold.ttf */,
 				6307B6BF280DFB2F00E5AE2E /* Gorga-Grotesque-Bold.otf */,
+				63FE76132838745D00FE6A6E /* Gilroy-Bold.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -114,7 +132,9 @@
 				63027FB8275C27D9004C14A2 /* HomeController.swift */,
 				63FE760F283724E700FE6A6E /* MessagesViewController.swift */,
 				63FE760D2836EE2400FE6A6E /* MainViewController.swift */,
-				63FE76112837264500FE6A6E /* StandingsViewController.swift */,
+				63FE7619283C33F800FE6A6E /* HistoryViewController.swift */,
+				63FE761B283C4DD700FE6A6E /* ViewControllerWithHeader.swift */,
+				63FE76112837264500FE6A6E /* RankingsViewController.swift */,
 				637BEB6727BB28C40074DD29 /* FindGameController.swift */,
 			);
 			path = Controllers;
@@ -132,13 +152,25 @@
 			isa = PBXGroup;
 			children = (
 				6390F903275C6E2000793B0A /* nearbyButton.swift */,
+				63FE7615283AD9AA00FE6A6E /* inviteFriendView.swift */,
 				6307B6BC280DF29A00E5AE2E /* CountdownView.swift */,
 				6307B6C1280DFB9300E5AE2E /* ProfileBoxView.swift */,
 				6390F907275D5B8100793B0A /* statBox.swift */,
 				637BEB6927BB2BD20074DD29 /* ProfileCard.swift */,
 				6390F90B275D7B4400793B0A /* CircularImageView.swift */,
+				63FE7617283B2ED000FE6A6E /* UserCell.swift */,
+				63FE7622283C662900FE6A6E /* MessageCell.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		63FE761D283C61FA00FE6A6E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				63FE761E283C623700FE6A6E /* User.swift */,
+				63FE7620283C630000FE6A6E /* Message.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -202,6 +234,7 @@
 				6390F906275C7C1000793B0A /* Brown-Bold.ttf in Resources */,
 				63027FC1275C27DB004C14A2 /* LaunchScreen.storyboard in Resources */,
 				63027FBE275C27DB004C14A2 /* Assets.xcassets in Resources */,
+				63FE76142838745D00FE6A6E /* Gilroy-Bold.ttf in Resources */,
 				6307B6C0280DFB2F00E5AE2E /* Gorga-Grotesque-Bold.otf in Resources */,
 				63027FBC275C27D9004C14A2 /* Main.storyboard in Resources */,
 				6390F90A275D6B6100793B0A /* Gilroy-ExtraBold.otf in Resources */,
@@ -219,16 +252,23 @@
 				6390F90C275D7B4400793B0A /* CircularImageView.swift in Sources */,
 				63FE7610283724E700FE6A6E /* MessagesViewController.swift in Sources */,
 				63027FB5275C27D9004C14A2 /* AppDelegate.swift in Sources */,
-				63FE76122837264500FE6A6E /* StandingsViewController.swift in Sources */,
+				63FE76122837264500FE6A6E /* RankingsViewController.swift in Sources */,
 				63FE760E2836EE2400FE6A6E /* MainViewController.swift in Sources */,
+				63FE7616283AD9AA00FE6A6E /* inviteFriendView.swift in Sources */,
 				6307B6C2280DFD7400E5AE2E /* ProfileBoxView.swift in Sources */,
+				63FE7618283B2ED000FE6A6E /* UserCell.swift in Sources */,
 				637BEB6D27BB679E0074DD29 /* CustomViewControllerWithNav.swift in Sources */,
 				6390F904275C6E2000793B0A /* nearbyButton.swift in Sources */,
 				6390F908275D5B8100793B0A /* statBox.swift in Sources */,
 				6307B6BD280DF29A00E5AE2E /* CountdownView.swift in Sources */,
 				63027FB7275C27D9004C14A2 /* SceneDelegate.swift in Sources */,
 				637BEB6827BB28C40074DD29 /* FindGameController.swift in Sources */,
+				63FE761A283C33F800FE6A6E /* HistoryViewController.swift in Sources */,
 				637BEB6A27BB2BD20074DD29 /* ProfileCard.swift in Sources */,
+				63FE7621283C630000FE6A6E /* Message.swift in Sources */,
+				63FE761C283C4DD700FE6A6E /* ViewControllerWithHeader.swift in Sources */,
+				63FE761F283C623700FE6A6E /* User.swift in Sources */,
+				63FE7623283C662900FE6A6E /* MessageCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

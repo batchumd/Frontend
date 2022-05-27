@@ -9,10 +9,10 @@ import UIKit
 
 class ProfileCard: UICollectionViewCell {
     
-    var profile: Profile! {
+    var user: User! {
         didSet {
-            profileImage.image = profile.image
-            infoLabel.text = profile.name + ", " + String(profile.age)
+            profileImage.image = user.image
+            infoLabel.text = user.name + ", " + String(user.age)
         }
     }
     

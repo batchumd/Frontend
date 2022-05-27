@@ -11,6 +11,7 @@ import UIKit
 class MainViewController: UITabBarController {
     
     let titleImageView: UIImageView = {
+        //View for logo in nav bar
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(named: "BatchLogo")?.withAlignmentRectInsets(UIEdgeInsets(top: -4, left: 0, bottom: -4, right: 0))
@@ -19,12 +20,15 @@ class MainViewController: UITabBarController {
     }()
     
     let homeController = HomeController()
-    let messagesController = MessagesViewController()
-    let standingsViewController = StandingsViewController()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupNavigationBar()
+    let messagesController = MessagesViewController()
+    
+    let standingsViewController = RankingsViewController()
+    
+    let historyViewController = HistoryViewController()
+    
+    fileprivate func setupTabBar() {
+        tabBar.tintColor = UIColor(named: "mainColor")
         tabBar.backgroundColor = .white
         tabBar.layer.cornerRadius = 30
         tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -32,8 +36,13 @@ class MainViewController: UITabBarController {
         tabBar.layer.shadowOpacity = 0.16
         tabBar.layer.shadowOffset = .zero
         tabBar.layer.shadowRadius = 10
-        setViewControllers([homeController, messagesController, messagesController], animated: false)
-
+        setViewControllers([homeController, standingsViewController, messagesController, historyViewController], animated: false)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupNavigationBar()
+        setupTabBar()
     }
     
      func setupNavigationBar() {
@@ -42,10 +51,5 @@ class MainViewController: UITabBarController {
         navigationItem.titleView?.frame = CGRect(x: 0, y: 0, width: 20, height: 5)
         navigationController?.navigationBar.isHidden = false
         navigationController?.navigationBar.isTranslucent = false
-
-        let myBatches = UIButton()
-//      myBatches.addTarget(self, action: #selector(showPlans), for: .touchUpInside)
-        myBatches.setImage(UIImage(named: "MessagesIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: myBatches)
     }
 }

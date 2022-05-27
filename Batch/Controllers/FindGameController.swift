@@ -7,12 +7,6 @@
 
 import UIKit
 
-struct Profile {
-    var name: String
-    var age: Int
-    var image: UIImage
-}
-
 class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     private var minimumSpacing: CGFloat = 10
@@ -20,11 +14,10 @@ class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate,
     private var edgeInsetPadding: CGFloat = 20
     
     let profiles = [
-                    
-                    Profile(name: "Nicole", age: 21, image: UIImage(named: "nicole")!),
-                    Profile(name: "Layla", age: 20, image: UIImage(named: "layla")!),
-                    Profile(name: "Ariana", age: 19, image: UIImage(named: "ariana")!),
-                    Profile(name: "Lauren", age: 22, image: UIImage(named: "lauren")!)
+                    User(name: "Nicole", age: 21, image: UIImage(named: "nicole")!, points: 938),
+                    User(name: "Layla", age: 20, image: UIImage(named: "layla")!, points: 129),
+                    User(name: "Ariana", age: 19, image: UIImage(named: "ariana")!, points: 420),
+                    User(name: "Lauren", age: 22, image: UIImage(named: "lauren")!, points: 500)
     ]
     
     let informationLabel: UILabel = {
@@ -83,7 +76,7 @@ class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate,
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "result", for: indexPath as IndexPath) as! ProfileCard
-        cell.profile = profiles[indexPath.item]
+        cell.user = profiles[indexPath.item]
         return cell
     }
     
