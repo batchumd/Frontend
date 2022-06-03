@@ -16,14 +16,18 @@
 		6307B6BD280DF29A00E5AE2E /* CountdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6307B6BC280DF29A00E5AE2E /* CountdownView.swift */; };
 		6307B6C0280DFB2F00E5AE2E /* Gorga-Grotesque-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6307B6BF280DFB2F00E5AE2E /* Gorga-Grotesque-Bold.otf */; };
 		6307B6C2280DFD7400E5AE2E /* ProfileBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6307B6C1280DFB9300E5AE2E /* ProfileBoxView.swift */; };
+		636AEA6A284A5473002B5A3F /* EmailInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636AEA69284A5473002B5A3F /* EmailInputViewController.swift */; };
 		637BEB6827BB28C40074DD29 /* FindGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 637BEB6727BB28C40074DD29 /* FindGameController.swift */; };
 		637BEB6A27BB2BD20074DD29 /* ProfileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 637BEB6927BB2BD20074DD29 /* ProfileCard.swift */; };
 		637BEB6D27BB679E0074DD29 /* CustomViewControllerWithNav.swift in Sources */ = {isa = PBXBuildFile; fileRef = 637BEB6C27BB679E0074DD29 /* CustomViewControllerWithNav.swift */; };
+		6390DD0228477B8C0025AD4E /* SignedOutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390DD0128477B8C0025AD4E /* SignedOutViewController.swift */; };
+		6390DD0428477DEA0025AD4E /* ViewControllerWithGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390DD0328477DEA0025AD4E /* ViewControllerWithGradient.swift */; };
 		6390F904275C6E2000793B0A /* nearbyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390F903275C6E2000793B0A /* nearbyButton.swift */; };
 		6390F906275C7C1000793B0A /* Brown-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6390F905275C7C1000793B0A /* Brown-Bold.ttf */; };
 		6390F908275D5B8100793B0A /* statBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390F907275D5B8100793B0A /* statBox.swift */; };
 		6390F90A275D6B6100793B0A /* Gilroy-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6390F909275D6B6100793B0A /* Gilroy-ExtraBold.otf */; };
 		6390F90C275D7B4400793B0A /* CircularImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390F90B275D7B4400793B0A /* CircularImageView.swift */; };
+		63B8FF852841937B0004B06B /* CountdownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B8FF842841937A0004B06B /* CountdownViewController.swift */; };
 		63FE760E2836EE2400FE6A6E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE760D2836EE2400FE6A6E /* MainViewController.swift */; };
 		63FE7610283724E700FE6A6E /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE760F283724E700FE6A6E /* MessagesViewController.swift */; };
 		63FE76122837264500FE6A6E /* RankingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE76112837264500FE6A6E /* RankingsViewController.swift */; };
@@ -49,14 +53,18 @@
 		6307B6BC280DF29A00E5AE2E /* CountdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownView.swift; sourceTree = "<group>"; };
 		6307B6BF280DFB2F00E5AE2E /* Gorga-Grotesque-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gorga-Grotesque-Bold.otf"; sourceTree = "<group>"; };
 		6307B6C1280DFB9300E5AE2E /* ProfileBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBoxView.swift; sourceTree = "<group>"; };
+		636AEA69284A5473002B5A3F /* EmailInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInputViewController.swift; sourceTree = "<group>"; };
 		637BEB6727BB28C40074DD29 /* FindGameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindGameController.swift; sourceTree = "<group>"; };
 		637BEB6927BB2BD20074DD29 /* ProfileCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCard.swift; sourceTree = "<group>"; };
 		637BEB6C27BB679E0074DD29 /* CustomViewControllerWithNav.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomViewControllerWithNav.swift; sourceTree = "<group>"; };
+		6390DD0128477B8C0025AD4E /* SignedOutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedOutViewController.swift; sourceTree = "<group>"; };
+		6390DD0328477DEA0025AD4E /* ViewControllerWithGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerWithGradient.swift; sourceTree = "<group>"; };
 		6390F903275C6E2000793B0A /* nearbyButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nearbyButton.swift; sourceTree = "<group>"; };
 		6390F905275C7C1000793B0A /* Brown-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Brown-Bold.ttf"; sourceTree = "<group>"; };
 		6390F907275D5B8100793B0A /* statBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = statBox.swift; sourceTree = "<group>"; };
 		6390F909275D6B6100793B0A /* Gilroy-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-ExtraBold.otf"; sourceTree = "<group>"; };
 		6390F90B275D7B4400793B0A /* CircularImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularImageView.swift; sourceTree = "<group>"; };
+		63B8FF842841937A0004B06B /* CountdownViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownViewController.swift; sourceTree = "<group>"; };
 		63FE760D2836EE2400FE6A6E /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		63FE760F283724E700FE6A6E /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		63FE76112837264500FE6A6E /* RankingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingsViewController.swift; sourceTree = "<group>"; };
@@ -130,12 +138,16 @@
 			isa = PBXGroup;
 			children = (
 				63027FB8275C27D9004C14A2 /* HomeController.swift */,
+				6390DD0128477B8C0025AD4E /* SignedOutViewController.swift */,
+				636AEA69284A5473002B5A3F /* EmailInputViewController.swift */,
 				63FE760F283724E700FE6A6E /* MessagesViewController.swift */,
 				63FE760D2836EE2400FE6A6E /* MainViewController.swift */,
 				63FE7619283C33F800FE6A6E /* HistoryViewController.swift */,
 				63FE761B283C4DD700FE6A6E /* ViewControllerWithHeader.swift */,
 				63FE76112837264500FE6A6E /* RankingsViewController.swift */,
 				637BEB6727BB28C40074DD29 /* FindGameController.swift */,
+				63B8FF842841937A0004B06B /* CountdownViewController.swift */,
+				6390DD0328477DEA0025AD4E /* ViewControllerWithGradient.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -248,18 +260,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6390DD0428477DEA0025AD4E /* ViewControllerWithGradient.swift in Sources */,
+				636AEA6A284A5473002B5A3F /* EmailInputViewController.swift in Sources */,
 				63027FB9275C27D9004C14A2 /* HomeController.swift in Sources */,
 				6390F90C275D7B4400793B0A /* CircularImageView.swift in Sources */,
 				63FE7610283724E700FE6A6E /* MessagesViewController.swift in Sources */,
 				63027FB5275C27D9004C14A2 /* AppDelegate.swift in Sources */,
 				63FE76122837264500FE6A6E /* RankingsViewController.swift in Sources */,
 				63FE760E2836EE2400FE6A6E /* MainViewController.swift in Sources */,
+				6390DD0228477B8C0025AD4E /* SignedOutViewController.swift in Sources */,
 				63FE7616283AD9AA00FE6A6E /* inviteFriendView.swift in Sources */,
 				6307B6C2280DFD7400E5AE2E /* ProfileBoxView.swift in Sources */,
 				63FE7618283B2ED000FE6A6E /* UserCell.swift in Sources */,
 				637BEB6D27BB679E0074DD29 /* CustomViewControllerWithNav.swift in Sources */,
 				6390F904275C6E2000793B0A /* nearbyButton.swift in Sources */,
 				6390F908275D5B8100793B0A /* statBox.swift in Sources */,
+				63B8FF852841937B0004B06B /* CountdownViewController.swift in Sources */,
 				6307B6BD280DF29A00E5AE2E /* CountdownView.swift in Sources */,
 				63027FB7275C27D9004C14A2 /* SceneDelegate.swift in Sources */,
 				637BEB6827BB28C40074DD29 /* FindGameController.swift in Sources */,

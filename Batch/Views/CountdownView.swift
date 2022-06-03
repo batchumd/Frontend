@@ -10,6 +10,8 @@ import UIKit
 
 class CountdownView: UIView {
     
+    var fullscreen: Bool = false
+    
     let title: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -17,6 +19,9 @@ class CountdownView: UIView {
         label.textAlignment = .center
         label.text = "WE'RE LIVE IN"
         label.font = UIFont(name: "Gilroy-ExtraBold", size: 24)
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.2
+        label.numberOfLines = 0
         return label
     }()
     
@@ -42,10 +47,21 @@ class CountdownView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        gradientLayer.frame = bounds
+        if fullscreen != true {
+            gradientLayer.frame = bounds
+        }
     }
     
-    override init(frame: CGRect) {
+    init(fullscreen: Bool = false) {
+        self.fullscreen = fullscreen
+        
+        if fullscreen {
+            self.title.font = UIFont(name: "Gilroy-ExtraBold", size: 35)
+            self.counter.font = UIFont(name: "GorgaGrotesque-Bold", size: 55)
+            self.subtitle.font = UIFont(name: "Brown-bold", size: 22)
+            self.subtitle.text = "Come back at 9pm to play!"
+        }
+        
         super.init(frame: .zero)
         self.clipsToBounds = true
         self.translatesAutoresizingMaskIntoConstraints = false

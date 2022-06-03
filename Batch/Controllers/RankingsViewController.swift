@@ -28,13 +28,24 @@ class RankingsViewController: ViewControllerWithHeader {
     let genderFilter: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(items: ["Female", "Male"])
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        segmentedControl.selectedSegmentTintColor = UIColor(named: "mainColor")
+        segmentedControl.selectedSegmentTintColor = UIColor(red: 252/255, green: 72/255, blue: 190/255, alpha: 1.0)
         segmentedControl.tintColor = .white
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor(named: "customGray")!, NSAttributedString.Key.font: UIFont(name: "Brown-Bold", size: 14)!], for: .normal)
         segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
+        segmentedControl.setImage(UIImage(named: "male")!.resize(targetSize: CGSize(width: 25, height: 25)), forSegmentAt: 1)
+        segmentedControl.setImage(UIImage(named: "female")!.resize(targetSize: CGSize(width: 22, height: 25)), forSegmentAt: 0)
+        segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
         return segmentedControl
     }()
+    
+    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+        if sender.selectedSegmentIndex == 0 {
+            self.genderFilter.selectedSegmentTintColor = UIColor(red: 252/255, green: 72/255, blue: 190/255, alpha: 1.0)
+        } else {
+            self.genderFilter.selectedSegmentTintColor = UIColor(red: 70/255, green: 141/255, blue: 255/255, alpha: 1.0)
+        }
+    }
     
     fileprivate func setupStandingsCollectionView() {
         //Setup collectionView
@@ -53,6 +64,7 @@ class RankingsViewController: ViewControllerWithHeader {
         genderFilter.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor).isActive = true
         genderFilter.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30).isActive = true
         genderFilter.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        genderFilter.widthAnchor.constraint(equalToConstant: 115).isActive = true
     }
     
     override func viewDidLoad() {
