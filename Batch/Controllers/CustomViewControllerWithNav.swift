@@ -30,7 +30,6 @@ class CustomViewControllerWithNav: UIViewController {
         navigationController?.navigationBar.isTranslucent = false
 
         let myBatches = UIButton()
-//      myBatches.addTarget(self, action: #selector(showPlans), for: .touchUpInside)
         myBatches.setImage(UIImage(named: "MessagesIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: myBatches)
     }

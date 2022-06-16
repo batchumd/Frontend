@@ -130,7 +130,6 @@ class SignedOutViewController: ViewControllerWithGradient {
     }()
     
     //MARK: UI Lifecycle Methods
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.mainStackView.layoutIfNeeded()

@@ -9,7 +9,6 @@ import UIKit
 
 class EmailInputViewController: RegistrationViewController {
     
-    
     //MARK: UI Elements
     let emailInput: ATCTextField = {
         let textField = ATCTextField()

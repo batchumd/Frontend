@@ -17,6 +17,7 @@ class RankingsViewController: ViewControllerWithHeader {
                     User(name: "Lauren", age: 22, image: UIImage(named: "lauren")!, points: 500)
     ]
     
+    //MARK: UI Elements
     let standingsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -39,41 +40,11 @@ class RankingsViewController: ViewControllerWithHeader {
         return segmentedControl
     }()
     
-    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
-        if sender.selectedSegmentIndex == 0 {
-            self.genderFilter.selectedSegmentTintColor = UIColor(red: 252/255, green: 72/255, blue: 190/255, alpha: 1.0)
-        } else {
-            self.genderFilter.selectedSegmentTintColor = UIColor(red: 70/255, green: 141/255, blue: 255/255, alpha: 1.0)
-        }
-    }
-    
-    fileprivate func setupStandingsCollectionView() {
-        //Setup collectionView
-        standingsCollectionView.delegate = self
-        standingsCollectionView.dataSource = self
-        view.addSubview(standingsCollectionView)
-        standingsCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        standingsCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
-        standingsCollectionView.topAnchor.constraint(equalTo: self.genderFilter.bottomAnchor, constant: 15).isActive = true
-        standingsCollectionView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-    }
-    
-    fileprivate func setupGenderFilter() {
-        //Setup genderFilter
-        view.addSubview(genderFilter)
-        genderFilter.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor).isActive = true
-        genderFilter.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30).isActive = true
-        genderFilter.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        genderFilter.widthAnchor.constraint(equalToConstant: 115).isActive = true
-    }
-    
+    //MARK: UI Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupHeader(title: "Rankings")
-        
         setupGenderFilter()
-        
         setupStandingsCollectionView()
     }
     
@@ -84,7 +55,33 @@ class RankingsViewController: ViewControllerWithHeader {
         tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Gilroy-ExtraBold", size: 11)!], for: .normal)
         tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
         tabBarItem.imageInsets = UIEdgeInsets(top: 7, left: 0, bottom: -7, right: 0)
+    }
 
+    fileprivate func setupStandingsCollectionView() {
+        standingsCollectionView.delegate = self
+        standingsCollectionView.dataSource = self
+        view.addSubview(standingsCollectionView)
+        standingsCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        standingsCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        standingsCollectionView.topAnchor.constraint(equalTo: self.genderFilter.bottomAnchor, constant: 15).isActive = true
+        standingsCollectionView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    }
+    
+    fileprivate func setupGenderFilter() {
+        view.addSubview(genderFilter)
+        genderFilter.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor).isActive = true
+        genderFilter.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30).isActive = true
+        genderFilter.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        genderFilter.widthAnchor.constraint(equalToConstant: 115).isActive = true
+    }
+    
+    //MARK: Business Logic
+    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+        if sender.selectedSegmentIndex == 0 {
+            self.genderFilter.selectedSegmentTintColor = UIColor(red: 252/255, green: 72/255, blue: 190/255, alpha: 1.0)
+        } else {
+            self.genderFilter.selectedSegmentTintColor = UIColor(red: 70/255, green: 141/255, blue: 255/255, alpha: 1.0)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -94,7 +91,6 @@ class RankingsViewController: ViewControllerWithHeader {
 }
 
 extension RankingsViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.frame.width, height: 55)
     }
@@ -113,6 +109,4 @@ extension RankingsViewController: UICollectionViewDelegateFlowLayout, UICollecti
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 16
     }
-    
-    
 }

@@ -9,6 +9,7 @@ import UIKit
 
 class CountdownViewController: ViewControllerWithGradient {
     
+    //MARK: UI Elements
     let countdownView = CountdownView(fullscreen: true)
     
     let closeButton: UIButton = {
@@ -43,23 +44,32 @@ class CountdownViewController: ViewControllerWithGradient {
             return UIButton()
         }
     }()
-
+    
+    //MARK: UI Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupGradient()
+        animateGradient()
+        setupCountdownView()
+        setupNavigationBar()
+    }
+    
+    fileprivate func setupCountdownView() {
         self.view.addSubview(countdownView)
         countdownView.heightAnchor.constraint(equalToConstant: 300).isActive = true
         countdownView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
         countdownView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        self.navigationItem.setHidesBackButton(true, animated: true)
-        
-        closeButton.addTarget(self, action: #selector(dismissViewController), for: .touchUpInside)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: closeButton)
-        
-       
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: notifyButton)
-        notifyButton.addTarget(self, action: #selector(notifyButtonPressed), for: .touchUpInside)
     }
     
+    fileprivate func setupNavigationBar() {
+        self.navigationItem.setHidesBackButton(true, animated: true)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.closeButton)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: self.notifyButton)
+        notifyButton.addTarget(self, action: #selector(notifyButtonPressed), for: .touchUpInside)
+        closeButton.addTarget(self, action: #selector(dismissViewController), for: .touchUpInside)
+    }
+    
+    //MARK: Business Logic
     @objc fileprivate func dismissViewController() {
         let transition:CATransition = CATransition()
         transition.duration = 0.25
