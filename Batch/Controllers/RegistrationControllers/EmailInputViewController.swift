@@ -47,7 +47,7 @@ class EmailInputViewController: RegistrationViewController {
         if ValidityChecker().isEmailValid((emailInput.text ?? "") + "@terpmail.umd.edu") {
             showVerificationController()
         } else {
-            self.displayError(message: "Please enter a valid name")
+            self.displayError(message: "Please enter a valid email")
         }
     }
     

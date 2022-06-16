@@ -60,6 +60,8 @@ class PhotosInputViewController: RegistrationViewController, UIImagePickerContro
         let openImagePickerForImage2 = UITapGestureRecognizer(target: self, action: #selector(self.openImagePicker))
         openImagePickerForImage1.name = "image1"
         openImagePickerForImage2.name = "image2"
+        
+        continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
 
         firstImageView.addGestureRecognizer(openImagePickerForImage1)
         secondImageView.addGestureRecognizer(openImagePickerForImage2)
@@ -73,6 +75,16 @@ class PhotosInputViewController: RegistrationViewController, UIImagePickerContro
     }
     
     //MARK: Business Logic
+    @objc func continueButtonTapped() {
+        let vc = GenderInputViewController()
+        let transition:CATransition = CATransition()
+        transition.duration = 0.25
+        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        transition.type = CATransitionType.fade
+        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
+        self.navigationController?.pushViewController(vc, animated: false)
+    }
+    
     @objc func openImagePicker(sender: UITapGestureRecognizer) {
         if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
             if sender.name == "image1" {
