@@ -35,7 +35,7 @@ class RankingsViewController: ViewControllerWithHeader {
         segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
         segmentedControl.setImage(UIImage(named: "male")!.resize(targetSize: CGSize(width: 25, height: 25)), forSegmentAt: 1)
         segmentedControl.setImage(UIImage(named: "female")!.resize(targetSize: CGSize(width: 22, height: 25)), forSegmentAt: 0)
-        segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
+        segmentedControl.addTarget(RankingsViewController.self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
         return segmentedControl
     }()
     

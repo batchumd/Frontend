@@ -17,12 +17,6 @@ class ViewControllerWithGradient: UIViewController, CAAnimationDelegate {
     let mediumPurple: CGColor = UIColor(red: 151/255, green: 59/255, blue: 246/255, alpha: 1).cgColor
     let darkPurple: CGColor = UIColor(red: 106/255, green: 0/255, blue: 216/255, alpha: 1).cgColor
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        setupGradient()
-        animateGradient()
-    }
-    
     func setupGradient() {
         self.gradientColorSet = [
             [lightPurple, mediumPurple],

@@ -27,7 +27,19 @@
 		6390F908275D5B8100793B0A /* statBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390F907275D5B8100793B0A /* statBox.swift */; };
 		6390F90A275D6B6100793B0A /* Gilroy-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6390F909275D6B6100793B0A /* Gilroy-ExtraBold.otf */; };
 		6390F90C275D7B4400793B0A /* CircularImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390F90B275D7B4400793B0A /* CircularImageView.swift */; };
+		63A0B7CE284B785F006630F5 /* VerificationLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A0B7CD284B785F006630F5 /* VerificationLinkViewController.swift */; };
+		63A0B7D0284B7870006630F5 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A0B7CF284B7870006630F5 /* RegistrationViewController.swift */; };
 		63B8FF852841937B0004B06B /* CountdownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B8FF842841937A0004B06B /* CountdownViewController.swift */; };
+		63C1404F28512C09006850C5 /* NameInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C1404E28512C09006850C5 /* NameInputViewController.swift */; };
+		63C1405128512D6E006850C5 /* DateOfBirthInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C1405028512D6E006850C5 /* DateOfBirthInputViewController.swift */; };
+		63C1405428513EB6006850C5 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C1405328513EB6006850C5 /* UIKitExtensions.swift */; };
+		63D82F3A2858FEE5001D3DE7 /* PhotosInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D82F392858FEE5001D3DE7 /* PhotosInputViewController.swift */; };
+		63D82F3C285A2042001D3DE7 /* ProgressIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D82F3B285A2042001D3DE7 /* ProgressIndicatorView.swift */; };
+		63D82F3E285A604E001D3DE7 /* ContinueButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D82F3D285A604E001D3DE7 /* ContinueButton.swift */; };
+		63D82F40285AA6A7001D3DE7 /* ValidityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D82F3F285AA6A7001D3DE7 /* ValidityChecker.swift */; };
+		63D82F49285AA972001D3DE7 /* RotationAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D82F48285AA972001D3DE7 /* RotationAnimation.swift */; };
+		63D82F4B285AA9BF001D3DE7 /* StrokeAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D82F4A285AA9BF001D3DE7 /* StrokeAnimation.swift */; };
+		63D82F4D285AA9E0001D3DE7 /* ProgressShapeLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D82F4C285AA9E0001D3DE7 /* ProgressShapeLayer.swift */; };
 		63FE760E2836EE2400FE6A6E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE760D2836EE2400FE6A6E /* MainViewController.swift */; };
 		63FE7610283724E700FE6A6E /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE760F283724E700FE6A6E /* MessagesViewController.swift */; };
 		63FE76122837264500FE6A6E /* RankingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FE76112837264500FE6A6E /* RankingsViewController.swift */; };
@@ -64,7 +76,19 @@
 		6390F907275D5B8100793B0A /* statBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = statBox.swift; sourceTree = "<group>"; };
 		6390F909275D6B6100793B0A /* Gilroy-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-ExtraBold.otf"; sourceTree = "<group>"; };
 		6390F90B275D7B4400793B0A /* CircularImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularImageView.swift; sourceTree = "<group>"; };
+		63A0B7CD284B785F006630F5 /* VerificationLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationLinkViewController.swift; sourceTree = "<group>"; };
+		63A0B7CF284B7870006630F5 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		63B8FF842841937A0004B06B /* CountdownViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownViewController.swift; sourceTree = "<group>"; };
+		63C1404E28512C09006850C5 /* NameInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameInputViewController.swift; sourceTree = "<group>"; };
+		63C1405028512D6E006850C5 /* DateOfBirthInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateOfBirthInputViewController.swift; sourceTree = "<group>"; };
+		63C1405328513EB6006850C5 /* UIKitExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
+		63D82F392858FEE5001D3DE7 /* PhotosInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosInputViewController.swift; sourceTree = "<group>"; };
+		63D82F3B285A2042001D3DE7 /* ProgressIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressIndicatorView.swift; sourceTree = "<group>"; };
+		63D82F3D285A604E001D3DE7 /* ContinueButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinueButton.swift; sourceTree = "<group>"; };
+		63D82F3F285AA6A7001D3DE7 /* ValidityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidityChecker.swift; sourceTree = "<group>"; };
+		63D82F48285AA972001D3DE7 /* RotationAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationAnimation.swift; sourceTree = "<group>"; };
+		63D82F4A285AA9BF001D3DE7 /* StrokeAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeAnimation.swift; sourceTree = "<group>"; };
+		63D82F4C285AA9E0001D3DE7 /* ProgressShapeLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressShapeLayer.swift; sourceTree = "<group>"; };
 		63FE760D2836EE2400FE6A6E /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		63FE760F283724E700FE6A6E /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		63FE76112837264500FE6A6E /* RankingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingsViewController.swift; sourceTree = "<group>"; };
@@ -138,16 +162,13 @@
 			isa = PBXGroup;
 			children = (
 				63027FB8275C27D9004C14A2 /* HomeController.swift */,
-				6390DD0128477B8C0025AD4E /* SignedOutViewController.swift */,
-				636AEA69284A5473002B5A3F /* EmailInputViewController.swift */,
+				63C1405228513E4F006850C5 /* RegistrationControllers */,
 				63FE760F283724E700FE6A6E /* MessagesViewController.swift */,
 				63FE760D2836EE2400FE6A6E /* MainViewController.swift */,
 				63FE7619283C33F800FE6A6E /* HistoryViewController.swift */,
-				63FE761B283C4DD700FE6A6E /* ViewControllerWithHeader.swift */,
 				63FE76112837264500FE6A6E /* RankingsViewController.swift */,
 				637BEB6727BB28C40074DD29 /* FindGameController.swift */,
 				63B8FF842841937A0004B06B /* CountdownViewController.swift */,
-				6390DD0328477DEA0025AD4E /* ViewControllerWithGradient.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -156,6 +177,12 @@
 			isa = PBXGroup;
 			children = (
 				637BEB6C27BB679E0074DD29 /* CustomViewControllerWithNav.swift */,
+				63FE761B283C4DD700FE6A6E /* ViewControllerWithHeader.swift */,
+				6390DD0328477DEA0025AD4E /* ViewControllerWithGradient.swift */,
+				63D82F3D285A604E001D3DE7 /* ContinueButton.swift */,
+				63C1405328513EB6006850C5 /* UIKitExtensions.swift */,
+				63D82F41285AA825001D3DE7 /* ProgressIndicator */,
+				63D82F3F285AA6A7001D3DE7 /* ValidityChecker.swift */,
 			);
 			path = ExtensionsandElements;
 			sourceTree = "<group>";
@@ -174,6 +201,31 @@
 				63FE7622283C662900FE6A6E /* MessageCell.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		63C1405228513E4F006850C5 /* RegistrationControllers */ = {
+			isa = PBXGroup;
+			children = (
+				6390DD0128477B8C0025AD4E /* SignedOutViewController.swift */,
+				636AEA69284A5473002B5A3F /* EmailInputViewController.swift */,
+				63A0B7CD284B785F006630F5 /* VerificationLinkViewController.swift */,
+				63A0B7CF284B7870006630F5 /* RegistrationViewController.swift */,
+				63C1404E28512C09006850C5 /* NameInputViewController.swift */,
+				63C1405028512D6E006850C5 /* DateOfBirthInputViewController.swift */,
+				63D82F392858FEE5001D3DE7 /* PhotosInputViewController.swift */,
+			);
+			path = RegistrationControllers;
+			sourceTree = "<group>";
+		};
+		63D82F41285AA825001D3DE7 /* ProgressIndicator */ = {
+			isa = PBXGroup;
+			children = (
+				63D82F3B285A2042001D3DE7 /* ProgressIndicatorView.swift */,
+				63D82F48285AA972001D3DE7 /* RotationAnimation.swift */,
+				63D82F4C285AA9E0001D3DE7 /* ProgressShapeLayer.swift */,
+				63D82F4A285AA9BF001D3DE7 /* StrokeAnimation.swift */,
+			);
+			path = ProgressIndicator;
 			sourceTree = "<group>";
 		};
 		63FE761D283C61FA00FE6A6E /* Models */ = {
@@ -263,21 +315,32 @@
 				6390DD0428477DEA0025AD4E /* ViewControllerWithGradient.swift in Sources */,
 				636AEA6A284A5473002B5A3F /* EmailInputViewController.swift in Sources */,
 				63027FB9275C27D9004C14A2 /* HomeController.swift in Sources */,
+				63D82F3E285A604E001D3DE7 /* ContinueButton.swift in Sources */,
+				63D82F3C285A2042001D3DE7 /* ProgressIndicatorView.swift in Sources */,
 				6390F90C275D7B4400793B0A /* CircularImageView.swift in Sources */,
+				63D82F3A2858FEE5001D3DE7 /* PhotosInputViewController.swift in Sources */,
 				63FE7610283724E700FE6A6E /* MessagesViewController.swift in Sources */,
+				63D82F49285AA972001D3DE7 /* RotationAnimation.swift in Sources */,
 				63027FB5275C27D9004C14A2 /* AppDelegate.swift in Sources */,
 				63FE76122837264500FE6A6E /* RankingsViewController.swift in Sources */,
 				63FE760E2836EE2400FE6A6E /* MainViewController.swift in Sources */,
+				63D82F4B285AA9BF001D3DE7 /* StrokeAnimation.swift in Sources */,
 				6390DD0228477B8C0025AD4E /* SignedOutViewController.swift in Sources */,
 				63FE7616283AD9AA00FE6A6E /* inviteFriendView.swift in Sources */,
 				6307B6C2280DFD7400E5AE2E /* ProfileBoxView.swift in Sources */,
 				63FE7618283B2ED000FE6A6E /* UserCell.swift in Sources */,
+				63D82F40285AA6A7001D3DE7 /* ValidityChecker.swift in Sources */,
+				63A0B7D0284B7870006630F5 /* RegistrationViewController.swift in Sources */,
 				637BEB6D27BB679E0074DD29 /* CustomViewControllerWithNav.swift in Sources */,
+				63D82F4D285AA9E0001D3DE7 /* ProgressShapeLayer.swift in Sources */,
+				63C1405428513EB6006850C5 /* UIKitExtensions.swift in Sources */,
+				63A0B7CE284B785F006630F5 /* VerificationLinkViewController.swift in Sources */,
 				6390F904275C6E2000793B0A /* nearbyButton.swift in Sources */,
 				6390F908275D5B8100793B0A /* statBox.swift in Sources */,
 				63B8FF852841937B0004B06B /* CountdownViewController.swift in Sources */,
 				6307B6BD280DF29A00E5AE2E /* CountdownView.swift in Sources */,
 				63027FB7275C27D9004C14A2 /* SceneDelegate.swift in Sources */,
+				63C1404F28512C09006850C5 /* NameInputViewController.swift in Sources */,
 				637BEB6827BB28C40074DD29 /* FindGameController.swift in Sources */,
 				63FE761A283C33F800FE6A6E /* HistoryViewController.swift in Sources */,
 				637BEB6A27BB2BD20074DD29 /* ProfileCard.swift in Sources */,
@@ -285,6 +348,7 @@
 				63FE761C283C4DD700FE6A6E /* ViewControllerWithHeader.swift in Sources */,
 				63FE761F283C623700FE6A6E /* User.swift in Sources */,
 				63FE7623283C662900FE6A6E /* MessageCell.swift in Sources */,
+				63C1405128512D6E006850C5 /* DateOfBirthInputViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

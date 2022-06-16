@@ -82,13 +82,9 @@ class HomeController: UIViewController {
     }
     
     @objc fileprivate func showSignOutViewController() {
-        let vc = SignedOutViewController()
-        let transition:CATransition = CATransition()
-        transition.duration = 0.25
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.fade
-        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
-        self.navigationController?.pushViewController(vc, animated: false)
+        let vc = UINavigationController(rootViewController: SignedOutViewController())
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
     }
     
 }

@@ -9,6 +9,7 @@ import UIKit
 
 class SignedOutViewController: ViewControllerWithGradient {
     
+    //MARK: UI Elements
     let logoView: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(named: "BatchLogo")?.withTintColor(.white)
@@ -17,7 +18,7 @@ class SignedOutViewController: ViewControllerWithGradient {
         return view
     }()
     
-    let layer = CALayer()
+    let patternLayer = CALayer()
     
     let schoolLogo: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "umd"))
@@ -31,9 +32,9 @@ class SignedOutViewController: ViewControllerWithGradient {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 25
         view.backgroundColor = .white
-        self.layer.contents = UIImage(named: "celebration pattern")?.cgImage
-        self.layer.contentsGravity = .resizeAspect
-        view.layer.insertSublayer(self.layer, at: 0)
+        self.patternLayer.contents = UIImage(named: "celebration pattern")?.cgImage
+        self.patternLayer.contentsGravity = .resizeAspect
+        view.layer.insertSublayer(self.patternLayer, at: 0)
         return view
     }()
     
@@ -102,19 +103,12 @@ class SignedOutViewController: ViewControllerWithGradient {
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         let attributedString = NSMutableAttributedString(string: "By signing in or creating an account you agree to our Terms of Service and Privacy Policy.")
-
-        // *** Create instance of `NSMutableParagraphStyle`
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        // *** set LineSpacing property in points ***
-        paragraphStyle.lineSpacing = 5 // Whatever line spacing you want in points
-
-        // *** Apply attribute to string ***
+        paragraphStyle.lineSpacing = 5
         attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value:paragraphStyle, range:NSMakeRange(0, attributedString.length))
         attributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range:NSMakeRange(0, attributedString.length))
         attributedString.addAttribute(NSAttributedString.Key.font, value: UIFont(name: "Brown-bold", size: 14)!, range:NSMakeRange(0, attributedString.length))
-
-        // *** Set Attributed String to your label ***
         label.attributedText = attributedString
         return label
     }()
@@ -135,37 +129,55 @@ class SignedOutViewController: ViewControllerWithGradient {
         return stackView
     }()
     
+    //MARK: UI Lifecycle Methods
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.mainStackView.layoutIfNeeded()
-        self.layer.frame = self.infoBox.bounds
+        self.patternLayer.frame = self.infoBox.bounds
     }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.infoBox.addSubview(infoStack)
-        self.infoStack.leadingAnchor.constraint(equalTo: self.infoBox.leadingAnchor).isActive = true
-        self.infoStack.trailingAnchor.constraint(equalTo: self.infoBox.trailingAnchor).isActive = true
-        self.infoStack.centerYAnchor.constraint(equalTo: self.infoBox.centerYAnchor).isActive = true
-        
+        self.setupGradient()
+        self.animateGradient()
+        setupMainStack()
+        setupInfoStack()
+        setupBackButton()
+        setupMadeWithLoveLabel()
+        signInButton.addTarget(self, action: #selector(showSignInController), for: .touchUpInside)
+    }
+    
+    fileprivate func setupMainStack() {
         self.view.addSubview(self.mainStackView)
         self.schoolLogo.heightAnchor.constraint(equalToConstant: 120).isActive = true
         self.logoView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         self.mainStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30).isActive = true
         self.mainStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30).isActive = true
         self.mainStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+    }
+    
+    fileprivate func setupBackButton() {
+        let myBatches = UIButton()
+        myBatches.setImage(UIImage(named: "back")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        navigationItem.backBarButtonItem = UIBarButtonItem(customView: myBatches)
+    }
+    
+    fileprivate func setupInfoStack() {
+        self.infoBox.addSubview(infoStack)
+        self.infoStack.leadingAnchor.constraint(equalTo: self.infoBox.leadingAnchor).isActive = true
+        self.infoStack.trailingAnchor.constraint(equalTo: self.infoBox.trailingAnchor).isActive = true
+        self.infoStack.centerYAnchor.constraint(equalTo: self.infoBox.centerYAnchor).isActive = true
         self.infoBox.heightAnchor.constraint(equalTo: mainStackView.widthAnchor).isActive = true
-        
+    }
+    
+    fileprivate func setupMadeWithLoveLabel() {
         self.view.addSubview(self.madeWithLoveLabel)
         self.madeWithLoveLabel.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -10).isActive = true
         self.madeWithLoveLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        
-        signInButton.addTarget(self, action: #selector(showSignInController), for: .touchUpInside)
-        
     }
     
+    //MARK: Business Logic
     @objc func showSignInController() {
         let vc = EmailInputViewController()
         let transition:CATransition = CATransition()
@@ -175,7 +187,4 @@ class SignedOutViewController: ViewControllerWithGradient {
         self.navigationController!.view.layer.add(transition, forKey: kCATransition)
         self.navigationController?.pushViewController(vc, animated: false)
     }
-    
-    
-    
 }
