@@ -25,7 +25,6 @@ class MainViewController: UITabBarController {
     
     let standingsViewController = RankingsViewController()
     
-    let historyViewController = HistoryViewController()
     
     fileprivate func setupTabBar() {
         tabBar.tintColor = UIColor(named: "mainColor")
@@ -36,7 +35,7 @@ class MainViewController: UITabBarController {
         tabBar.layer.shadowOpacity = 0.16
         tabBar.layer.shadowOffset = .zero
         tabBar.layer.shadowRadius = 10
-        setViewControllers([homeController, standingsViewController, messagesController, historyViewController], animated: false)
+        setViewControllers([homeController, standingsViewController, messagesController], animated: false)
     }
     
     override func viewDidLoad() {

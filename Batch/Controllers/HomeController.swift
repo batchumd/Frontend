@@ -30,6 +30,10 @@ class HomeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(patternImage: UIImage(named: "pattern")!)
+        let tapShowCountdown = UITapGestureRecognizer(target: self, action: #selector(self.showCountdownViewController))
+        countdownView.addGestureRecognizer(tapShowCountdown)
+        let tapShowSignOut = UITapGestureRecognizer(target: self, action: #selector(self.showSignOutViewController))
+        profileBoxView.addGestureRecognizer(tapShowSignOut)
         setupLayout()
     }
     
@@ -66,5 +70,22 @@ class HomeController: UIViewController {
 //        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
 //        self.navigationController?.pushViewController(vc, animated: false)
 //    }
+    
+    @objc fileprivate func showCountdownViewController() {
+        let vc = CountdownViewController()
+        let transition:CATransition = CATransition()
+        transition.duration = 0.25
+        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        transition.type = CATransitionType.fade
+        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
+        self.navigationController?.pushViewController(vc, animated: false)
+    }
+    
+    @objc fileprivate func showSignOutViewController() {
+        let vc = UINavigationController(rootViewController: SignedOutViewController())
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
+    }
+    
 }
 
