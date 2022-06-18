@@ -8,14 +8,14 @@
 import Foundation
 import UIKit
 
+let profiles = [
+                User(name: "Nicole", age: 21, image: UIImage(named: "nicole")!, points: 938),
+                User(name: "Layla", age: 20, image: UIImage(named: "layla")!, points: 129),
+                User(name: "Ariana", age: 19, image: UIImage(named: "ariana")!, points: 420),
+                User(name: "Lauren", age: 22, image: UIImage(named: "lauren")!, points: 500)
+]
+
 class RankingsViewController: ViewControllerWithHeader {
-    
-    let profiles = [
-                    User(name: "Nicole", age: 21, image: UIImage(named: "nicole")!, points: 938),
-                    User(name: "Layla", age: 20, image: UIImage(named: "layla")!, points: 129),
-                    User(name: "Ariana", age: 19, image: UIImage(named: "ariana")!, points: 420),
-                    User(name: "Lauren", age: 22, image: UIImage(named: "lauren")!, points: 500)
-    ]
     
     //MARK: UI Elements
     let standingsCollectionView: UICollectionView = {
@@ -36,7 +36,7 @@ class RankingsViewController: ViewControllerWithHeader {
         segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
         segmentedControl.setImage(UIImage(named: "male")!.resize(targetSize: CGSize(width: 25, height: 25)), forSegmentAt: 1)
         segmentedControl.setImage(UIImage(named: "female")!.resize(targetSize: CGSize(width: 22, height: 25)), forSegmentAt: 0)
-        segmentedControl.addTarget(RankingsViewController.self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
+        segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
         return segmentedControl
     }()
     
@@ -96,13 +96,13 @@ extension RankingsViewController: UICollectionViewDelegateFlowLayout, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.profiles.count
+        return profiles.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! UserCell
         cell.rankLabel.text = String(indexPath.row + 1)
-        cell.user = self.profiles[indexPath.row]
+        cell.user = profiles[indexPath.row]
         return cell
     }
     

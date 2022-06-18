@@ -55,3 +55,16 @@ extension String {
       return prefix(1).uppercased() + self.lowercased().dropFirst()
     }
 }
+
+class circularImageView: UIImageView {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let radius: CGFloat = bounds.size.width / 2.0
+        layer.cornerRadius = radius
+        translatesAutoresizingMaskIntoConstraints = false
+        clipsToBounds = true
+        layer.masksToBounds = true
+        contentMode = .scaleAspectFill
+        backgroundColor = .systemGray5
+    }
+}

@@ -11,4 +11,10 @@ struct Message {
     var sender: User
     var content: String
     var time: Date
+    var type: MessageType
+}
+
+enum MessageType {
+    case text
+    case info
 }

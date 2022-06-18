@@ -6,12 +6,12 @@
 
 import UIKit
 
-class MessageCell: UICollectionViewCell {
+class ChatPreviewCell: UICollectionViewCell {
 
     var message: Message! {
         didSet {
             profileImageView.image = message.sender.image
-            nameAgeLabel.text = message.sender.name + ", " + String(message.sender.age)
+            nameAgeLabel.text = message.sender.name! + ", " + String(message.sender.age!)
             contentPreviewLabel.text = message.content
             if #available(iOS 15.0, *) {
                 timeLabel.text = message.time.formatted(.dateTime.month(.abbreviated))

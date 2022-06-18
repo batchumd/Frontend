@@ -10,7 +10,7 @@ import UIKit
 class MessagesViewController: ViewControllerWithHeader {
     
     let messages = [
-        Message(sender: User(name: "Tom", age: 23, image: UIImage(named: "nicole")!, points: 233), content: "Hey whats up!", time: Date(timeIntervalSinceNow: 2333))
+        Message(sender: User(name: "Tom", age: 23, image: UIImage(named: "nicole")!, points: 233), content: "Hey whats up!", time: Date(timeIntervalSinceNow: 2333), type: .text)
     ]
     
     //MARK: UI Elements
@@ -18,7 +18,7 @@ class MessagesViewController: ViewControllerWithHeader {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(MessageCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(ChatPreviewCell.self, forCellWithReuseIdentifier: "cell")
         return collectionView
     }()
     
@@ -89,8 +89,19 @@ extension MessagesViewController: UICollectionViewDelegateFlowLayout, UICollecti
         return self.messages.count
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = GameViewController(chatID: "lakdsfj")
+        vc.gameData = Game(chatID: "skadjhfkalf", players: profiles, host: User(name: "Layla", age: 23, image: UIImage(named: "layla")!, points: 233))
+        let transition:CATransition = CATransition()
+        transition.duration = 0.25
+        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        transition.type = CATransitionType.fade
+        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
+        self.navigationController?.pushViewController(vc, animated: false)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! MessageCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ChatPreviewCell
         cell.message = self.messages[indexPath.row]
         return cell
     }

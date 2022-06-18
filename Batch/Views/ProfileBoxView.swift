@@ -54,6 +54,7 @@ class ProfileBoxView: UIView {
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false
         addShadow()
+        self.layer.cornerRadius = 25
         stackView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(stackView)
         stackView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
@@ -74,13 +75,12 @@ class ProfileBoxView: UIView {
 }
 
 extension UIView {
-    func addShadow() {
-        layer.cornerRadius = 25
+    func addShadow(radius: CGFloat = 10, offset: CGSize? = nil, opacity: Float = 0.16) {
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.16
-        layer.shadowOffset = .zero
-        layer.shadowRadius = 10
+        layer.shadowOpacity = opacity
+        layer.shadowOffset = offset ?? .zero
+        layer.shadowRadius = radius
         backgroundColor = .white
     }
 }
