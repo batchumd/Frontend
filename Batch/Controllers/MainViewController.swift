@@ -30,6 +30,7 @@ class MainViewController: UITabBarController {
         super.viewDidLoad()
         setupNavigationBar()
         setupTabBar()
+        setupPointsLabel()
     }
     
     func setupNavigationBar() {
@@ -50,5 +51,14 @@ class MainViewController: UITabBarController {
         tabBar.layer.shadowOffset = .zero
         tabBar.layer.shadowRadius = 10
         setViewControllers([homeController, standingsViewController, messagesController], animated: false)
+    }
+    
+    fileprivate func setupPointsLabel() {
+        let pointsLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 90, height: 30))
+        pointsLabel.text = "245"
+        pointsLabel.textAlignment = .right
+        pointsLabel.font = UIFont(name: "GorgaGrotesque-Bold", size: 23)
+        pointsLabel.textColor = UIColor(named: "mainColor")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: pointsLabel)
     }
 }

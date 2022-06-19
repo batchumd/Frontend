@@ -23,7 +23,7 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     
     fileprivate var hasAddedMembers: Bool!
     
-    fileprivate var messages = [Message(sender: User(name: "Tom", age: 23, image: UIImage(named: "nicole")!, points: 233), content: "Hey whats up!", time: Date(timeIntervalSinceNow: 2333), type: .text)]
+    fileprivate var messages = [Message(sender: User(name: "Tom", age: 23, image: UIImage(named: "nicole")!, points: 233), content: "Hey whats up!", time: Date(timeIntervalSinceNow: 2333), type: .text), Message(sender: User(name: "Bill", age: 20, image: UIImage(named: "nicole")!, points: 233), content: "Ok so I don't really like astrology, but Im a Pisces", time: Date(timeIntervalSinceNow: 2333), type: .text)]
         
     var gameData: Game! {
         didSet {
@@ -62,30 +62,53 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         hasFetchedMessages = false
         handleKeyboardLogic()
         setupMainView()
-        setupLeaveButton()
+        setupHostNameTitle()
         setupPointsLabel()
+        setupLeaveButton()
     }
     
-    fileprivate func setupLeaveButton() {
-        let pointsLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 90, height: 30))
-        pointsLabel.text =  "\(self.gameData.host.name!), \(self.gameData.host.age!)"
-        pointsLabel.textAlignment = .center
-        pointsLabel.font = UIFont(name: "Gilroy-Extrabold", size: 18)
-        pointsLabel.textColor = UIColor(named: "customGray")
-        self.navigationItem.titleView = pointsLabel
+    fileprivate func setupHostNameTitle() {
+        let hostNameTitle = UILabel(frame: CGRect(x: 0, y: 0, width: 90, height: 30))
+        hostNameTitle.text =  "\(self.gameData.host.name!), \(self.gameData.host.age!)"
+        hostNameTitle.textAlignment = .center
+        hostNameTitle.font = UIFont(name: "Gilroy-Extrabold", size: 18)
+        hostNameTitle.textColor = UIColor(named: "customGray")
+        self.navigationItem.titleView = hostNameTitle
     }
     
     fileprivate func setupPointsLabel() {
         let pointsLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 90, height: 30))
-        pointsLabel.text = "2350"
+        pointsLabel.text = "245"
         pointsLabel.textAlignment = .right
         pointsLabel.font = UIFont(name: "GorgaGrotesque-Bold", size: 23)
         pointsLabel.textColor = UIColor(named: "mainColor")
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: pointsLabel)
     }
     
+    fileprivate func setupLeaveButton() {
+        let containerView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 75, height: 30)))
+        let btnBack = UIButton(frame: CGRect(x:0, y: 0, width: 30, height: 30))
+        btnBack.setImage(UIImage(named: "exit")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btnBack.tintColor = UIColor(red: 255/255, green: 90/255, blue: 82/255, alpha: 1.0)
+        btnBack.isUserInteractionEnabled = false
+        let backLabel = UILabel(frame: CGRect(x: 30, y: 1, width: 60, height: 30))
+        backLabel.text = "Leave"
+        backLabel.font = UIFont(name: "Brown-bold", size: 16)
+        backLabel.textColor = UIColor(red: 255/255, green: 90/255, blue: 82/255, alpha: 1.0)
+        containerView.addSubview(btnBack)
+        containerView.addSubview(backLabel)
+        let tapBackContainer = UITapGestureRecognizer(target: self, action: #selector(self.leaveAction))
+        containerView.addGestureRecognizer(tapBackContainer)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: containerView)
+    }
+    
     @objc func leaveAction() {
-        self.navigationController?.popViewController(animated: true)
+        let alert = UIAlertController(title: "Are you sure?", message: "You won't be able to re-enter.", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Stay", style: UIAlertAction.Style.cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Leave", style: UIAlertAction.Style.destructive, handler: { action in
+            self.navigationController?.popViewController(animated: true)
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
     
     fileprivate func handleKeyboardLogic() {
@@ -119,7 +142,7 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     fileprivate func setupHeaderView() {
         view.addSubview(headerView)
         headerView.anchor(top: self.view.safeAreaLayoutGuide.topAnchor, bottom: nil, leading: self.view.leadingAnchor, trailing: self.view.trailingAnchor)
-        headerView.heightAnchor.constraint(equalToConstant: 160).isActive = true
+        headerView.heightAnchor.constraint(equalToConstant: 165).isActive = true
     }
     
     fileprivate func setupCreateMessageView() {

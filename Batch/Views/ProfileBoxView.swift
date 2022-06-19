@@ -38,7 +38,7 @@ class ProfileBoxView: UIView {
     }()
     
     lazy var statsView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [statBox(value: 10, name: "Played"), statBox(value: 2, name: "Won"), statBox(value: 245, name: "Points", highlight: true)])
+        let stackView = UIStackView(arrangedSubviews: [statBox(value: 8, name: "Played"), statBox(value: 2, name: "Won"), statBox(value: 245, name: "Points", highlight: true)])
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView

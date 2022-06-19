@@ -22,7 +22,7 @@ class GameTitleView: UIView {
     let statusBox: UIStackView = {
         let stackView = UIStackView()
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        stackView.layoutMargins = UIEdgeInsets(top: 7, left: 10, bottom: 7, right: 8)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.backgroundColor = UIColor(named: "mainColor")
         stackView.layer.cornerRadius = 15

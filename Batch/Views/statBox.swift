@@ -12,7 +12,7 @@ class statBox: UIView {
     
     let valueLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Gilroy-ExtraBold", size: 37)
+        label.font = UIFont(name: "GorgaGrotesque-Bold", size: 40)
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.5
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -49,7 +49,7 @@ class statBox: UIView {
         self.addSubview(valueLabel)
         valueLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
         valueLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-        valueLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor).isActive = true
+        valueLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: -10).isActive = true
         valueLabel.text = String(value)
     }
     
