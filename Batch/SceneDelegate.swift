@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -21,13 +22,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Make this scene's window be visible.
         self.window!.makeKeyAndVisible()
-        let mainViewController = MainViewController()
-        let navController = UINavigationController(rootViewController: mainViewController)
+        
+        let navController = UINavigationController()
         navController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         navController.navigationBar.shadowImage = UIImage()
-        self.window?.rootViewController = navController
         navController.view.backgroundColor = .white
-
+        
+        // Determine if user is logged in
+        if Auth.auth().currentUser == nil {
+            navController.viewControllers = [SignedOutViewController()]
+        } else {
+            navController.viewControllers = [MainViewController()]
+        }
+        
+        self.window?.rootViewController = navController
+        
         guard scene is UIWindowScene else { return }
     }
 

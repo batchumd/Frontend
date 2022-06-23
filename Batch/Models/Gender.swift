@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Gender: CaseIterable {
+enum Gender: CaseIterable, Codable {
     case male
     case female
     case nonbinary

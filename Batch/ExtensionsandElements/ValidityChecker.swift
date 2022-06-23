@@ -28,6 +28,10 @@ class ValidityChecker {
         return age.year! >= 18
     }
     
+    func isPasswordValid(_ string: String) -> Bool {
+        return string.count >= 8
+    }
+    
     fileprivate func checkValidity(value: String, regex: String) -> Bool {
         let predicate = NSPredicate(format:"SELF MATCHES %@", regex)
         return predicate.evaluate(with: value)

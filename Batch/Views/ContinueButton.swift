@@ -25,12 +25,20 @@ class ContinueButton: UIButton {
         }
     }
     
-    func disableButton() {
+    func disable() {
         self.isUserInteractionEnabled = false
         if #available(iOS 15.0, *) {
             self.configuration?.image = UIImage()
         }
         self.setupLoadingIndicator()
+    }
+    
+    func enable() {
+        self.isUserInteractionEnabled = true
+        if #available(iOS 15.0, *) {
+            self.configuration?.image = UIImage(named: "continue")!.withTintColor(UIColor(named: "mainColor")!)
+        }
+        self.loadingIndicator.removeFromSuperview()
     }
     
     fileprivate func setupLoadingIndicator() {

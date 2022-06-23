@@ -13,12 +13,7 @@ class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate 
 
     private var edgeInsetPadding: CGFloat = 20
     
-    let profiles = [
-                    User(name: "Nicole", age: 21, image: UIImage(named: "nicole")!, points: 938),
-                    User(name: "Layla", age: 20, image: UIImage(named: "layla")!, points: 129),
-                    User(name: "Ariana", age: 19, image: UIImage(named: "ariana")!, points: 420),
-                    User(name: "Lauren", age: 22, image: UIImage(named: "lauren")!, points: 500)
-    ]
+    let profiles: [User] = []
     
     //MARK: UI Elements
     let informationLabel: UILabel = {

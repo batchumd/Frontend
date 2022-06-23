@@ -31,7 +31,7 @@ class PlayersCollectionView: UICollectionView, GridLayoutDelegate, UICollectionV
         didSet {
             let remainingToFill = 8 - players.count
             for _ in 0...remainingToFill {
-                players.append(User(name: nil, age: nil, image: nil, points: nil))
+                players.append(User(email: nil, name: nil, age: nil, points: nil, dob: nil, gender: nil, interestedIn: nil, profileImages: nil, uid: nil))
             }
             self.playersSplitted = players.split()
             dataSource = self
@@ -112,7 +112,7 @@ class userBubbleCell: UICollectionViewCell {
             let memberImage = UIImageView()
             self.addSubview(memberImage)
             memberImage.fillSuperView()
-            memberImage.image = user.image
+//            memberImage.image = user.image
             memberImage.centerInsideSuperView()
         }
     }

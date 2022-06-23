@@ -17,13 +17,18 @@ struct Game {
 class GameViewController: UIViewController, UITextFieldDelegate {
     
     //MARK:- Variables
+    
     fileprivate var chatID: String
         
     fileprivate var hasFetchedMessages: Bool!
     
     fileprivate var hasAddedMembers: Bool!
     
-    fileprivate var messages = [Message(sender: User(name: "Tom", age: 23, image: UIImage(named: "nicole")!, points: 233), content: "Hey whats up!", time: Date(timeIntervalSinceNow: 2333), type: .text), Message(sender: User(name: "Bill", age: 20, image: UIImage(named: "nicole")!, points: 233), content: "Ok so I don't really like astrology, but Im a Pisces", time: Date(timeIntervalSinceNow: 2333), type: .text)]
+    fileprivate let bottomSafeArea = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
+    
+    fileprivate var isKeyboardShowing = false
+    
+    fileprivate var messages: [Message] = []
         
     var gameData: Game! {
         didSet {
@@ -127,7 +132,7 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         setupChatView()
         setupCreateMessageView()
         mainView.fillSuperView()
-        createMessage.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        createMessage.heightAnchor.constraint(equalToConstant: 60).isActive = true
         setupHeaderView()
     }
     
@@ -162,10 +167,6 @@ class GameViewController: UIViewController, UITextFieldDelegate {
             self.createMessage.sendButton.isEnabled = false
         }
     }
-    
-    let bottomSafeArea = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
-    
-    var isKeyboardShowing = false
     
     @objc func keyboardWillHide(notification: NSNotification) {
         isKeyboardShowing = false
@@ -226,9 +227,9 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch messages[indexPath.item].type {
-        case .text: return CGSize(width: self.chatView.frame.width, height: 100)
-        case .info: return CGSize(width: self.chatView.frame.width, height: 45)
-        default:    return CGSize(width: self.chatView.frame.width, height: 0)
+            case .text: return CGSize(width: self.chatView.frame.width, height: 100)
+            case .info: return CGSize(width: self.chatView.frame.width, height: 45)
+            default:    return CGSize(width: self.chatView.frame.width, height: 0)
         }
     }
     

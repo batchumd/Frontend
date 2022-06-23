@@ -25,6 +25,7 @@ class GenderInputViewController: RegistrationViewController {
         subtitleLabel.text = "How do you identify?"
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         setupView()
+        print(user)
         self.setupGradient()
         self.animateGradient()
         self.setupGenderOptions()
@@ -71,17 +72,7 @@ class GenderInputViewController: RegistrationViewController {
             self.displayError(message: "Please select a gender option")
             return
         }
-        self.showInterestedInInputViewController()
+        self.user?.gender = gender
+        self.showNextViewController(InterestedInInputViewController())
     }
-    
-    fileprivate func showInterestedInInputViewController() {
-        let vc = InterestedInInputViewController()
-        let transition:CATransition = CATransition()
-        transition.duration = 0.25
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.fade
-        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
-        self.navigationController?.pushViewController(vc, animated: false)
-    }
-    
 }

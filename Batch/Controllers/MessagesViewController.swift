@@ -9,9 +9,7 @@ import UIKit
 
 class MessagesViewController: ViewControllerWithHeader {
     
-    let messages = [
-        Message(sender: User(name: "Tom", age: 23, image: UIImage(named: "nicole")!, points: 233), content: "Hey whats up!", time: Date(timeIntervalSinceNow: 2333), type: .text)
-    ]
+    let messages: [Message] = []
     
     //MARK: UI Elements
     let messagesCollectionView: UICollectionView = {
@@ -91,7 +89,7 @@ extension MessagesViewController: UICollectionViewDelegateFlowLayout, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = GameViewController(chatID: "lakdsfj")
-        vc.gameData = Game(chatID: "skadjhfkalf", players: profiles, host: User(name: "Layla", age: 23, image: UIImage(named: "layla")!, points: 233))
+//        vc.gameData = Game(chatID: "skadjhfkalf", players: profiles, host: User(name: "Layla", age: 23, image: UIImage(named: "layla")!, points: 233))
         let transition:CATransition = CATransition()
         transition.duration = 0.25
         transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)

@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class EmailInputViewController: RegistrationViewController {
-    
+        
     //MARK: UI Elements
     let emailInput: ATCTextField = {
         let textField = ATCTextField()
@@ -29,9 +30,24 @@ class EmailInputViewController: RegistrationViewController {
         return textField
     }()
     
+    let passwordInput: ATCTextField = {
+        let textField = ATCTextField()
+        textField.setLeftPadding(20)
+        textField.font = UIFont(name: "Brown-bold", size: 16)
+        textField.textColor = UIColor(named: "mainColor")
+        textField.placeholder = "Password"
+        textField.isSecureTextEntry = true
+        textField.backgroundColor = .white
+        textField.layer.cornerRadius = 10
+        return textField
+    }()
+    
     //MARK: UI Lifecycle Methods
     override func viewDidLoad() {
+        super.viewDidLoad()
+        self.user = User()
         self.mainStackView.insertArrangedSubview(emailInput, at: 2)
+        self.mainStackView.insertArrangedSubview(passwordInput, at: 3)
         titleLabel.text = "Enter your UMD \nstudent email."
         subtitleLabel.text = "Batch is currently only available for the University of Maryland community. We plan to launch in more places in the near future!"
         informationLabel.text = "We will never share your email with anyone or display it on your profile."
@@ -43,21 +59,34 @@ class EmailInputViewController: RegistrationViewController {
     
     //MARK: Business Logic
     @objc func continueButtonClicked() {
-        if ValidityChecker().isEmailValid((emailInput.text ?? "") + "@terpmail.umd.edu") {
-            showVerificationController()
+        
+        guard var email = emailInput.text, let password = passwordInput.text else {
+            return
+        }
+        email = email + "@terpmail.umd.edu"
+        
+        if ValidityChecker().isEmailValid(email) && ValidityChecker().isPasswordValid(password) {
+            self.continueButton.disable()
+            Auth.auth().createUser(withEmail: email, password: password, completion: { (result, error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+                self.continueButton.enable()
+                self.showNextViewController(NameInputViewController())
+            })
         } else {
             self.displayError(message: "Please enter a valid email")
         }
     }
     
-    func showVerificationController() {
-        let vc = VerificationLinkViewController()
-        let transition:CATransition = CATransition()
-        transition.duration = 0.25
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.fade
-        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
-        self.navigationController?.pushViewController(vc, animated: false)
+}
+
+struct InfoPlistHelper {
+    static func getStringValue(forKey: String) -> String {
+        guard let value = Bundle.main.infoDictionary?[forKey] as? String else {
+            fatalError("No value found for key!")
+        }
+         return value
     }
-    
 }

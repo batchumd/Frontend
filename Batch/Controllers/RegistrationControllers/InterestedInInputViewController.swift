@@ -82,7 +82,7 @@ class InterestedInInputViewController: RegistrationViewController {
         if self.interestedIn.count == 0 {
             self.displayError(message: "You must select at least one option")
         } else {
-            print(self.interestedIn)
+            self.user?.interestedIn = self.interestedIn
             self.showDateOfBirthViewController()
         }
     }
