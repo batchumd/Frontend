@@ -11,6 +11,8 @@ import UIKit
 class InterestedInInputViewController: RegistrationViewController {
     
     var interestedIn: [Gender] = []
+    
+    let firebaseHelpers = FirebaseHelpers()
         
     //MARK: UI Elements
     let interestedInOptionsStackView: UIStackView = {
@@ -60,7 +62,7 @@ class InterestedInInputViewController: RegistrationViewController {
             UIView.animate(withDuration: 0.20, animations: {
                 sender.layer.opacity = 0.5
             })
-            self.interestedIn = self.interestedIn.filter({ $0 != gender })
+            self.interestedIn.removeAll(where: {$0 == gender})
         } else {
             UIView.animate(withDuration: 0.20, animations: {
                 sender.layer.opacity = 1.0
@@ -83,12 +85,10 @@ class InterestedInInputViewController: RegistrationViewController {
             self.displayError(message: "You must select at least one option")
         } else {
             self.user?.interestedIn = self.interestedIn
-            self.showDateOfBirthViewController()
+            firebaseHelpers.addNewUserToDatabase(userData: self.user!) {
+                self.dismiss(animated: true)
+            }
         }
-    }
-    
-    fileprivate func showDateOfBirthViewController() {
-        dismiss(animated: true)
     }
     
 }

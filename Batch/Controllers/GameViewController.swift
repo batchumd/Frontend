@@ -74,7 +74,7 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     
     fileprivate func setupHostNameTitle() {
         let hostNameTitle = UILabel(frame: CGRect(x: 0, y: 0, width: 90, height: 30))
-        hostNameTitle.text =  "\(self.gameData.host.name!), \(self.gameData.host.age!)"
+        hostNameTitle.text =  "\(self.gameData.host.name), \(self.gameData.host.age)"
         hostNameTitle.textAlignment = .center
         hostNameTitle.font = UIFont(name: "Gilroy-Extrabold", size: 18)
         hostNameTitle.textColor = UIColor(named: "customGray")

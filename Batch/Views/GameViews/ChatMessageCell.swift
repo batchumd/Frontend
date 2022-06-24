@@ -42,7 +42,7 @@ class ChatMessageCell: UICollectionViewCell {
     var message: Message! {
             didSet {
                 textView.text = message.content
-                nameLabel.text = "\(self.message.sender.name!), \(self.message.sender.age!)"
+                nameLabel.text = "\(self.message.sender.name), \(self.message.sender.age)"
                 self.setupGrayBubbleOnLeft()
             }
         }

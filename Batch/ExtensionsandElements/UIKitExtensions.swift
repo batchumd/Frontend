@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 //MARK: UIImage
 extension UIImage {
@@ -27,16 +28,41 @@ extension UIImage {
         return UIGraphicsGetImageFromCurrentImageContext()!
     }
     
+    enum JPEGQuality: CGFloat {
+        case lowest  = 0
+        case low     = 0.25
+        case medium  = 0.5
+        case high    = 0.75
+        case highest = 1
+    }
+    
+    func jpeg(_ jpegQuality: JPEGQuality) -> Data? {
+        return jpegData(compressionQuality: jpegQuality.rawValue)
+    }
+}
+
+extension UIImageView {
+    func setCachedImage(urlstring: String, size: CGSize, complete: @escaping () -> ()) {
+        let processor = ResizingImageProcessor(referenceSize: size)
+        self.kf.setImage(
+            with: URL(string: urlstring),
+            options: [
+                .processor(processor),
+                .scaleFactor(UIScreen.main.scale),
+                .transition(.fade(2)),
+                .cacheOriginalImage
+            ])
+        complete()
+    }
 }
 
 class ATCTextField: UITextField {
-    let padding = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 0)
+    
     override open func textRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.inset(by: padding)
+        return bounds.inset(by: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: self.rightView?.bounds.width ?? 0))
     }
     override open func editingRect(forBounds bounds: CGRect) -> CGRect {
-        let rightpadding = self.rightView?.bounds.width ?? 0
-        return bounds.inset(by: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: rightpadding))
+        return bounds.inset(by: UIEdgeInsets(top: 20, left: 20, bottom: 20, right:  self.rightView?.bounds.width ?? 0))
     }
 }
 
@@ -66,19 +92,5 @@ class circularImageView: UIImageView {
         layer.masksToBounds = true
         contentMode = .scaleAspectFill
         backgroundColor = .systemGray5
-    }
-}
-
-extension UIImage {
-    enum JPEGQuality: CGFloat {
-        case lowest  = 0
-        case low     = 0.25
-        case medium  = 0.5
-        case high    = 0.75
-        case highest = 1
-    }
-    
-    func jpeg(_ jpegQuality: JPEGQuality) -> Data? {
-        return jpegData(compressionQuality: jpegQuality.rawValue)
     }
 }

@@ -14,7 +14,8 @@ import FirebaseStorage
 protocol FirebaseProtocol {
     func uploadImage(reference: String, image: UIImage, complete:@escaping ()->())
     func downloadURL(reference: String, complete:@escaping (String)->())
-    func addNewUserToDatabase(userData: User,complete:@escaping ()->())
+    func addNewUserToDatabase(userData: User,complete: @escaping ()->())
+    func fetchUserData(_ uid: String, completionHandler: @escaping (_ userData: User?) -> ())
 }
 
 protocol Fetchable {
@@ -64,26 +65,36 @@ struct FirebaseHelpers: FirebaseProtocol {
         })
     }
     
-    func addNewUserToDatabase(userData: User, complete: @escaping () -> ()) {
-        print(userData.convertToDict() ?? nil)
-//        db.collection("users").document(getUserID()).setData(userData.convertToDict()) { err in
-//            if let err = err {
-//                        fatalError("\(err)")
-//                    } else {
-//                        guard let phoneNumber = userData["phoneNumber"] else {
-//                            print("Couldnt get phone number")
-//                            fatalError("No Phone Number")
-//                        }
-//                        self.db.collection("registeredPhones").document(phoneNumber).setData(["uid": self.getUserID()])
-//                        print("Document Written Successfully")
-//                        complete()
-//                    }
-//                }
+    func addNewUserToDatabase(userData: User,complete: @escaping ()->()) {
+        guard let uid = getUserID(), var data = userData.convertToDict() else {
+           return
+        }
+        data["dob"] = userData.dob
+        db.collection("users").document(uid).setData(data) { err in
+            if let err = err { fatalError("\(err)") }
+            print("Document Written Successfully")
+            complete()
+        }
+    }
+    
+    func fetchUserData(_ uid: String, completionHandler: @escaping (_ userData: User?) -> ()) {
+        fetch(User.self, id: uid) { (snapshot) in
+            if snapshot.exists {
+                
+                let user = try! User.init(from: snapshot.data())
+                completionHandler(user)
+                return
+            } else {
+                completionHandler(nil)
+                return
+            }
+        }
     }
     
     func getUserID() -> String? {
-        guard let userUid = auth.currentUser?.uid else { return nil }
+        guard let userUid = auth.currentUser?.uid else {
+            return nil
+        }
         return userUid
-
     }
 }

@@ -11,7 +11,6 @@ class ProfileBoxView: UIView {
     
     let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "nicole")!
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
@@ -23,7 +22,6 @@ class ProfileBoxView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor(named: "customGray")
         label.textAlignment = .center
-        label.text = "Nicole, 28"
         label.font = UIFont(name: "Gilroy-ExtraBold", size: 25)
         return label
     }()
@@ -37,8 +35,14 @@ class ProfileBoxView: UIView {
         return stackView
     }()
     
+    let roundsStatBox = statBox(name: "Rounds")
+    
+    let wonStatBox = statBox(name: "Won")
+    
+    let pointsStatBox = statBox(name: "Points", highlight: true)
+    
     lazy var statsView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [statBox(value: 8, name: "Played"), statBox(value: 2, name: "Won"), statBox(value: 245, name: "Points", highlight: true)])
+        let stackView = UIStackView(arrangedSubviews: [roundsStatBox, wonStatBox, pointsStatBox])
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -61,7 +65,7 @@ class ProfileBoxView: UIView {
         stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
         stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-        profileImageView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 1/3).isActive = true
+        profileImageView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.4).isActive = true
         profileImageView.heightAnchor.constraint(equalTo: profileImageView.widthAnchor).isActive = true
         statsView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 40).isActive = true
         statsView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -40).isActive = true

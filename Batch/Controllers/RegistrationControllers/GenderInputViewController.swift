@@ -25,7 +25,6 @@ class GenderInputViewController: RegistrationViewController {
         subtitleLabel.text = "How do you identify?"
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         setupView()
-        print(user)
         self.setupGradient()
         self.animateGradient()
         self.setupGenderOptions()
@@ -38,7 +37,7 @@ class GenderInputViewController: RegistrationViewController {
                 filled.buttonSize = .large
                 filled.cornerStyle = .large
                 filled.baseBackgroundColor = .white
-                filled.attributedTitle = AttributedString(NSAttributedString(string: gender.desc.capitalizingFirstLetter(), attributes: [
+                filled.attributedTitle = AttributedString(NSAttributedString(string: gender.rawValue.capitalizingFirstLetter(), attributes: [
                         .font: UIFont(name: "Gilroy-ExtraBold", size: 20)!,
                         .foregroundColor: UIColor(named: "mainColor")!]))
                 let button = UIButton(configuration: filled, primaryAction: nil )

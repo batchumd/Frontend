@@ -10,6 +10,12 @@ import UIKit
 
 class statBox: UIView {
     
+    var statValue: Int! {
+        didSet {
+            self.valueLabel.text = String(self.statValue)
+        }
+    }
+    
     let valueLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "GorgaGrotesque-Bold", size: 40)
@@ -29,7 +35,7 @@ class statBox: UIView {
         return label
     }()
     
-    init(value: Int = 0, name: String = "", highlight: Bool = false) {
+    init(name: String = "", highlight: Bool = false) {
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -50,7 +56,6 @@ class statBox: UIView {
         valueLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
         valueLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         valueLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: -10).isActive = true
-        valueLabel.text = String(value)
     }
     
     required init?(coder: NSCoder) {

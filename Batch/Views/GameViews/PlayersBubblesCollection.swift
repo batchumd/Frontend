@@ -31,7 +31,7 @@ class PlayersCollectionView: UICollectionView, GridLayoutDelegate, UICollectionV
         didSet {
             let remainingToFill = 8 - players.count
             for _ in 0...remainingToFill {
-                players.append(User(email: nil, name: nil, age: nil, points: nil, dob: nil, gender: nil, interestedIn: nil, profileImages: nil, uid: nil))
+                players.append(try! User()!)
             }
             self.playersSplitted = players.split()
             dataSource = self

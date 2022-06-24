@@ -45,7 +45,7 @@ class EmailInputViewController: RegistrationViewController {
     //MARK: UI Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.user = User()
+        self.user = try! User()
         self.mainStackView.insertArrangedSubview(emailInput, at: 2)
         self.mainStackView.insertArrangedSubview(passwordInput, at: 3)
         titleLabel.text = "Enter your UMD \nstudent email."
@@ -65,16 +65,24 @@ class EmailInputViewController: RegistrationViewController {
         }
         email = email + "@terpmail.umd.edu"
         
-        if ValidityChecker().isEmailValid(email) && ValidityChecker().isPasswordValid(password) {
-            self.continueButton.disable()
-            Auth.auth().createUser(withEmail: email, password: password, completion: { (result, error) in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
-                self.continueButton.enable()
-                self.showNextViewController(NameInputViewController())
-            })
+        if ValidityChecker().isEmailValid(email) {
+            if ValidityChecker().isPasswordValid(password) {
+                self.continueButton.disable()
+                Auth.auth().createUser(withEmail: email, password: password, completion: { (result, error) in
+                    if let error = error {
+                        print(error.localizedDescription)
+                        return
+                    }
+                    self.user?.email = email
+                    self.user?.gamesWon = 0
+                    self.user?.roundsPlayed = 0
+                    self.user?.points = 0
+                    self.continueButton.enable()
+                    self.showNextViewController(NameInputViewController())
+                })
+            } else {
+                self.displayError(message: "Password must be atleast 8 characters.")
+            }
         } else {
             self.displayError(message: "Please enter a valid email")
         }

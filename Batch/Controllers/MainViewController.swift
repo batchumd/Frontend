@@ -30,7 +30,32 @@ class MainViewController: UITabBarController {
         super.viewDidLoad()
         setupNavigationBar()
         setupTabBar()
-        setupPointsLabel()
+        
+        guard let uid = FirebaseHelpers().getUserID() else {
+            present(SignedOutViewController(), animated: true)
+            return
+        }
+        
+        FirebaseHelpers().fetchUserData(uid) { (userData) in
+            if let userData = userData {
+                userData.saveToDefaults(forKey: "User\(uid)Key") {
+                    guard let user = LocalStorage.shared.currentUserData() else {
+                        return
+                    }
+                    
+                    self.setupPointsLabel(points: user.points ?? 0)
+                    
+                    let profileBox = self.homeController.profileBoxView
+                    profileBox.nameAgeLabel.text = "\(user.name ?? "User"), \(user.age ?? 0)"
+                    profileBox.roundsStatBox.statValue = user.roundsPlayed ?? 0
+                    profileBox.wonStatBox.statValue = user.gamesWon ?? 0
+                    profileBox.pointsStatBox.statValue = user.points ?? 0
+                    self.homeController.profileBoxView.profileImageView.setCachedImage(urlstring: user.profileImages?[0] ?? "", size: profileBox.profileImageView.frame.size) {
+                        
+                    }
+                }
+            }
+        }
     }
     
     func setupNavigationBar() {
@@ -53,11 +78,11 @@ class MainViewController: UITabBarController {
         setViewControllers([homeController, standingsViewController, messagesController], animated: false)
     }
     
-    fileprivate func setupPointsLabel() {
+    fileprivate func setupPointsLabel(points: Int) {
         let pointsLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 90, height: 30))
-        pointsLabel.text = "245"
+        pointsLabel.text = String(points)
         pointsLabel.textAlignment = .right
-        pointsLabel.font = UIFont(name: "GorgaGrotesque-Bold", size: 23)
+        pointsLabel.font = UIFont(name: "GorgaGrotesque-Bold", size: 25)
         pointsLabel.textColor = UIColor(named: "mainColor")
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: pointsLabel)
     }
