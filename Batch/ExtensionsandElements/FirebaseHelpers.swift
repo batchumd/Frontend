@@ -10,12 +10,15 @@ import UIKit
 import FirebaseFirestore
 import FirebaseAuth
 import FirebaseStorage
+import Firebase
 
 protocol FirebaseProtocol {
     func uploadImage(reference: String, image: UIImage, complete:@escaping ()->())
     func downloadURL(reference: String, complete:@escaping (String)->())
     func addNewUserToDatabase(userData: User,complete: @escaping ()->())
     func fetchUserData(_ uid: String, completionHandler: @escaping (_ userData: User?) -> ())
+    func signOutUser()
+    func getCountdownToLive()
 }
 
 protocol Fetchable {
@@ -80,19 +83,30 @@ struct FirebaseHelpers: FirebaseProtocol {
     func fetchUserData(_ uid: String, completionHandler: @escaping (_ userData: User?) -> ()) {
         fetch(User.self, id: uid) { (snapshot) in
             if snapshot.exists {
-                
                 let user = try! User.init(from: snapshot.data())
                 completionHandler(user)
-                return
             } else {
                 completionHandler(nil)
-                return
             }
+        }
+    }
+    
+    func getCountdownToLive() {
+       
+    }
+    
+    func signOutUser() {
+        do {
+            try auth.signOut()
+            Switcher.updateRootVC()
+        } catch let signOutError as NSError {
+            print("Error signing out: %@", signOutError)
         }
     }
     
     func getUserID() -> String? {
         guard let userUid = auth.currentUser?.uid else {
+            Switcher.updateRootVC()
             return nil
         }
         return userUid

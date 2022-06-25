@@ -31,34 +31,28 @@ class MainViewController: UITabBarController {
         setupNavigationBar()
         setupTabBar()
         
-        guard let uid = FirebaseHelpers().getUserID() else {
-            present(SignedOutViewController(), animated: true)
-            return
-        }
+        guard let uid = FirebaseHelpers().getUserID() else { return }
         
         FirebaseHelpers().fetchUserData(uid) { (userData) in
             if let userData = userData {
                 userData.saveToDefaults(forKey: "User\(uid)Key") {
-                    guard let user = LocalStorage.shared.currentUserData() else {
-                        return
-                    }
-                    
+                    guard let user = LocalStorage.shared.currentUserData() else { return }
                     self.setupPointsLabel(points: user.points ?? 0)
-                    
                     let profileBox = self.homeController.profileBoxView
                     profileBox.nameAgeLabel.text = "\(user.name ?? "User"), \(user.age ?? 0)"
                     profileBox.roundsStatBox.statValue = user.roundsPlayed ?? 0
                     profileBox.wonStatBox.statValue = user.gamesWon ?? 0
                     profileBox.pointsStatBox.statValue = user.points ?? 0
                     self.homeController.profileBoxView.profileImageView.setCachedImage(urlstring: user.profileImages?[0] ?? "", size: profileBox.profileImageView.frame.size) {
-                        
                     }
+                                        
                 }
             }
         }
     }
     
     func setupNavigationBar() {
+        setupSignOutButton()
         navigationItem.titleView = titleImageView
         navigationController?.view.backgroundColor = .white
         navigationItem.titleView?.frame = CGRect(x: 0, y: 0, width: 20, height: 5)
@@ -85,5 +79,19 @@ class MainViewController: UITabBarController {
         pointsLabel.font = UIFont(name: "GorgaGrotesque-Bold", size: 25)
         pointsLabel.textColor = UIColor(named: "mainColor")
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: pointsLabel)
+    }
+    
+    fileprivate func setupSignOutButton() {
+        let btnBack = UIButton(frame: CGRect(x:0, y: 0, width: 75, height: 30))
+        btnBack.tintColor = UIColor(red: 255/255, green: 90/255, blue: 82/255, alpha: 1.0)
+        btnBack.setTitle("Sign Out", for: .normal)
+        btnBack.titleLabel!.font = UIFont(name: "Gilroy-ExtraBold", size: 18)
+        btnBack.setTitleColor(UIColor(named: "mainColor"), for: .normal)
+        btnBack.addTarget(self, action: #selector(self.handleSignOut), for: .touchUpInside)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: btnBack)
+    }
+    
+    @objc func handleSignOut() {
+        FirebaseHelpers().signOutUser()
     }
 }

@@ -86,7 +86,7 @@ class InterestedInInputViewController: RegistrationViewController {
         } else {
             self.user?.interestedIn = self.interestedIn
             firebaseHelpers.addNewUserToDatabase(userData: self.user!) {
-                self.dismiss(animated: true)
+                Switcher.updateRootVC()
             }
         }
     }

@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseFirestore
 
 class EmailInputViewController: RegistrationViewController {
         
@@ -65,20 +66,35 @@ class EmailInputViewController: RegistrationViewController {
         }
         email = email + "@terpmail.umd.edu"
         
+        let auth = Auth.auth()
+        
         if ValidityChecker().isEmailValid(email) {
             if ValidityChecker().isPasswordValid(password) {
                 self.continueButton.disable()
-                Auth.auth().createUser(withEmail: email, password: password, completion: { (result, error) in
+                auth.createUser(withEmail: email, password: password, completion: { (result, error) in
                     if let error = error {
-                        print(error.localizedDescription)
-                        return
+                        let errorCode = AuthErrorCode(_nsError: error as NSError)
+                        switch errorCode.code {
+                        case .emailAlreadyInUse:
+                            auth.signIn(withEmail: email, password: password) { (result, error) in
+                                if let error = error {
+                                    print(error.localizedDescription)
+                                    return
+                                }
+                                self.continueButton.enable()
+                                Switcher.updateRootVC()
+                            }
+                        default:
+                            break
+                        }
+                    } else {
+                        self.user?.email = email
+                        self.user?.gamesWon = 0
+                        self.user?.roundsPlayed = 0
+                        self.user?.points = 0
+                        self.continueButton.enable()
+                        self.showNextViewController(NameInputViewController())
                     }
-                    self.user?.email = email
-                    self.user?.gamesWon = 0
-                    self.user?.roundsPlayed = 0
-                    self.user?.points = 0
-                    self.continueButton.enable()
-                    self.showNextViewController(NameInputViewController())
                 })
             } else {
                 self.displayError(message: "Password must be atleast 8 characters.")

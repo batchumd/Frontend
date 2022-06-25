@@ -18,24 +18,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = self.window ?? UIWindow()
 
         // Set this scene's window's background color.
-        self.window!.backgroundColor = UIColor.white
+        self.window!.backgroundColor = UIColor.clear
 
         // Make this scene's window be visible.
         self.window!.makeKeyAndVisible()
         
-        let navController = UINavigationController()
-        navController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
-        navController.navigationBar.shadowImage = UIImage()
-        navController.view.backgroundColor = .white
-        
-        // Determine if user is logged in
-        if Auth.auth().currentUser == nil {
-            navController.viewControllers = [SignedOutViewController()]
-        } else {
-            navController.viewControllers = [MainViewController()]
-        }
-        
-        self.window?.rootViewController = navController
+        Switcher.updateRootVC()
         
         guard scene is UIWindowScene else { return }
     }
@@ -72,3 +60,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 }
 
+
+class Switcher {
+    
+    static func updateRootVC(){
+        
+        let navController = UINavigationController()
+        navController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        navController.navigationBar.shadowImage = UIImage()
+        navController.view.backgroundColor = .white
+        
+        let status = Auth.auth().currentUser != nil
+
+        if (status == true) {
+            navController.viewControllers = [MainViewController()]
+        } else {
+           navController.viewControllers = [SignedOutViewController()]
+        }
+        
+        UIApplication.shared.keywindow?.rootViewController = navController
+        
+    }
+    
+}

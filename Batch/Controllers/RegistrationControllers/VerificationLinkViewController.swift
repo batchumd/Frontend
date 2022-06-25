@@ -12,7 +12,6 @@ import FirebaseAuth
 class VerificationLinkViewController: RegistrationViewController {
             
     //MARK: UI Elements
-    
     fileprivate let loadingIndicator = ProgressView(lineWidth: 8)
     
     //MARK: UI Lifecycle Methods
