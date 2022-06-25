@@ -130,7 +130,6 @@ class SignedOutViewController: ViewControllerWithGradient {
     }()
     
     //MARK: UI Lifecycle Methods
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.mainStackView.layoutIfNeeded()
@@ -146,6 +145,7 @@ class SignedOutViewController: ViewControllerWithGradient {
         setupBackButton()
         setupMadeWithLoveLabel()
         signInButton.addTarget(self, action: #selector(showSignInController), for: .touchUpInside)
+        registerButton.addTarget(self, action: #selector(showSignInController), for: .touchUpInside)
     }
     
     fileprivate func setupMainStack() {

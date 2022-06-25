@@ -20,6 +20,7 @@ class CustomViewControllerWithNav: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
+        setupPointsLabel()
     }
     
     func setupNavigationBar() {
@@ -30,8 +31,16 @@ class CustomViewControllerWithNav: UIViewController {
         navigationController?.navigationBar.isTranslucent = false
 
         let myBatches = UIButton()
-//      myBatches.addTarget(self, action: #selector(showPlans), for: .touchUpInside)
         myBatches.setImage(UIImage(named: "MessagesIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: myBatches)
+    }
+    
+    fileprivate func setupPointsLabel() {
+        let pointsLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 90, height: 30))
+        pointsLabel.text = "2350"
+        pointsLabel.textAlignment = .right
+        pointsLabel.font = UIFont(name: "GorgaGrotesque-Bold", size: 23)
+        pointsLabel.textColor = UIColor(named: "mainColor")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: pointsLabel)
     }
 }

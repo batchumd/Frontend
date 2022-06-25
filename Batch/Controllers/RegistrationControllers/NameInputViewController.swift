@@ -35,20 +35,14 @@ class NameInputViewController: RegistrationViewController {
     
     //MARK: Business Logic
     @objc func continueButtonTapped() {
-        if ValidityChecker().isNameValid(self.nameInput.text ?? "") {
-            self.showDateOfBirthViewController()
+        guard let name = self.nameInput.text else {
+            return
+        }
+        if ValidityChecker().isNameValid(name) {
+            self.user?.name = name
+            self.showNextViewController(DateOfBirthInputViewController())
         } else {
             self.displayError(message: "Please enter a valid name")
         }
-    }
-    
-    func showDateOfBirthViewController() {
-        let vc = DateOfBirthInputViewController()
-        let transition:CATransition = CATransition()
-        transition.duration = 0.25
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.fade
-        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
-        self.navigationController?.pushViewController(vc, animated: false)
     }
 }

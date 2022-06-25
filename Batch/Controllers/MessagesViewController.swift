@@ -9,21 +9,18 @@ import UIKit
 
 class MessagesViewController: ViewControllerWithHeader {
     
-    let messages = [
-        Message(sender: User(name: "Tom", age: 23, image: UIImage(named: "nicole")!, points: 233), content: "Hey whats up!", time: Date(timeIntervalSinceNow: 2333))
-    ]
+    let messages: [Message] = []
     
+    //MARK: UI Elements
     let messagesCollectionView: UICollectionView = {
-        //Main collection view for messages
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(MessageCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(ChatPreviewCell.self, forCellWithReuseIdentifier: "cell")
         return collectionView
     }()
     
     let searchBar: UITextField = {
-        //Textfield for searching matches
         let textField = UITextField()
         textField.placeholder = "Search 2 matches"
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -36,6 +33,24 @@ class MessagesViewController: ViewControllerWithHeader {
         textField.leftViewMode = .always
         return textField
     }()
+    
+    //MARK: UI Lifecycle Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        //Setup the views
+        setupHeader(title: "Messages")
+        setupSearchBar()
+        setupMessagesCollectionView()
+    }
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        self.tabBarItem = UITabBarItem.init(title: "Messages", image: UIImage(named: "MessagesIcon"), tag: 2)
+        tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Gilroy-ExtraBold", size: 11)!], for: .normal)
+        tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
+        tabBarItem.imageInsets = UIEdgeInsets(top: 7, left: 0, bottom: -7, right: 0)
+    }
     
     fileprivate func setupMessagesCollectionView() {
         messagesCollectionView.delegate = self
@@ -55,23 +70,6 @@ class MessagesViewController: ViewControllerWithHeader {
         searchBar.heightAnchor.constraint(equalToConstant: 35).isActive = true
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        //Setup the views
-        setupHeader(title: "Messages")
-        setupSearchBar()
-        setupMessagesCollectionView()
-    }
-    
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        self.tabBarItem = UITabBarItem.init(title: "Messages", image: UIImage(named: "MessagesIcon"), tag: 2)
-        tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Gilroy-ExtraBold", size: 11)!], for: .normal)
-        tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
-        tabBarItem.imageInsets = UIEdgeInsets(top: 7, left: 0, bottom: -7, right: 0)
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -89,8 +87,19 @@ extension MessagesViewController: UICollectionViewDelegateFlowLayout, UICollecti
         return self.messages.count
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = GameViewController(chatID: "lakdsfj")
+//        vc.gameData = Game(chatID: "skadjhfkalf", players: profiles, host: User(name: "Layla", age: 23, image: UIImage(named: "layla")!, points: 233))
+        let transition:CATransition = CATransition()
+        transition.duration = 0.25
+        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        transition.type = CATransitionType.fade
+        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
+        self.navigationController?.pushViewController(vc, animated: false)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! MessageCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ChatPreviewCell
         cell.message = self.messages[indexPath.row]
         return cell
     }

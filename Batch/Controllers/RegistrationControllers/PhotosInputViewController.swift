@@ -10,7 +10,11 @@ import UIKit
 
 class PhotosInputViewController: RegistrationViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    let backend = FirebaseHelpers()
+    
     var selectedImageIndex: Int = 0
+    
+    var imagesToUpload: [UIImage] = []
         
     //MARK: UI Elements
     
@@ -55,12 +59,11 @@ class PhotosInputViewController: RegistrationViewController, UIImagePickerContro
         self.setupGradient()
         self.animateGradient()
         self.mainStackView.addArrangedSubview(imagesStackView)
-        
         let openImagePickerForImage1 = UITapGestureRecognizer(target: self, action: #selector(self.openImagePicker))
         let openImagePickerForImage2 = UITapGestureRecognizer(target: self, action: #selector(self.openImagePicker))
         openImagePickerForImage1.name = "image1"
         openImagePickerForImage2.name = "image2"
-
+        continueButton.addTarget(self, action: #selector(uploadImages), for: .touchUpInside)
         firstImageView.addGestureRecognizer(openImagePickerForImage1)
         secondImageView.addGestureRecognizer(openImagePickerForImage2)
 
@@ -73,6 +76,7 @@ class PhotosInputViewController: RegistrationViewController, UIImagePickerContro
     }
     
     //MARK: Business Logic
+    
     @objc func openImagePicker(sender: UITapGestureRecognizer) {
         if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
             if sender.name == "image1" {
@@ -91,18 +95,58 @@ class PhotosInputViewController: RegistrationViewController, UIImagePickerContro
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-
             if selectedImageIndex == 1 && firstImageView.image != nil {
                 self.secondImageView.backgroundColor = .none
+                self.imagesToUpload.removeAll(where: {$0 == secondImageView.image})
                 self.secondImageView.image = pickedImage
             } else {
                 self.firstImageView.backgroundColor = .none
+                self.imagesToUpload.removeAll(where: {$0 == firstImageView.image})
                 self.firstImageView.image = pickedImage
             }
+            self.imagesToUpload.append(pickedImage)
         }
         
         dismiss(animated: true, completion: nil)
     }
-
     
+    @objc func uploadImages() {
+        
+        if imagesToUpload.isEmpty {
+            self.displayError(message: "Please upload atleast one image.")
+            return
+        }
+        
+        guard let uid = backend.getUserID() else { return }
+        
+        let imageUploadGroup = DispatchGroup()
+        
+        self.continueButton.disable()
+
+        for (index,image) in imagesToUpload.enumerated() {
+            imageUploadGroup.enter()
+            let reference = "profileImages/\(uid)\(String(index)).jpg"
+            handleUpload(reference, image: image) {
+                imageUploadGroup.leave()
+            }
+        }
+        
+        imageUploadGroup.notify(queue: .main) {
+            self.continueButton.enable()
+            self.showNextViewController(GenderInputViewController())
+        }
+    }
+        
+    fileprivate func handleUpload(_ reference: String, image: UIImage, complete: @escaping () -> ()) {
+        self.backend.uploadImage(reference: reference, image: image) {
+            self.backend.downloadURL(reference: reference) { imageURL in
+                if self.user?.profileImages != nil {
+                    self.user?.profileImages!.append(imageURL)
+                } else {
+                    self.user?.profileImages = [imageURL]
+                }
+                complete()
+            }
+        }
+    }
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import FirebaseFirestore
 
 class DateOfBirthInputViewController: RegistrationViewController {
     
@@ -47,21 +48,11 @@ class DateOfBirthInputViewController: RegistrationViewController {
     @objc func continueButtonTapped() {
         
         if ValidityChecker().isBirthdateValid(self.datePicker.date) {
-            showPhotosInputController()
+            self.user?.dob = self.datePicker.date
+            self.showNextViewController(PhotosInputViewController())
         } else {
             displayError(message: "You must be 18 to use Batch")
         }
-        
-    }
-    
-    @objc func showPhotosInputController() {
-        let vc = PhotosInputViewController()
-        let transition:CATransition = CATransition()
-        transition.duration = 0.25
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.fade
-        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
-        self.navigationController?.pushViewController(vc, animated: false)
     }
     
     @objc func datePickerChanged() {

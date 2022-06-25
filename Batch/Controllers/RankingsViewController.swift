@@ -10,13 +10,9 @@ import UIKit
 
 class RankingsViewController: ViewControllerWithHeader {
     
-    let profiles = [
-                    User(name: "Nicole", age: 21, image: UIImage(named: "nicole")!, points: 938),
-                    User(name: "Layla", age: 20, image: UIImage(named: "layla")!, points: 129),
-                    User(name: "Ariana", age: 19, image: UIImage(named: "ariana")!, points: 420),
-                    User(name: "Lauren", age: 22, image: UIImage(named: "lauren")!, points: 500)
-    ]
+    let profiles: [User] = []
     
+    //MARK: UI Elements
     let standingsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -35,45 +31,15 @@ class RankingsViewController: ViewControllerWithHeader {
         segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
         segmentedControl.setImage(UIImage(named: "male")!.resize(targetSize: CGSize(width: 25, height: 25)), forSegmentAt: 1)
         segmentedControl.setImage(UIImage(named: "female")!.resize(targetSize: CGSize(width: 22, height: 25)), forSegmentAt: 0)
-        segmentedControl.addTarget(RankingsViewController.self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
+        segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
         return segmentedControl
     }()
     
-    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
-        if sender.selectedSegmentIndex == 0 {
-            self.genderFilter.selectedSegmentTintColor = UIColor(red: 252/255, green: 72/255, blue: 190/255, alpha: 1.0)
-        } else {
-            self.genderFilter.selectedSegmentTintColor = UIColor(red: 70/255, green: 141/255, blue: 255/255, alpha: 1.0)
-        }
-    }
-    
-    fileprivate func setupStandingsCollectionView() {
-        //Setup collectionView
-        standingsCollectionView.delegate = self
-        standingsCollectionView.dataSource = self
-        view.addSubview(standingsCollectionView)
-        standingsCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        standingsCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
-        standingsCollectionView.topAnchor.constraint(equalTo: self.genderFilter.bottomAnchor, constant: 15).isActive = true
-        standingsCollectionView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-    }
-    
-    fileprivate func setupGenderFilter() {
-        //Setup genderFilter
-        view.addSubview(genderFilter)
-        genderFilter.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor).isActive = true
-        genderFilter.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30).isActive = true
-        genderFilter.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        genderFilter.widthAnchor.constraint(equalToConstant: 115).isActive = true
-    }
-    
+    //MARK: UI Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupHeader(title: "Rankings")
-        
         setupGenderFilter()
-        
         setupStandingsCollectionView()
     }
     
@@ -84,7 +50,33 @@ class RankingsViewController: ViewControllerWithHeader {
         tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Gilroy-ExtraBold", size: 11)!], for: .normal)
         tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
         tabBarItem.imageInsets = UIEdgeInsets(top: 7, left: 0, bottom: -7, right: 0)
+    }
 
+    fileprivate func setupStandingsCollectionView() {
+        standingsCollectionView.delegate = self
+        standingsCollectionView.dataSource = self
+        view.addSubview(standingsCollectionView)
+        standingsCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        standingsCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        standingsCollectionView.topAnchor.constraint(equalTo: self.genderFilter.bottomAnchor, constant: 15).isActive = true
+        standingsCollectionView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    }
+    
+    fileprivate func setupGenderFilter() {
+        view.addSubview(genderFilter)
+        genderFilter.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor).isActive = true
+        genderFilter.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30).isActive = true
+        genderFilter.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        genderFilter.widthAnchor.constraint(equalToConstant: 115).isActive = true
+    }
+    
+    //MARK: Business Logic
+    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+        if sender.selectedSegmentIndex == 0 {
+            self.genderFilter.selectedSegmentTintColor = UIColor(red: 252/255, green: 72/255, blue: 190/255, alpha: 1.0)
+        } else {
+            self.genderFilter.selectedSegmentTintColor = UIColor(red: 70/255, green: 141/255, blue: 255/255, alpha: 1.0)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -94,25 +86,22 @@ class RankingsViewController: ViewControllerWithHeader {
 }
 
 extension RankingsViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.frame.width, height: 55)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.profiles.count
+        return profiles.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! UserCell
         cell.rankLabel.text = String(indexPath.row + 1)
-        cell.user = self.profiles[indexPath.row]
+        cell.user = profiles[indexPath.row]
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 16
     }
-    
-    
 }

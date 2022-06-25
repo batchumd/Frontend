@@ -11,7 +11,6 @@ class ProfileBoxView: UIView {
     
     let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "nicole")!
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
@@ -23,7 +22,6 @@ class ProfileBoxView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor(named: "customGray")
         label.textAlignment = .center
-        label.text = "Nicole, 28"
         label.font = UIFont(name: "Gilroy-ExtraBold", size: 25)
         return label
     }()
@@ -37,8 +35,14 @@ class ProfileBoxView: UIView {
         return stackView
     }()
     
+    let roundsStatBox = statBox(name: "Rounds")
+    
+    let wonStatBox = statBox(name: "Won")
+    
+    let pointsStatBox = statBox(name: "Points", highlight: true)
+    
     lazy var statsView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [statBox(value: 10, name: "Played"), statBox(value: 2, name: "Won"), statBox(value: 245, name: "Points", highlight: true)])
+        let stackView = UIStackView(arrangedSubviews: [roundsStatBox, wonStatBox, pointsStatBox])
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -54,13 +58,14 @@ class ProfileBoxView: UIView {
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false
         addShadow()
+        self.layer.cornerRadius = 25
         stackView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(stackView)
         stackView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
         stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
         stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-        profileImageView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 1/3).isActive = true
+        profileImageView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.4).isActive = true
         profileImageView.heightAnchor.constraint(equalTo: profileImageView.widthAnchor).isActive = true
         statsView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 40).isActive = true
         statsView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -40).isActive = true
@@ -74,13 +79,12 @@ class ProfileBoxView: UIView {
 }
 
 extension UIView {
-    func addShadow() {
-        layer.cornerRadius = 25
+    func addShadow(radius: CGFloat = 10, offset: CGSize? = nil, opacity: Float = 0.16) {
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.16
-        layer.shadowOffset = .zero
-        layer.shadowRadius = 10
+        layer.shadowOpacity = opacity
+        layer.shadowOffset = offset ?? .zero
+        layer.shadowRadius = radius
         backgroundColor = .white
     }
 }

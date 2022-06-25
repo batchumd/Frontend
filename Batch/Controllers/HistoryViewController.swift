@@ -15,7 +15,6 @@ class HistoryViewController: ViewControllerWithHeader {
     
     init() {
         super.init(nibName: nil, bundle: nil)
-        
         self.tabBarItem = UITabBarItem.init(title: "Friends", image: UIImage(named: "friends"), tag: 3)
         tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Gilroy-ExtraBold", size: 11)!], for: .normal)
         tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 10)

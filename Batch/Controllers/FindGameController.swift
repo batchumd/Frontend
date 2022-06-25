@@ -7,19 +7,15 @@
 
 import UIKit
 
-class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate {
     
     private var minimumSpacing: CGFloat = 10
 
     private var edgeInsetPadding: CGFloat = 20
     
-    let profiles = [
-                    User(name: "Nicole", age: 21, image: UIImage(named: "nicole")!, points: 938),
-                    User(name: "Layla", age: 20, image: UIImage(named: "layla")!, points: 129),
-                    User(name: "Ariana", age: 19, image: UIImage(named: "ariana")!, points: 420),
-                    User(name: "Lauren", age: 22, image: UIImage(named: "lauren")!, points: 500)
-    ]
+    let profiles: [User] = []
     
+    //MARK: UI Elements
     let informationLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -39,7 +35,6 @@ class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate,
         label.textColor = UIColor(named: "customGray")
         return label
     }()
-
     
     let gameCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -47,6 +42,7 @@ class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate,
         return collectionView
     }()
     
+    //MARK: UI Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         gameCollectionView.register(ProfileCard.self, forCellWithReuseIdentifier: "result")
@@ -70,6 +66,9 @@ class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate,
         gameCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
     }
     
+}
+
+extension FindGameController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return profiles.count
     }
@@ -98,5 +97,4 @@ class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate,
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
             return minimumSpacing
         }
-    
 }

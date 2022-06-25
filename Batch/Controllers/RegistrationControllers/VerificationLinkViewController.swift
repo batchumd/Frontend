@@ -7,18 +7,11 @@
 
 import Foundation
 import UIKit
+import FirebaseAuth
 
 class VerificationLinkViewController: RegistrationViewController {
-        
+            
     //MARK: UI Elements
-    fileprivate let awaitingVerificationLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Awaiting Verification"
-        label.font = UIFont(name: "Brown-bold", size: 25)
-        label.textColor = .white
-        return label
-    }()
-    
     fileprivate let loadingIndicator = ProgressView(lineWidth: 8)
     
     //MARK: UI Lifecycle Methods
@@ -45,25 +38,30 @@ class VerificationLinkViewController: RegistrationViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
     
+    fileprivate func listenForVerification() {
+        if let user = Auth.auth().currentUser {
+            user.sendEmailVerification { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+                
+            }
+        }
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
     //MARK: Business Logic
     @objc func showNameInputController() {
-        let vc = NameInputViewController()
-        let transition:CATransition = CATransition()
-        transition.duration = 0.25
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.fade
-        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
-        self.navigationController?.pushViewController(vc, animated: false)
+        self.showNextViewController(NameInputViewController())
     }
 
     @objc func applicationWillEnterForeground(_ notification: Notification) {
         self.loadingIndicator.animateStroke()
         self.loadingIndicator.animateRotation()
-        
     }
     
 }

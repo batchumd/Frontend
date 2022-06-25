@@ -11,8 +11,8 @@ class ProfileCard: UICollectionViewCell {
     
     var user: User! {
         didSet {
-            profileImage.image = user.image
-            infoLabel.text = user.name + ", " + String(user.age)
+//            profileImage.image = user.image
+            infoLabel.text = user.name! + ", " + String(user.age!)
         }
     }
     
