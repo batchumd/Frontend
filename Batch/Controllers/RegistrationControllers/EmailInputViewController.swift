@@ -10,6 +10,10 @@ import FirebaseAuth
 import FirebaseFirestore
 
 class EmailInputViewController: RegistrationViewController {
+    
+    var authType: AuthType
+        
+    let auth = Auth.auth()
         
     //MARK: UI Elements
     let emailInput: ATCTextField = {
@@ -44,12 +48,20 @@ class EmailInputViewController: RegistrationViewController {
     }()
     
     //MARK: UI Lifecycle Methods
-    override func viewDidLoad() {
-        super.viewDidLoad()
+
+    init(type: AuthType) {
+        self.authType = type
+        super.init(nibName: nil, bundle: nil)
         self.user = try! User()
         self.mainStackView.insertArrangedSubview(emailInput, at: 2)
         self.mainStackView.insertArrangedSubview(passwordInput, at: 3)
-        titleLabel.text = "Enter your UMD \nstudent email."
+        switch type {
+            case .reAuth:
+                titleLabel.text = "Please confirm your login to delete your account."
+                subtitleLabel.isHidden = true
+            case .register: titleLabel.text = "Enter your UMD \nstudent email."
+            case .signIn: titleLabel.text = "Sign in to your account."
+        }
         subtitleLabel.text = "Batch is currently only available for the University of Maryland community. We plan to launch in more places in the near future!"
         informationLabel.text = "We will never share your email with anyone or display it on your profile."
         continueButton.addTarget(self, action: #selector(continueButtonClicked), for: .touchUpInside)
@@ -58,59 +70,89 @@ class EmailInputViewController: RegistrationViewController {
         self.animateGradient()
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     //MARK: Business Logic
+    
     @objc func continueButtonClicked() {
         
-        guard var email = emailInput.text, let password = passwordInput.text else {
-            return
-        }
+        guard var email = emailInput.text, let password = passwordInput.text else { return }
+        
         email = email + "@terpmail.umd.edu"
-        
-        let auth = Auth.auth()
-        
-        if ValidityChecker().isEmailValid(email) {
-            if ValidityChecker().isPasswordValid(password) {
-                self.continueButton.disable()
-                auth.createUser(withEmail: email, password: password, completion: { (result, error) in
-                    if let error = error {
-                        let errorCode = AuthErrorCode(_nsError: error as NSError)
-                        switch errorCode.code {
-                        case .emailAlreadyInUse:
-                            auth.signIn(withEmail: email, password: password) { (result, error) in
-                                if let error = error {
-                                    print(error.localizedDescription)
-                                    return
-                                }
-                                self.continueButton.enable()
-                                Switcher.updateRootVC()
-                            }
-                        default:
-                            break
-                        }
-                    } else {
-                        self.user?.email = email
-                        self.user?.gamesWon = 0
-                        self.user?.roundsPlayed = 0
-                        self.user?.points = 0
-                        self.continueButton.enable()
-                        self.showNextViewController(NameInputViewController())
-                    }
-                })
-            } else {
-                self.displayError(message: "Password must be atleast 8 characters.")
-            }
-        } else {
-            self.displayError(message: "Please enter a valid email")
+                
+        switch self.authType {
+            case .register: handleRegistration(email: email, password: password)
+            case .signIn: handleSignin(email: email, password: password)
+            case .reAuth: handleSignin(email: email, password: password)
         }
     }
     
+    fileprivate func handleRegistration(email: String, password: String) {
+        
+        let validityChecker = ValidityChecker()
+        
+        // Check if email is valid
+        if validityChecker.isEmailValid(email) {
+            
+            // Check if password throws off error
+            if let error = validityChecker.passwordErrorCheck(password) {
+                self.displayError(message: error.localizedDescription)
+                return
+            }
+            
+            self.continueButton.disable()
+            auth.createUser(withEmail: email, password: password, completion: { (result, error) in
+                if let error = error {
+                    let errorCode = AuthErrorCode(_nsError: error as NSError)
+                    switch errorCode.code {
+                        case .emailAlreadyInUse:
+                            self.displayError(message: "Email already in use.")
+                        case .invalidEmail:
+                            self.displayError(message: "Email is invalid")
+                        default: break
+                    }
+                } else {
+                    self.user?.email = email
+                    self.user?.gamesWon = 0
+                    self.user?.roundsPlayed = 0
+                    self.user?.points = 0
+                    self.continueButton.enable()
+                    self.showNextViewController(NameInputViewController())
+                }
+                self.continueButton.enable()
+            })
+        }
+    }
+    
+    fileprivate func handleSignin(email: String, password: String) {
+        self.continueButton.disable()
+        auth.signIn(withEmail: email, password: password) { (result, error) in
+            if let error = error {
+                let errorCode = AuthErrorCode(_nsError: error as NSError)
+                switch errorCode.code {
+                    case .wrongPassword:
+                        self.displayError(message: "Password was incorrect.")
+                    case .userNotFound:
+                        self.displayError(message: "Email does not exist.")
+                    default: break
+                }
+                self.continueButton.enable()
+                return
+            }
+            self.continueButton.enable()
+            if self.authType == .reAuth {
+                self.navigationController!.popViewController(animated: true)
+            } else if self.authType == .signIn {
+                Switcher.updateRootVC()
+            }
+        }
+    }
 }
 
-struct InfoPlistHelper {
-    static func getStringValue(forKey: String) -> String {
-        guard let value = Bundle.main.infoDictionary?[forKey] as? String else {
-            fatalError("No value found for key!")
-        }
-         return value
-    }
+enum AuthType {
+    case signIn
+    case reAuth
+    case register
 }

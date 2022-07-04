@@ -145,7 +145,7 @@ class SignedOutViewController: ViewControllerWithGradient {
         setupBackButton()
         setupMadeWithLoveLabel()
         signInButton.addTarget(self, action: #selector(showSignInController), for: .touchUpInside)
-        registerButton.addTarget(self, action: #selector(showSignInController), for: .touchUpInside)
+        registerButton.addTarget(self, action: #selector(showRegistrationController), for: .touchUpInside)
     }
     
     fileprivate func setupMainStack() {
@@ -179,7 +179,17 @@ class SignedOutViewController: ViewControllerWithGradient {
     
     //MARK: Business Logic
     @objc func showSignInController() {
-        let vc = EmailInputViewController()
+        let vc = EmailInputViewController(type: .signIn)
+        let transition:CATransition = CATransition()
+        transition.duration = 0.25
+        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        transition.type = CATransitionType.fade
+        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
+        self.navigationController?.pushViewController(vc, animated: false)
+    }
+    
+    @objc func showRegistrationController() {
+        let vc = EmailInputViewController(type: .register)
         let transition:CATransition = CATransition()
         transition.duration = 0.25
         transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
