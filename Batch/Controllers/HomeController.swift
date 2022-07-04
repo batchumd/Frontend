@@ -34,10 +34,9 @@ class HomeController: UIViewController {
     let inviteFriendView = InviteFriendView()
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "pattern")!)
         let tapShowCountdown = UITapGestureRecognizer(target: self, action: #selector(self.showCountdownViewController))
         countdownView.addGestureRecognizer(tapShowCountdown)
+        profileBoxView.settingsButton.addTarget(self, action: #selector(showPreferences), for: .touchUpInside)
         setupLayout()
         NetworkManager().getCurrentTime { date, error in
             if let error = error {
@@ -90,6 +89,11 @@ class HomeController: UIViewController {
 //        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
 //        self.navigationController?.pushViewController(vc, animated: false)
 //    }
+    
+    @objc func showPreferences() {
+        let vc = UINavigationController(rootViewController: PreferencesViewController())
+        self.present(vc, animated: true)
+    }
     
     @objc fileprivate func showCountdownViewController() {
         let vc = CountdownViewController(countdown)
