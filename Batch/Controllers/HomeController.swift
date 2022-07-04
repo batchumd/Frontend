@@ -13,6 +13,12 @@ class HomeController: UIViewController {
     
     let mainView = UIView()
     
+    var countdown: GameCountdown!
+    
+    var appDidEnterBackgroundDate: Date?
+    
+    var countdownTimer: CustomTimer?
+    
     lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [countdownView, profileBoxView, inviteFriendView])
         stackView.axis = .vertical
@@ -33,6 +39,22 @@ class HomeController: UIViewController {
         let tapShowCountdown = UITapGestureRecognizer(target: self, action: #selector(self.showCountdownViewController))
         countdownView.addGestureRecognizer(tapShowCountdown)
         setupLayout()
+        NetworkManager().getCurrentTime { date, error in
+            if let error = error {
+                print(error)
+                return
+            }
+            self.countdown = GameCountdown(currentDate: date!)
+            
+            //Dispatch countdown timer to main queue. Cannot add to background queue
+            DispatchQueue.main.async {
+                if self.countdownTimer == nil {
+                    self.countdownTimer = CustomTimer(handler: { elapsed in
+                        self.updateTime(elapsed)
+                    })
+                }
+            }
+        }
     }
     
     init() {
@@ -70,7 +92,7 @@ class HomeController: UIViewController {
 //    }
     
     @objc fileprivate func showCountdownViewController() {
-        let vc = CountdownViewController()
+        let vc = CountdownViewController(countdown)
         let transition:CATransition = CATransition()
         transition.duration = 0.25
         transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
@@ -79,5 +101,9 @@ class HomeController: UIViewController {
         self.navigationController?.pushViewController(vc, animated: false)
     }
     
+    @objc func updateTime(_ elapsed: TimeInterval) {
+        countdown.currentDate = countdown.currentDate.addingTimeInterval(elapsed)
+        self.countdownView.counter.text = countdown.timeRemaining.associatedValue
+    }
+    
 }
-

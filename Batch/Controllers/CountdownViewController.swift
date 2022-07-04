@@ -9,6 +9,10 @@ import UIKit
 
 class CountdownViewController: ViewControllerWithGradient {
     
+    var countdown: GameCountdown
+    
+    var countdownTimer: CustomTimer?
+    
     //MARK: UI Elements
     let countdownView = CountdownView(fullscreen: true)
     
@@ -46,6 +50,21 @@ class CountdownViewController: ViewControllerWithGradient {
     }()
     
     //MARK: UI Lifecycle Methods
+    
+    init(_ countdown: GameCountdown) {
+        self.countdown = countdown
+        super.init(nibName: nil, bundle: nil)
+        if self.countdownTimer == nil {
+            self.countdownTimer = CustomTimer(handler: { elapsed in
+                self.updateTime(elapsed)
+            })
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupGradient()
@@ -55,6 +74,7 @@ class CountdownViewController: ViewControllerWithGradient {
     }
     
     fileprivate func setupCountdownView() {
+        self.countdownView.counter.text = countdown.timeRemaining.associatedValue
         self.view.addSubview(countdownView)
         countdownView.heightAnchor.constraint(equalToConstant: 300).isActive = true
         countdownView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
@@ -85,6 +105,12 @@ class CountdownViewController: ViewControllerWithGradient {
         } else {
             notifyButton.isSelected = true
         }
+    }
+    
+    @objc func updateTime(_ elapsed: TimeInterval) {
+        countdown.currentDate = countdown.currentDate.addingTimeInterval(elapsed)
+//        countdown.currentDate = Calendar.current.date(byAdding: .second, value: elapsed, to: countdown.currentDate)!
+        self.countdownView.counter.text = countdown.timeRemaining.associatedValue
     }
     
 }
