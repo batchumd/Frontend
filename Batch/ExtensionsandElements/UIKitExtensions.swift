@@ -108,5 +108,14 @@ extension UIApplication {
             // Finally, keep only the key window
             .first(where: \.isKeyWindow)
     }
-    
+}
+
+extension Array {
+    func split() -> [[Element]] {
+        let ct = self.count
+        let half = ct / 2
+        let leftSplit = self[0 ..< half]
+        let rightSplit = self[half ..< ct]
+        return [Array(leftSplit), Array(rightSplit)]
+    }
 }
