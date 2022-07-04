@@ -78,8 +78,11 @@ class Switcher {
            navController.viewControllers = [SignedOutViewController()]
         }
         
-        UIApplication.shared.keywindow?.rootViewController = navController
-        
+        let window = UIApplication.shared.keywindow
+        guard let uWindow = window else { return }
+
+        uWindow.rootViewController = navController
+        UIView.transition(with: uWindow, duration: 0.3, options: [.transitionCrossDissolve], animations: {}, completion: nil)
     }
     
 }
