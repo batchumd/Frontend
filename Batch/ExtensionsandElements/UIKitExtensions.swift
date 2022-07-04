@@ -10,24 +10,15 @@ import Kingfisher
 
 //MARK: UIImage
 extension UIImage {
-
+    
+    // Resize images
     func resize(targetSize: CGSize) -> UIImage {
         return UIGraphicsImageRenderer(size:targetSize).image { _ in
             self.draw(in: CGRect(origin: .zero, size: targetSize))
         }
     }
     
-    var roundMyImage: UIImage {
-        let rect = CGRect(origin:CGPoint(x: 0, y: 0), size: self.size)
-        UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
-        UIBezierPath(
-            roundedRect: rect,
-            cornerRadius: self.size.height
-            ).addClip()
-        self.draw(in: rect)
-        return UIGraphicsGetImageFromCurrentImageContext()!
-    }
-    
+    // JPEG compression for uploading to firestore
     enum JPEGQuality: CGFloat {
         case lowest  = 0
         case low     = 0.25
@@ -42,8 +33,9 @@ extension UIImage {
 }
 
 extension UIImageView {
+    // Utilize KingFisher to load images from firebase
     func setCachedImage(urlstring: String, size: CGSize, complete: @escaping () -> ()) {
-        let processor = ResizingImageProcessor(referenceSize: size)
+        let processor = ResizingImageProcessor(referenceSize: size, mode: .aspectFill)
         self.kf.setImage(
             with: URL(string: urlstring),
             options: [
@@ -57,13 +49,13 @@ extension UIImageView {
 }
 
 class ATCTextField: UITextField {
-    
     override open func textRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: self.rightView?.bounds.width ?? 0))
     }
     override open func editingRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: UIEdgeInsets(top: 20, left: 20, bottom: 20, right:  self.rightView?.bounds.width ?? 0))
     }
+    
 }
 
 //MARK: UITextField
