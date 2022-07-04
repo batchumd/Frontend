@@ -15,8 +15,8 @@ class LocalStorage {
     
     func currentUserData() -> User? {
         do {
-            let id = FirebaseHelpers().getUserID()
-            if let data = UserDefaults.standard.object(forKey: "User\(id!)Key") as? Data {
+            guard let id = FirebaseHelpers().getUserID() else { return nil }
+            if let data = UserDefaults.standard.object(forKey: "User\(id)Key") as? Data {
                 let decoder = JSONDecoder()
                 return try decoder.decode(User.self, from: data)
             }
