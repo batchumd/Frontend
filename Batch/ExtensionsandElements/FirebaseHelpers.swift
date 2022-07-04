@@ -18,6 +18,7 @@ protocol FirebaseProtocol {
     func addNewUserToDatabase(userData: User,complete: @escaping ()->())
     func fetchUserData(_ uid: String, completionHandler: @escaping (_ userData: User?) -> ())
     func signOutUser()
+    func deleteCurrentUser(complete: @escaping (_ error: Error?) -> ())
     func getCountdownToLive()
 }
 
@@ -68,10 +69,8 @@ struct FirebaseHelpers: FirebaseProtocol {
         })
     }
     
-    func addNewUserToDatabase(userData: User,complete: @escaping ()->()) {
-        guard let uid = getUserID(), var data = userData.convertToDict() else {
-           return
-        }
+    func addNewUserToDatabase(userData: User, complete: @escaping ()->()) {
+        guard let uid = getUserID(), var data = userData.convertToDict() else { return }
         data["dob"] = userData.dob
         db.collection("users").document(uid).setData(data) { err in
             if let err = err { fatalError("\(err)") }
@@ -111,4 +110,52 @@ struct FirebaseHelpers: FirebaseProtocol {
         }
         return userUid
     }
+    
+    func deleteCurrentUser(complete: @escaping (_ error: Error?) -> ()) {
+        
+        guard let uid = getUserID() else { return }
+        
+        self.deleteUserImages {
+            auth.currentUser?.delete(completion: { error in
+                if let error = error {
+                    complete(error)
+                    return
+                }
+                db.collection("users").document(uid).delete { error in
+                    if let error = error { complete(error) }
+                    print("User data deleted")
+                    Switcher.updateRootVC()
+                }
+            })
+        }
+        
+    }
+    
+    func deleteUserImages(complete: @escaping () -> ()) {
+        guard let userImages = LocalStorage.shared.currentUserData()?.profileImages else { return }
+        for imageURL in userImages {
+            let storageRef = storage.reference(forURL: imageURL)
+            storageRef.delete { error in
+                complete()
+            }
+        }
+    }
+    
+    func updateUserData(data: [String: Any]){
+        
+        guard let uid = getUserID() else { return }
+      
+        let userRef = db.collection("users").document(uid)
+        
+        userRef.updateData(data) { (error) in
+            if error == nil {
+                print("updated")
+            } else{
+                print("not updated")
+            }
+            
+        }
+
+    }
+    
 }
