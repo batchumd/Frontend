@@ -22,7 +22,7 @@ class MessagesViewController: ViewControllerWithHeader {
     
     let searchBar: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Search 2 matches"
+        textField.placeholder = "Search 0 matches"
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.backgroundColor = .systemGray6
         textField.font = UIFont(name: "Avenir", size: 17)
@@ -34,6 +34,8 @@ class MessagesViewController: ViewControllerWithHeader {
         return textField
     }()
     
+    let noMatchesGraphic = GraphicInfoView(type: .noMatches)
+    
     //MARK: UI Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +43,11 @@ class MessagesViewController: ViewControllerWithHeader {
         //Setup the views
         setupHeader(title: "Messages")
         setupSearchBar()
-        setupMessagesCollectionView()
+        if (messages.count == 0) {
+            setupGraphic(type: .noMatches)
+        } else {
+            setupMessagesCollectionView()
+        }
     }
     
     init() {
@@ -64,9 +70,9 @@ class MessagesViewController: ViewControllerWithHeader {
     
     fileprivate func setupSearchBar() {
         view.addSubview(searchBar)
-        searchBar.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 15).isActive = true
-        searchBar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30).isActive = true
-        searchBar.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30).isActive = true
+        searchBar.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: margin / 2).isActive = true
+        searchBar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: margin).isActive = true
+        searchBar.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -margin).isActive = true
         searchBar.heightAnchor.constraint(equalToConstant: 35).isActive = true
     }
     

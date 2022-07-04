@@ -40,7 +40,7 @@ class InterestedInInputViewController: RegistrationViewController {
                 filled.buttonSize = .large
                 filled.cornerStyle = .large
                 filled.baseBackgroundColor = .white
-                filled.attributedTitle = AttributedString(NSAttributedString(string: gender.pluralized.capitalizingFirstLetter(), attributes: [
+                filled.attributedTitle = AttributedString(NSAttributedString(string: gender.rawValue.capitalizingFirstLetter(), attributes: [
                         .font: UIFont(name: "Gilroy-ExtraBold", size: 20)!,
                         .foregroundColor: UIColor(named: "mainColor")!]))
                 let button = UIButton(configuration: filled, primaryAction: nil)

@@ -9,6 +9,13 @@ import UIKit
 
 class ProfileBoxView: UIView {
     
+    let settingsButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "settings")?.withTintColor(.systemGray2), for: .normal)
+        button.backgroundColor = .clear
+        return button
+    }()
+    
     let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -70,8 +77,10 @@ class ProfileBoxView: UIView {
         statsView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 40).isActive = true
         statsView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -40).isActive = true
         statsView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        self.addSubview(settingsButton)
+        settingsButton.anchor(top: topAnchor, bottom: nil, leading: nil, trailing: trailingAnchor, padding: UIEdgeInsets(top: 15, left: 0, bottom: 0, right: 15))
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

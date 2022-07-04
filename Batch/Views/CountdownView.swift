@@ -40,7 +40,6 @@ class CountdownView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
         label.textAlignment = .center
-        label.text = "9h 34m 21s"
         label.font = UIFont(name: "GorgaGrotesque-Bold", size: 45)
         return label
     }()

@@ -28,6 +28,7 @@ class MainViewController: UITabBarController {
     //MARK: UI Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "pattern")!).withAlphaComponent(0.65)
         setupNavigationBar()
         setupTabBar()
         
@@ -45,14 +46,13 @@ class MainViewController: UITabBarController {
                     profileBox.pointsStatBox.statValue = user.points ?? 0
                     self.homeController.profileBoxView.profileImageView.setCachedImage(urlstring: user.profileImages?[0] ?? "", size: profileBox.profileImageView.frame.size) {
                     }
-                                        
                 }
             }
         }
     }
     
     func setupNavigationBar() {
-        setupSignOutButton()
+        setupCollegeButton()
         navigationItem.titleView = titleImageView
         navigationController?.view.backgroundColor = .white
         navigationItem.titleView?.frame = CGRect(x: 0, y: 0, width: 20, height: 5)
@@ -73,22 +73,33 @@ class MainViewController: UITabBarController {
     }
     
     fileprivate func setupPointsLabel(points: Int) {
-        let pointsLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 90, height: 30))
+        let container = UIView(frame: CGRect(x: 0, y: 0, width: 75, height: 30 ))
+        let pointsLabel = UILabel(frame: CGRect(x: 0, y: -10, width: 75, height: 30))
         pointsLabel.text = String(points)
         pointsLabel.textAlignment = .right
         pointsLabel.font = UIFont(name: "GorgaGrotesque-Bold", size: 25)
         pointsLabel.textColor = UIColor(named: "mainColor")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: pointsLabel)
+        container.addSubview(pointsLabel)
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 10, width: 75, height: 30))
+        titleLabel.text = "Points"
+        titleLabel.textAlignment = .right
+        titleLabel.font = UIFont(name: "Brown-Bold", size: 15)
+        titleLabel.textColor = UIColor.systemGray2
+        container.addSubview(titleLabel)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: container)
     }
     
-    fileprivate func setupSignOutButton() {
-        let btnBack = UIButton(frame: CGRect(x:0, y: 0, width: 75, height: 30))
-        btnBack.tintColor = UIColor(red: 255/255, green: 90/255, blue: 82/255, alpha: 1.0)
-        btnBack.setTitle("Sign Out", for: .normal)
-        btnBack.titleLabel!.font = UIFont(name: "Gilroy-ExtraBold", size: 18)
-        btnBack.setTitleColor(UIColor(named: "mainColor"), for: .normal)
-        btnBack.addTarget(self, action: #selector(self.handleSignOut), for: .touchUpInside)
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: btnBack)
+    fileprivate func setupCollegeButton() {
+        let container = UIView(frame: CGRect(x: 0, y: 0, width: 75, height: 32))
+        container.layer.cornerRadius = 10
+        container.backgroundColor = UIColor(red: 209/255, green: 57/255, blue: 62/255, alpha: 1.0)
+        let schoolLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 75, height: 32))
+        schoolLabel.text = "UMD"
+        schoolLabel.textAlignment = .center
+        schoolLabel.font = UIFont(name: "Gilroy-Extrabold", size: 16)
+        schoolLabel.textColor = .white
+        container.addSubview(schoolLabel)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: container)
     }
     
     @objc func handleSignOut() {

@@ -21,26 +21,30 @@ class RankingsViewController: ViewControllerWithHeader {
         return collectionView
     }()
     
-    let genderFilter: UISegmentedControl = {
-        let segmentedControl = UISegmentedControl(items: ["Female", "Male"])
-        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        segmentedControl.selectedSegmentTintColor = UIColor(red: 252/255, green: 72/255, blue: 190/255, alpha: 1.0)
-        segmentedControl.tintColor = .white
-        segmentedControl.selectedSegmentIndex = 0
-        segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor(named: "customGray")!, NSAttributedString.Key.font: UIFont(name: "Brown-Bold", size: 14)!], for: .normal)
-        segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
-        segmentedControl.setImage(UIImage(named: "male")!.resize(targetSize: CGSize(width: 25, height: 25)), forSegmentAt: 1)
-        segmentedControl.setImage(UIImage(named: "female")!.resize(targetSize: CGSize(width: 22, height: 25)), forSegmentAt: 0)
-        segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
-        return segmentedControl
+    let filtersButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "filter")?.withTintColor(.systemGray2), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.tintColor = .systemGray2
+        button.setTitle("Filter", for: .normal)
+        button.titleLabel?.font = UIFont(name: "Brown-bold", size: 18)
+        button.titleEdgeInsets = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)
+        button.setTitleColor(UIColor.systemGray2, for: .normal)
+        return button
     }()
+    
+    let noRankingsGraphic = GraphicInfoView(type: .noRankings)
     
     //MARK: UI Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupHeader(title: "Rankings")
         setupGenderFilter()
-        setupStandingsCollectionView()
+        if profiles.isEmpty {
+            setupGraphic(type: .noRankings)
+        } else {
+            setupStandingsCollectionView()
+        }
     }
     
     init() {
@@ -58,25 +62,19 @@ class RankingsViewController: ViewControllerWithHeader {
         view.addSubview(standingsCollectionView)
         standingsCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         standingsCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
-        standingsCollectionView.topAnchor.constraint(equalTo: self.genderFilter.bottomAnchor, constant: 15).isActive = true
+        standingsCollectionView.topAnchor.constraint(equalTo: self.headerLabel.bottomAnchor, constant: margin / 2).isActive = true
         standingsCollectionView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
     }
     
     fileprivate func setupGenderFilter() {
-        view.addSubview(genderFilter)
-        genderFilter.centerYAnchor.constraint(equalTo: headerLabel.centerYAnchor).isActive = true
-        genderFilter.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30).isActive = true
-        genderFilter.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        genderFilter.widthAnchor.constraint(equalToConstant: 115).isActive = true
+        view.addSubview(filtersButton)
+        filtersButton.anchor(top: self.view.safeAreaLayoutGuide.topAnchor, bottom: nil, leading: nil, trailing: self.view.trailingAnchor, padding: UIEdgeInsets(top: margin / 2, left: margin, bottom: 0, right: margin))
+        filtersButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
     
     //MARK: Business Logic
     @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
-        if sender.selectedSegmentIndex == 0 {
-            self.genderFilter.selectedSegmentTintColor = UIColor(red: 252/255, green: 72/255, blue: 190/255, alpha: 1.0)
-        } else {
-            self.genderFilter.selectedSegmentTintColor = UIColor(red: 70/255, green: 141/255, blue: 255/255, alpha: 1.0)
-        }
+      
     }
     
     required init?(coder: NSCoder) {

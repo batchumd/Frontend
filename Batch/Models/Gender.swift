@@ -7,16 +7,12 @@
 
 import Foundation
 
-enum Gender: String, CaseIterable, Codable {
+protocol SettingOption {
+    var rawValue: String { get }
+}
+
+enum Gender: String, CaseIterable, Codable, SettingOption {
     case male = "male"
     case female = "female"
     case nonbinary = "nonbinary"
-    
-    var pluralized: String {
-        switch self {
-            case .male: return "men"
-            case .female: return "women"
-            case .nonbinary: return "nonbinary people"
-        }
-    }
 }
