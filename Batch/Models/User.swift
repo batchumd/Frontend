@@ -24,12 +24,16 @@ struct User: Convertable {
     
     init? (from: [String: Any]? = nil) throws {
         if var from = from {
-            let now = Date()
-            let birthday: Date = (from["dob"] as! Timestamp).dateValue()
-            let calendar = Calendar.current
-            let ageComponents = calendar.dateComponents([.year], from: birthday, to: now)
-            from["age"] = ageComponents.year!
-            from.removeValue(forKey: "dob")
+            
+            if from.contains(where: {$0.key == "dob"}) {
+                let now = Date()
+                let birthday: Date = (from["dob"] as! Timestamp).dateValue()
+                let calendar = Calendar.current
+                let ageComponents = calendar.dateComponents([.year], from: birthday, to: now)
+                from["age"] = ageComponents.year!
+                from.removeValue(forKey: "dob")
+            }
+            
             let data = try JSONSerialization.data(withJSONObject: from, options: .prettyPrinted)
             let decoder = JSONDecoder()
             self = try decoder.decode(Self.self, from: data)
