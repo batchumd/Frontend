@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Make this scene's window be visible.
         self.window!.makeKeyAndVisible()
         
-        Switcher.updateRootVC()
+        Switcher.shared.updateRootVC()
         
         guard scene is UIWindowScene else { return }
     }
@@ -63,7 +63,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 class Switcher {
     
-    static func updateRootVC(){
+    static let shared = Switcher()
+    
+    func updateRootVC(){
         
         let navController = UINavigationController()
         navController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
@@ -71,9 +73,15 @@ class Switcher {
         navController.view.backgroundColor = .white
         
         let status = Auth.auth().currentUser != nil
-
+        
         if (status == true) {
-            navController.viewControllers = [MainViewController()]
+            if let registrationData = LocalStorage.shared.registrationData() {
+                let registrationController = currentRegistrationController(registrationData)
+                registrationController.user = registrationData
+                navController.viewControllers = [registrationController]
+            } else {
+                navController.viewControllers = [MainViewController()]
+            }
         } else {
            navController.viewControllers = [SignedOutViewController()]
         }
@@ -83,6 +91,15 @@ class Switcher {
 
         uWindow.rootViewController = navController
         UIView.transition(with: uWindow, duration: 0.3, options: [.transitionCrossDissolve], animations: {}, completion: nil)
+    }
+    
+    func currentRegistrationController(_ registrationData: User) -> RegistrationViewController {
+        if registrationData.name == nil { return NameInputViewController() } else
+        if registrationData.dob == nil { return DateOfBirthInputViewController() } else
+        if registrationData.profileImages == nil { return PhotosInputViewController() } else
+        if registrationData.gender == nil { return GenderInputViewController() } else
+        if registrationData.interestedIn == nil { return InterestedInInputViewController() } else
+        { return NameInputViewController() }
     }
     
 }

@@ -72,7 +72,7 @@ class PhotosInputViewController: RegistrationViewController, UIImagePickerContro
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.imagesStackView.layoutIfNeeded()
-        self.imagesStackView.heightAnchor.constraint(equalToConstant: self.firstImageView.frame.size.width).isActive = true
+        self.imagesStackView.heightAnchor.constraint(equalToConstant: self.firstImageView.frame.size.width * 1.5).isActive = true
     }
     
     //MARK: Business Logic

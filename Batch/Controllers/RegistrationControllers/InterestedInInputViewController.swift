@@ -86,7 +86,9 @@ class InterestedInInputViewController: RegistrationViewController {
         } else {
             self.user?.interestedIn = self.interestedIn
             firebaseHelpers.addNewUserToDatabase(userData: self.user!) {
-                Switcher.updateRootVC()
+                UserDefaults.standard.removeObject(forKey: "RegistrationData")
+                UserDefaults.standard.synchronize()
+                Switcher.shared.updateRootVC()
             }
         }
     }

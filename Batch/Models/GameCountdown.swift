@@ -12,16 +12,18 @@ enum CountdownResponse {
     case result(time: String)
     
     var associatedValue: String {
-            get {
-                switch self {
-                    case  .result(let time): return time
-                    default: return "Lobby is Open!"
-                }
+        get {
+            switch self {
+                case .result(let time): return time
+                case .isFinished: return "Lobby is Open!"
             }
         }
+    }
 }
 
 struct GameCountdown {
+    
+    var countdownDelegate: CountdownDelegate?
     
     private static let dateComponentFormatter: DateComponentsFormatter = {
         var formatter = DateComponentsFormatter()
@@ -39,14 +41,18 @@ struct GameCountdown {
         let day = calendar.component(.day, from: currentDate)
         return Calendar.current.date(from: DateComponents(year: year, month: month, day: day, hour: 21)) ?? Date()
     }
-
-    var timeRemaining: CountdownResponse {
     
+    var isFinished: Bool {
         if targetDate <= currentDate {
-            return .isFinished
+            countdownDelegate?.isFinished(true)
+            return true
         } else {
-            let timeRemaining = GameCountdown.dateComponentFormatter.string(from: currentDate, to: targetDate)!
-            return .result(time: timeRemaining)
+            countdownDelegate?.isFinished(false)
+            return false
         }
+    }
+    
+    var timeRemaining: String {
+        return GameCountdown.dateComponentFormatter.string(from: currentDate, to: targetDate)!
     }
 }

@@ -56,8 +56,6 @@ class ProfileBoxView: UIView {
     }()
     
     override func layoutSubviews() {
-        super.layoutSubviews()
-        profileImageView.layoutIfNeeded()
         profileImageView.layer.cornerRadius = profileImageView.frame.size.width / 2
     }
     
@@ -88,9 +86,8 @@ class ProfileBoxView: UIView {
 }
 
 extension UIView {
-    func addShadow(radius: CGFloat = 10, offset: CGSize? = nil, opacity: Float = 0.16) {
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowColor = UIColor.black.cgColor
+    func addShadow(radius: CGFloat = 10, offset: CGSize? = nil, opacity: Float = 0.16, color: UIColor = .black) {
+        layer.shadowColor = color.cgColor
         layer.shadowOpacity = opacity
         layer.shadowOffset = offset ?? .zero
         layer.shadowRadius = radius

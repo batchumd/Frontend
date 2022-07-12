@@ -26,4 +26,17 @@ class LocalStorage {
         }
         return nil
     }
+    
+    func registrationData() -> User? {
+        do {
+            if let data = UserDefaults.standard.object(forKey: "RegistrationData") as? Data {
+                let decoder = JSONDecoder()
+                return try decoder.decode(User.self, from: data)
+            }
+        }
+        catch {
+            print("Couldn't Fetch User Data")
+        }
+        return nil
+    }
 }

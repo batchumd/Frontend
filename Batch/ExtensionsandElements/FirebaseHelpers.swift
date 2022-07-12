@@ -97,7 +97,7 @@ struct FirebaseHelpers: FirebaseProtocol {
     func signOutUser() {
         do {
             try auth.signOut()
-            Switcher.updateRootVC()
+            Switcher.shared.updateRootVC()
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
         }
@@ -105,7 +105,7 @@ struct FirebaseHelpers: FirebaseProtocol {
     
     func getUserID() -> String? {
         guard let userUid = auth.currentUser?.uid else {
-            Switcher.updateRootVC()
+            Switcher.shared.updateRootVC()
             return nil
         }
         return userUid
@@ -124,7 +124,7 @@ struct FirebaseHelpers: FirebaseProtocol {
                 db.collection("users").document(uid).delete { error in
                     if let error = error { complete(error) }
                     print("User data deleted")
-                    Switcher.updateRootVC()
+                    Switcher.shared.updateRootVC()
                 }
             })
         }

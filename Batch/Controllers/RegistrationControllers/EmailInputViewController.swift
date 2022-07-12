@@ -145,7 +145,7 @@ class EmailInputViewController: RegistrationViewController {
             if self.authType == .reAuth {
                 self.navigationController!.popViewController(animated: true)
             } else if self.authType == .signIn {
-                Switcher.updateRootVC()
+                Switcher.shared.updateRootVC()
             }
         }
     }

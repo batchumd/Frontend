@@ -13,18 +13,18 @@ class HomeController: UIViewController {
     
     let mainView = UIView()
     
-    var countdown: GameCountdown!
-    
-    var appDidEnterBackgroundDate: Date?
-    
-    var countdownTimer: CustomTimer?
-    
     lazy var stackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [countdownView, profileBoxView, inviteFriendView])
+        let stackView = UIStackView(arrangedSubviews: [countdownParent, profileBoxView, inviteFriendView])
         stackView.axis = .vertical
         stackView.spacing = 30
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
+    }()
+    
+    let countdownParent: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 25
+        return view
     }()
     
     let countdownView = CountdownView()
@@ -34,8 +34,10 @@ class HomeController: UIViewController {
     let inviteFriendView = InviteFriendView()
     
     override func viewDidLoad() {
+        self.countdownParent.addSubview(countdownView)
+        countdownView.fillSuperView()
         let tapShowCountdown = UITapGestureRecognizer(target: self, action: #selector(self.showCountdownViewController))
-        countdownView.addGestureRecognizer(tapShowCountdown)
+        countdownParent.addGestureRecognizer(tapShowCountdown)
         profileBoxView.settingsButton.addTarget(self, action: #selector(showPreferences), for: .touchUpInside)
         setupLayout()
         NetworkManager().getCurrentTime { date, error in
@@ -43,16 +45,8 @@ class HomeController: UIViewController {
                 print(error)
                 return
             }
-            self.countdown = GameCountdown(currentDate: date!)
-            
-            //Dispatch countdown timer to main queue. Cannot add to background queue
-            DispatchQueue.main.async {
-                if self.countdownTimer == nil {
-                    self.countdownTimer = CustomTimer(handler: { elapsed in
-                        self.updateTime(elapsed)
-                    })
-                }
-            }
+            self.countdownView.countdown = GameCountdown(currentDate: date!)
+            self.countdownView.countdown.countdownDelegate = self
         }
     }
     
@@ -80,6 +74,10 @@ class HomeController: UIViewController {
     
     //MARK: - Business Logic
     
+    func addShadowForCountdownParent() {
+        self.countdownParent.addShadow(radius: 20, offset: CGSize(width: 0, height: 0), opacity: 1.0, color: UIColor(named: "mainColor")!)
+    }
+    
 //    @objc fileprivate func showFindGameController() {
 //        let vc = FindGameController()
 //        let transition:CATransition = CATransition()
@@ -96,7 +94,7 @@ class HomeController: UIViewController {
     }
     
     @objc fileprivate func showCountdownViewController() {
-        let vc = CountdownViewController(countdown)
+        let vc = CountdownViewController(self.countdownView.countdown)
         let transition:CATransition = CATransition()
         transition.duration = 0.25
         transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
@@ -105,9 +103,13 @@ class HomeController: UIViewController {
         self.navigationController?.pushViewController(vc, animated: false)
     }
     
-    @objc func updateTime(_ elapsed: TimeInterval) {
-        countdown.currentDate = countdown.currentDate.addingTimeInterval(elapsed)
-        self.countdownView.counter.text = countdown.timeRemaining.associatedValue
+}
+
+
+extension HomeController: CountdownDelegate {
+    func isFinished(_ value: Bool) {
+        if value {
+            self.addShadowForCountdownParent()
+        }
     }
-    
 }
