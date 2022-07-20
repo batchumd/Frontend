@@ -19,10 +19,6 @@ class PlayersCollectionView: UICollectionView, GridLayoutDelegate, UICollectionV
     
     var players: [User]! {
         didSet {
-            let remainingToFill = 8 - players.count
-            for _ in 0...remainingToFill {
-                players.append(try! User()!)
-            }
             self.playersSplitted = players.split()
             dataSource = self
             reloadData()

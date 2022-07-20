@@ -12,7 +12,15 @@ protocol SettingOption {
 }
 
 enum Gender: String, CaseIterable, Codable, SettingOption {
-    case male = "male"
-    case female = "female"
-    case nonbinary = "nonbinary"
+    
+    case bachelor = "bachelor"
+    case bachelorette = "bachelorette"
+    
+    var pluralized: String {
+            switch self {
+            case .bachelor: return "Bachelors"
+            case .bachelorette: return "Bachelorettes"
+        }
+    }
+    
 }

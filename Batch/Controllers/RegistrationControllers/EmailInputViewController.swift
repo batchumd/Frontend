@@ -52,7 +52,7 @@ class EmailInputViewController: RegistrationViewController {
     init(type: AuthType) {
         self.authType = type
         super.init(nibName: nil, bundle: nil)
-        self.user = try! User()
+        self.user = [:]
         self.mainStackView.insertArrangedSubview(emailInput, at: 2)
         self.mainStackView.insertArrangedSubview(passwordInput, at: 3)
         switch type {
@@ -114,10 +114,10 @@ class EmailInputViewController: RegistrationViewController {
                         default: break
                     }
                 } else {
-                    self.user?.email = email
-                    self.user?.gamesWon = 0
-                    self.user?.roundsPlayed = 0
-                    self.user?.points = 0
+                    self.user?["email"] = email
+                    self.user?["gamesWon"] = 0
+                    self.user?["roundsPlayed"] = 0
+                    self.user?["points"] = 0
                     self.continueButton.enable()
                     self.showNextViewController(NameInputViewController())
                 }

@@ -9,40 +9,53 @@ import Foundation
 import UIKit
 import FirebaseFirestore
 
-struct User: Convertable {
-    var email: String?
-    var name: String?
-    var points: Int?
-    var age: Int?
-    var gender: Gender?
-    var dob: Date?
-    var interestedIn: [Gender]?
-    var profileImages: [String]?
-    var uid: String?
-    var roundsPlayed: Int?
-    var gamesWon: Int?
+class User: NSObject, Convertable {
     
-    init? (from: [String: Any]? = nil) throws {
-        if var from = from {
-            
-            if from.contains(where: {$0.key == "dob"}) {
-                let now = Date()
-                let birthday: Date = (from["dob"] as! Timestamp).dateValue()
-                let calendar = Calendar.current
-                let ageComponents = calendar.dateComponents([.year], from: birthday, to: now)
-                from["age"] = ageComponents.year!
-                from.removeValue(forKey: "dob")
-            }
-            
-            let data = try JSONSerialization.data(withJSONObject: from, options: .prettyPrinted)
-            let decoder = JSONDecoder()
-            self = try decoder.decode(Self.self, from: data)
-        }
+    var email: String
+    var name: String
+    var points: Int
+    var age: Int {
+        let now = Date()
+        let calendar = Calendar.current
+        let ageComponents = calendar.dateComponents([.year], from: Date(timeIntervalSince1970: self.dob), to: now)
+        return ageComponents.year ?? 0
     }
+    var gender: Gender
+    var dob: TimeInterval
+    var profileImages: [String]
+    var roundsPlayed: Int
+    var gamesWon: Int
+    
+    init(_ user: User) {
+        self.email = user.email
+        self.name = user.name
+        self.points = user.points
+        self.gender = user.gender
+        self.dob = user.dob
+        self.profileImages = user.profileImages
+        self.roundsPlayed = user.roundsPlayed
+        self.gamesWon = user.gamesWon
+    }
+    
+    convenience init (from: [String: Any]) throws {
+        
+        var from = from
+        
+        if from.contains(where: {$0.key == "dob"}) {
+            let dob: Date = (from["dob"] as! Timestamp).dateValue()
+            from["dob"] = dob.timeIntervalSince1970
+        }
+            
+        let data = try JSONSerialization.data(withJSONObject: from, options: .prettyPrinted)
+        let decoder = JSONDecoder()
+        let user = try decoder.decode(Self.self, from: data)
+        self.init(user)
+    }
+                
 }
 
 protocol Convertable: Codable {
-
+    
 }
 
 extension Convertable {
@@ -68,6 +81,7 @@ extension Convertable {
         do {
             let json = try encoder.encode(self)
             UserDefaults.standard.set(json, forKey: forKey)
+            
         } catch {
             print(error)
         }

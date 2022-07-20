@@ -73,9 +73,8 @@ class InterestedInInputViewController: RegistrationViewController {
     
     fileprivate func getGenderFromIndex(_ index: Int) -> Gender? {
         switch index {
-            case 0: return .male
-            case 1: return .female
-            case 2: return .nonbinary
+            case 0: return .bachelor
+            case 1: return .bachelorette
             default: return nil
         }
     }
@@ -84,7 +83,7 @@ class InterestedInInputViewController: RegistrationViewController {
         if self.interestedIn.count == 0 {
             self.displayError(message: "You must select at least one option")
         } else {
-            self.user?.interestedIn = self.interestedIn
+            self.user?["interestedIn"] = self.interestedIn.map({$0.rawValue})
             firebaseHelpers.addNewUserToDatabase(userData: self.user!) {
                 UserDefaults.standard.removeObject(forKey: "RegistrationData")
                 UserDefaults.standard.synchronize()

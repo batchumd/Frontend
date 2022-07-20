@@ -30,25 +30,19 @@ enum SettingsSection: Int, CaseIterable, CustomStringConvertible{
 
 enum ProfileSetting: Int, CaseIterable, SectionType, CustomStringConvertible {
 
-    case photos
-    case interestedIn
     case gender
     
     var containsSwitch: Bool { return false }
     
     var result: [SettingOption]? {
-        guard let userData = LocalStorage.shared.currentUserData() else { return nil }
+        guard let userData = LocalStorage.shared.currentUserData else { return nil }
         switch self {
-            case .photos: return nil
-            case .interestedIn: return userData.interestedIn
-            case .gender: return [userData.gender!]
+            case .gender: return [userData.gender]
         }
     }
     
     var description: String {
         switch self {
-            case .photos: return "Photos"
-            case .interestedIn: return "Interested In"
             case .gender: return "Gender"
         }
     }

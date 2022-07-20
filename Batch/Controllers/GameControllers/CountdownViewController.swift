@@ -10,7 +10,7 @@ import UIKit
 class CountdownViewController: ViewControllerWithGradient {
     
     //MARK: UI Elements
-    let countdownView = CountdownView(fullscreen: true)
+    let countdownView = CountdownMainView()
     
     let closeButton: UIButton = {
         let button = UIButton()
@@ -47,9 +47,10 @@ class CountdownViewController: ViewControllerWithGradient {
     
     //MARK: UI Lifecycle Methods
     
-    init(_ countdown: GameCountdown) {
+    init(_ date: Date?) {
         super.init(nibName: nil, bundle: nil)
-        self.countdownView.countdown = countdown
+        self.tabBarController?.tabBar.isHidden = true
+        self.countdownView.setupCountDown(date)
     }
     
     required init?(coder: NSCoder) {
@@ -66,9 +67,9 @@ class CountdownViewController: ViewControllerWithGradient {
     
     fileprivate func setupCountdownView() {
         self.view.addSubview(countdownView)
-        countdownView.heightAnchor.constraint(equalToConstant: 300).isActive = true
+        countdownView.anchor(top: nil, bottom: nil, leading: view.leadingAnchor, trailing: view.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15))
         countdownView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
-        countdownView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        countdownView.heightAnchor.constraint(equalToConstant: 400).isActive = true
     }
     
     fileprivate func setupNavigationBar() {
@@ -81,12 +82,7 @@ class CountdownViewController: ViewControllerWithGradient {
     
     //MARK: Business Logic
     @objc fileprivate func dismissViewController() {
-        let transition:CATransition = CATransition()
-        transition.duration = 0.25
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
-        transition.type = CATransitionType.fade
-        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
-        self.navigationController?.popViewController(animated: false)
+        self.dismiss(animated: true)
     }
     
     @objc fileprivate func notifyButtonPressed() {

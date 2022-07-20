@@ -59,9 +59,8 @@ class GenderInputViewController: RegistrationViewController {
             sender.layer.opacity = 1.0
         })
         switch sender.tag {
-            case 0: self.selectedGender = .male
-            case 1: self.selectedGender = .female
-            case 2: self.selectedGender = .nonbinary
+            case 0: self.selectedGender = .bachelor
+            case 1: self.selectedGender = .bachelorette
             default: return
         }
     }
@@ -71,7 +70,7 @@ class GenderInputViewController: RegistrationViewController {
             self.displayError(message: "Please select a gender option")
             return
         }
-        self.user?.gender = gender
+        self.user?["gender"] = gender.rawValue
         self.showNextViewController(InterestedInInputViewController())
     }
 }

@@ -15,11 +15,14 @@ import Firebase
 protocol FirebaseProtocol {
     func uploadImage(reference: String, image: UIImage, complete:@escaping ()->())
     func downloadURL(reference: String, complete:@escaping (String)->())
-    func addNewUserToDatabase(userData: User,complete: @escaping ()->())
+    func addNewUserToDatabase(userData: [String: Any],complete: @escaping ()->())
     func fetchUserData(_ uid: String, completionHandler: @escaping (_ userData: User?) -> ())
     func signOutUser()
     func deleteCurrentUser(complete: @escaping (_ error: Error?) -> ())
     func getCountdownToLive()
+    func updateUserData(data: [String: Any], complete: @escaping ()->())
+    func addImageToUserData(_ imageURL: String, complete: @escaping ()->())
+    func deleteUserImages(url: String?, complete: @escaping () -> ())
 }
 
 protocol Fetchable {
@@ -69,10 +72,9 @@ struct FirebaseHelpers: FirebaseProtocol {
         })
     }
     
-    func addNewUserToDatabase(userData: User, complete: @escaping ()->()) {
-        guard let uid = getUserID(), var data = userData.convertToDict() else { return }
-        data["dob"] = userData.dob
-        db.collection("users").document(uid).setData(data) { err in
+    func addNewUserToDatabase(userData: [String: Any], complete: @escaping ()->()) {
+        guard let uid = getUserID() else { return }
+        db.collection("users").document(uid).setData(userData) { err in
             if let err = err { fatalError("\(err)") }
             print("Document Written Successfully")
             complete()
@@ -82,8 +84,11 @@ struct FirebaseHelpers: FirebaseProtocol {
     func fetchUserData(_ uid: String, completionHandler: @escaping (_ userData: User?) -> ()) {
         fetch(User.self, id: uid) { (snapshot) in
             if snapshot.exists {
-                let user = try! User.init(from: snapshot.data())
-                completionHandler(user)
+                if let data = snapshot.data() {
+                    let user = try! User.init(from: data)
+                    completionHandler(user)
+                }
+                //handle
             } else {
                 completionHandler(nil)
             }
@@ -131,17 +136,52 @@ struct FirebaseHelpers: FirebaseProtocol {
         
     }
     
-    func deleteUserImages(complete: @escaping () -> ()) {
-        guard let userImages = LocalStorage.shared.currentUserData()?.profileImages else { return }
-        for imageURL in userImages {
-            let storageRef = storage.reference(forURL: imageURL)
+    func deleteUserImages(url: String? = nil, complete: @escaping () -> ()) {
+        if let url = url {
+            let storageRef = storage.reference(forURL: url)
             storageRef.delete { error in
-                complete()
+                self.removeImageFromUserData(url) {
+                    complete()
+                }
+            }
+        } else {
+            guard let userImages = LocalStorage.shared.currentUserData?.profileImages else { return }
+            for imageURL in userImages {
+                let storageRef = storage.reference(forURL: imageURL)
+                storageRef.delete { error in
+                    complete()
+                }
             }
         }
     }
     
-    func updateUserData(data: [String: Any]){
+    func addImageToUserData(_ imageURL: String, complete: @escaping ()->()) {
+        
+        guard let uid = getUserID() else { return }
+
+        let userRef = db.collection("users").document(uid)
+        
+        userRef.updateData([
+            "profileImages": FieldValue.arrayUnion([imageURL])
+        ]) { error in
+            complete()
+        }
+    }
+    
+    func removeImageFromUserData(_ imageURL: String, complete: @escaping ()->()) {
+        
+        guard let uid = getUserID() else { return }
+
+        let userRef = db.collection("users").document(uid)
+        
+        userRef.updateData([
+            "profileImages": FieldValue.arrayRemove([imageURL])
+        ]) { error in
+            complete()
+        }
+    }
+    
+    func updateUserData(data: [String: Any], complete: @escaping ()->()) {
         
         guard let uid = getUserID() else { return }
       
@@ -149,11 +189,10 @@ struct FirebaseHelpers: FirebaseProtocol {
         
         userRef.updateData(data) { (error) in
             if error == nil {
-                print("updated")
+                complete()
             } else{
                 print("not updated")
             }
-            
         }
 
     }

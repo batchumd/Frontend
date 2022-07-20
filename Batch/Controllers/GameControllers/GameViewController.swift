@@ -8,12 +8,6 @@
 import Foundation
 import UIKit
 
-struct Game {
-    var chatID: String
-    var players: [User]
-    var host: User
-}
-
 class GameViewController: UIViewController, UITextFieldDelegate {
     
     //MARK:- Variables
@@ -219,17 +213,13 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: infoId, for: indexPath) as! ChatInfoCell
             cell.message = currentMessage
             return cell
-        default:
-            break
         }
-        return UICollectionViewCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch messages[indexPath.item].type {
             case .text: return CGSize(width: self.chatView.frame.width, height: 100)
             case .info: return CGSize(width: self.chatView.frame.width, height: 45)
-            default:    return CGSize(width: self.chatView.frame.width, height: 0)
         }
     }
     

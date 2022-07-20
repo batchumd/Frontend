@@ -52,10 +52,8 @@ class MessagesViewController: ViewControllerWithHeader {
     
     init() {
         super.init(nibName: nil, bundle: nil)
-        self.tabBarItem = UITabBarItem.init(title: "Messages", image: UIImage(named: "MessagesIcon"), tag: 2)
-        tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Gilroy-ExtraBold", size: 11)!], for: .normal)
-        tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
-        tabBarItem.imageInsets = UIEdgeInsets(top: 7, left: 0, bottom: -7, right: 0)
+        self.tabBarItem = UITabBarItem.init(title: nil, image: UIImage(named: "MessagesIcon"), tag: 2)
+        tabBarItem.imageInsets = UIEdgeInsets(top: 5, left: 0, bottom: -5, right: 0)
     }
     
     fileprivate func setupMessagesCollectionView() {

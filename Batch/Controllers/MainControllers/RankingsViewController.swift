@@ -21,16 +21,19 @@ class RankingsViewController: ViewControllerWithHeader {
         return collectionView
     }()
     
-    let filtersButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "filter")?.withTintColor(.systemGray2), for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
-        button.tintColor = .systemGray2
-        button.setTitle("Filter", for: .normal)
-        button.titleLabel?.font = UIFont(name: "Brown-bold", size: 18)
-        button.titleEdgeInsets = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)
-        button.setTitleColor(UIColor.systemGray2, for: .normal)
-        return button
+    lazy var genderFilter: UISegmentedControl = {
+        let segmentedControl = UISegmentedControl(items: ["Female", "Male"])
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControl.selectedSegmentTintColor = UIColor(named: "mainColor")
+        segmentedControl.tintColor = .white
+        segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor(named: "customGray")!,
+                                                 NSAttributedString.Key.font: UIFont(name: "Brown-Bold", size: 14)!], for: .normal)
+        segmentedControl.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
+        segmentedControl.setTitle(Gender.bachelorette.pluralized, forSegmentAt: 0)
+        segmentedControl.setTitle(Gender.bachelor.pluralized, forSegmentAt: 1)
+        segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
+        return segmentedControl
     }()
     
     let noRankingsGraphic = GraphicInfoView(type: .noRankings)
@@ -50,10 +53,8 @@ class RankingsViewController: ViewControllerWithHeader {
     init() {
         super.init(nibName: nil, bundle: nil)
         title = "Standings"
-        self.tabBarItem = UITabBarItem.init(title: "Rankings", image: UIImage(named: "StandingsIcon"), tag: 3)
-        tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "Gilroy-ExtraBold", size: 11)!], for: .normal)
-        tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
-        tabBarItem.imageInsets = UIEdgeInsets(top: 7, left: 0, bottom: -7, right: 0)
+        self.tabBarItem = UITabBarItem.init(title: nil, image: UIImage(named: "StandingsIcon"), tag: 3)
+        tabBarItem.imageInsets = UIEdgeInsets(top: 5, left: 0, bottom: -5, right: 0)
     }
 
     fileprivate func setupStandingsCollectionView() {
@@ -67,16 +68,20 @@ class RankingsViewController: ViewControllerWithHeader {
     }
     
     fileprivate func setupGenderFilter() {
-        view.addSubview(filtersButton)
-        filtersButton.anchor(top: self.view.safeAreaLayoutGuide.topAnchor, bottom: nil, leading: nil, trailing: self.view.trailingAnchor, padding: UIEdgeInsets(top: margin / 2, left: margin, bottom: 0, right: margin))
-        filtersButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        //Setup genderFilter
+        view.addSubview(genderFilter)
+        genderFilter.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10).isActive = true
+        genderFilter.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30).isActive = true
+        genderFilter.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30).isActive = true
+        genderFilter.heightAnchor.constraint(equalToConstant: 35).isActive = true
     }
     
     //MARK: Business Logic
-    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
-      
-    }
     
+    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+           
+    }
+   
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

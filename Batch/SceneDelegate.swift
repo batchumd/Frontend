@@ -67,38 +67,50 @@ class Switcher {
     
     func updateRootVC(){
         
-        let navController = UINavigationController()
-        navController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
-        navController.navigationBar.shadowImage = UIImage()
-        navController.view.backgroundColor = .white
+//        let
+//
+//        let navController = UINavigationController()
+//        navController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+//        navController.navigationBar.shadowImage = UIImage()
+//        navController.view.backgroundColor = .white
         
         let status = Auth.auth().currentUser != nil
         
-        if (status == true) {
-            if let registrationData = LocalStorage.shared.registrationData() {
-                let registrationController = currentRegistrationController(registrationData)
-                registrationController.user = registrationData
-                navController.viewControllers = [registrationController]
-            } else {
-                navController.viewControllers = [MainViewController()]
-            }
-        } else {
-           navController.viewControllers = [SignedOutViewController()]
-        }
+        var loggedIn = false
         
         let window = UIApplication.shared.keywindow
         guard let uWindow = window else { return }
-
-        uWindow.rootViewController = navController
+        
+        if (status == true) {
+//            if let registrationData = LocalStorage.shared.registrationData() {
+//                let registrationController = currentRegistrationController(registrationData)
+//                registrationController.user = registrationData
+//                uWindow.rootViewController = UINavigationController(rootViewController: registrationController)
+//            } else {
+            guard let uid = FirebaseHelpers().getUserID() else { return }
+            FirebaseHelpers().fetchUserData(uid) { (userData) in
+                if let userData = userData {
+                    LocalStorage.shared.currentUserData = userData
+                    if loggedIn == false {
+                        uWindow.backgroundColor = .white
+                        uWindow.rootViewController = MainViewController()
+                        loggedIn = true
+                    }
+                }
+            }
+        } else {
+            uWindow.rootViewController = UINavigationController(rootViewController: SignedOutViewController())
+        }
+    
         UIView.transition(with: uWindow, duration: 0.3, options: [.transitionCrossDissolve], animations: {}, completion: nil)
     }
     
-    func currentRegistrationController(_ registrationData: User) -> RegistrationViewController {
-        if registrationData.name == nil { return NameInputViewController() } else
-        if registrationData.dob == nil { return DateOfBirthInputViewController() } else
-        if registrationData.profileImages == nil { return PhotosInputViewController() } else
-        if registrationData.gender == nil { return GenderInputViewController() } else
-        if registrationData.interestedIn == nil { return InterestedInInputViewController() } else
+    func currentRegistrationController(_ registrationData: [String: Any]) -> RegistrationViewController {
+        if registrationData["name"] == nil { return NameInputViewController() } else
+        if registrationData["dob"] == nil { return DateOfBirthInputViewController() } else
+        if registrationData["profileImages"] == nil { return PhotosInputViewController() } else
+        if registrationData["gender"] == nil { return GenderInputViewController() } else
+        if registrationData["interestedIn"] == nil { return InterestedInInputViewController() } else
         { return NameInputViewController() }
     }
     

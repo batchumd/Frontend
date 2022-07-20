@@ -22,9 +22,7 @@ enum CountdownResponse {
 }
 
 struct GameCountdown {
-    
-    var countdownDelegate: CountdownDelegate?
-    
+        
     private static let dateComponentFormatter: DateComponentsFormatter = {
         var formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute, .second]
@@ -44,10 +42,8 @@ struct GameCountdown {
     
     var isFinished: Bool {
         if targetDate <= currentDate {
-            countdownDelegate?.isFinished(true)
             return true
         } else {
-            countdownDelegate?.isFinished(false)
             return false
         }
     }

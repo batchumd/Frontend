@@ -9,13 +9,6 @@ import UIKit
 
 class ProfileBoxView: UIView {
     
-    let settingsButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "settings")?.withTintColor(.systemGray2), for: .normal)
-        button.backgroundColor = .clear
-        return button
-    }()
-    
     let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -34,7 +27,7 @@ class ProfileBoxView: UIView {
     }()
     
     lazy var stackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [UIView(), profileImageView, nameAgeLabel, statsView, UIView()])
+        let stackView = UIStackView(arrangedSubviews: [UIView(), profileImageView, nameAgeLabel, statsStackView, UIView()])
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.alignment = .center
@@ -42,18 +35,7 @@ class ProfileBoxView: UIView {
         return stackView
     }()
     
-    let roundsStatBox = statBox(name: "Rounds")
-    
-    let wonStatBox = statBox(name: "Won")
-    
-    let pointsStatBox = statBox(name: "Points", highlight: true)
-    
-    lazy var statsView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [roundsStatBox, wonStatBox, pointsStatBox])
-        stackView.axis = .horizontal
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
+    let statsStackView = StatsStackView()
     
     override func layoutSubviews() {
         profileImageView.layer.cornerRadius = profileImageView.frame.size.width / 2
@@ -72,11 +54,9 @@ class ProfileBoxView: UIView {
         stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         profileImageView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.4).isActive = true
         profileImageView.heightAnchor.constraint(equalTo: profileImageView.widthAnchor).isActive = true
-        statsView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 40).isActive = true
-        statsView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -40).isActive = true
-        statsView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        self.addSubview(settingsButton)
-        settingsButton.anchor(top: topAnchor, bottom: nil, leading: nil, trailing: trailingAnchor, padding: UIEdgeInsets(top: 15, left: 0, bottom: 0, right: 15))
+        statsStackView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 25).isActive = true
+        statsStackView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -25).isActive = true
+        statsStackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
 
     required init?(coder: NSCoder) {

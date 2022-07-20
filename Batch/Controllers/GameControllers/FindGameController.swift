@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate {
+class FindGameController: CustomNavController, UICollectionViewDelegate {
     
     private var minimumSpacing: CGFloat = 10
 
@@ -45,7 +45,7 @@ class FindGameController: CustomViewControllerWithNav, UICollectionViewDelegate 
     //MARK: UI Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        gameCollectionView.register(ProfileCard.self, forCellWithReuseIdentifier: "result")
+        gameCollectionView.register(ProfileCardCell.self, forCellWithReuseIdentifier: "result")
         gameCollectionView.dataSource = self
         gameCollectionView.delegate = self
         setupLayout()
@@ -74,7 +74,7 @@ extension FindGameController: UICollectionViewDelegateFlowLayout, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "result", for: indexPath as IndexPath) as! ProfileCard
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "result", for: indexPath as IndexPath) as! ProfileCardCell
         cell.user = profiles[indexPath.item]
         return cell
     }

@@ -7,36 +7,36 @@
 
 import Foundation
 
+protocol UserDelegate: AnyObject {
+    func userDataChanged()
+}
+
 class LocalStorage {
     
     static let shared = LocalStorage()
     
     init(){}
     
-    func currentUserData() -> User? {
-        do {
-            guard let id = FirebaseHelpers().getUserID() else { return nil }
-            if let data = UserDefaults.standard.object(forKey: "User\(id)Key") as? Data {
-                let decoder = JSONDecoder()
-                return try decoder.decode(User.self, from: data)
-            }
-        }
-        catch {
-            print("Couldn't Fetch User Data")
-        }
-        return nil
-    }
+    weak var delegate: UserDelegate?
     
-    func registrationData() -> User? {
-        do {
-            if let data = UserDefaults.standard.object(forKey: "RegistrationData") as? Data {
-                let decoder = JSONDecoder()
-                return try decoder.decode(User.self, from: data)
-            }
+    var currentUserData: User? {
+        didSet {
+            delegate?.userDataChanged()
         }
-        catch {
-            print("Couldn't Fetch User Data")
-        }
-        return nil
     }
+
+    
+//    func registrationData() -> [String: Any]? {
+//        do {
+//            let testFromDefaults = UserDefaults.standard.object([String: Any].self, with: "RegistrationData")
+//            if let data = UserDefaults.standard.object(forKey: "RegistrationData") as? Data {
+//                let decoder = JSONDecoder()
+//                return try decoder.decode([String: Any].self, from: data)
+//            }
+//        }
+//        catch {
+//            print("Couldn't Fetch User Data")
+//        }
+//        return nil
+//    }
 }

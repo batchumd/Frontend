@@ -122,30 +122,29 @@ class PhotosInputViewController: RegistrationViewController, UIImagePickerContro
         let imageUploadGroup = DispatchGroup()
         
         self.continueButton.disable()
+        
+        var imageURLs = [String]()
 
         for (index,image) in imagesToUpload.enumerated() {
             imageUploadGroup.enter()
             let reference = "profileImages/\(uid)\(String(index)).jpg"
-            handleUpload(reference, image: image) {
+            handleUpload(reference, image: image) { imageURL in
+                imageURLs.append(imageURL)
                 imageUploadGroup.leave()
             }
         }
         
         imageUploadGroup.notify(queue: .main) {
+            self.user?["profileImages"] = imageURLs
             self.continueButton.enable()
             self.showNextViewController(GenderInputViewController())
         }
     }
         
-    fileprivate func handleUpload(_ reference: String, image: UIImage, complete: @escaping () -> ()) {
+    fileprivate func handleUpload(_ reference: String, image: UIImage, complete: @escaping (_ imageURL: String) -> ()) {
         self.backend.uploadImage(reference: reference, image: image) {
             self.backend.downloadURL(reference: reference) { imageURL in
-                if self.user?.profileImages != nil {
-                    self.user?.profileImages!.append(imageURL)
-                } else {
-                    self.user?.profileImages = [imageURL]
-                }
-                complete()
+                complete(imageURL)
             }
         }
     }

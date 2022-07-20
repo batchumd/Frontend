@@ -26,7 +26,6 @@ class CustomTimer {
     
     @objc func pauseApp() {
         self.stop() //invalidate timer
-        self.currentBackgroundDate = Date()
     }
     
     @objc func startApp(){
@@ -44,6 +43,7 @@ class CustomTimer {
     
     func stop(){
         timer.invalidate();
+        self.currentBackgroundDate = Date()
     }
 
     @objc func updateTime() {
@@ -52,6 +52,6 @@ class CustomTimer {
     }
     
     deinit{
-        self.timer.invalidate();
+        timer.invalidate();
     }
 }

@@ -28,13 +28,9 @@ class SettingOptionsTableViewController: UITableViewController {
     init(profileSettingType: ProfileSetting) {
         
         switch profileSettingType {
-            case .interestedIn:
-                self.options = Gender.allCases
-                self.allowMultipleSelection = true
             case .gender:
                 self.options = Gender.allCases
                 self.allowMultipleSelection = false
-            default: self.options = nil
         }
         
         self.profileSettintType = profileSettingType
@@ -97,12 +93,6 @@ class SettingOptionsTableViewController: UITableViewController {
         }
         selectionDelegate?.selectionChanged(self.selectedOptions, self.profileSettintType)
         self.tableView.reloadData()
-//            FirebaseHelpers().updateUserData(data: ["interestedIn": self.selectedResult.map({$0.rawValue})])
-//        } else if profileSettingType == .gender {
-//            FirebaseHelpers().updateUserData(data: ["gender": self.selectedResult.first!.rawValue])
-//            selectionDelegate?.selectionChanged(gender)
-//        }
-//        self.tableView.reloadData()
     }
 
 }

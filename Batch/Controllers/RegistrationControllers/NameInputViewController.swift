@@ -39,7 +39,7 @@ class NameInputViewController: RegistrationViewController {
             return
         }
         if ValidityChecker().isNameValid(name) {
-            self.user?.name = name
+            self.user?["name"] = name
             self.showNextViewController(DateOfBirthInputViewController())
         } else {
             self.displayError(message: "Please enter a valid name")
