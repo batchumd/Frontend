@@ -25,8 +25,6 @@ class GenderInputViewController: RegistrationViewController {
         subtitleLabel.text = "How do you identify?"
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         setupView()
-        self.setupGradient()
-        self.animateGradient()
         self.setupGenderOptions()
     }
     

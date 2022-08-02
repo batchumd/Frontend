@@ -8,22 +8,21 @@
 import Foundation
 import UIKit
 
-protocol CountdownDelegate {
-    func statusChanged(isFinished: Bool)
-}
-
-class CountdownPreviewView: CountdownView {
+class CountdownView: UIView {
+    
+    var countdown: GameCountdown!
+        
+    var countdownTimer: CustomTimer?
+    
+    var isFullscreen: Bool
     
     let patternLayer = CALayer()
-    
-    var countdownDelegate: CountdownDelegate?
-    
+        
     let title: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
         label.textAlignment = .center
-        label.text = "WE'RE LIVE IN"
         label.font = UIFont(name: "Gilroy-ExtraBold", size: 24)
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.2
@@ -36,7 +35,6 @@ class CountdownPreviewView: CountdownView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
         label.textAlignment = .center
-        label.text = "Games start at 9pm est"
         label.font = UIFont(name: "Brown-bold", size: 18)
         return label
     }()
@@ -46,19 +44,22 @@ class CountdownPreviewView: CountdownView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
         label.textAlignment = .center
-        label.text = "- h - m - s"
-        label.font = UIFont(name: "GorgaGrotesque-Bold", size: 45)
+        label.font = UIFont(name: "GorgaGrotesque-Bold", size: 50)
         return label
     }()
     
     override func layoutSubviews() {
-        self.gradientLayer.frame = bounds
+        if !isFullscreen {
+            self.gradientLayer.frame = bounds
+        }
         self.patternLayer.frame = self.bounds
     }
     
-    init() {
+    init(isFullscreen: Bool) {
+        self.isFullscreen = isFullscreen
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false
+        if isFullscreen { changeViewForFullscreen() }
         let stackView = UIStackView(arrangedSubviews: [title, counter, subtitle])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
@@ -70,25 +71,34 @@ class CountdownPreviewView: CountdownView {
         patternLayer.contents = UIImage(named: "smaller_celebration")?.cgImage
         patternLayer.contentsGravity = .resizeAspectFill
         layer.insertSublayer(patternLayer, at: 0)
+        setViewForLobbyClosed()
     }
     
-    func setupCountDown(_ date: Date?) {
-        self.countdown = GameCountdown(currentDate: date ?? Date())
-        DispatchQueue.main.async {
-            self.updateTime(TimeInterval(0))
-            if self.countdownTimer == nil {
-                self.countdownTimer = CustomTimer(handler: { elapsed in
-                    self.updateTime(elapsed)
-                })
-            }
-        }
+    func changeViewForFullscreen() {
+        title.font = title.font.withSize(30)
+        subtitle.font = subtitle.font.withSize(20)
+        counter.font = counter.font.withSize(80)
     }
     
-    func setupLobbyReady() {
+    func setupCountDown(currentDate: Date, nextGame: Date) {
+        self.countdown = GameCountdown(currentDate: currentDate, targetDate: nextGame)
+        self.updateTime(TimeInterval(0))
+        self.countdownTimer = CustomTimer(handler: { elapsed in
+            self.updateTime(elapsed)
+        })
+    }
+    
+    func setViewForLobbyOpen() {
         patternLayer.isHidden = false
         title.text = "IT'S TIME"
-        counter.text = "We're Live!"
+        counter.text = "Lobby Open!"
         subtitle.text = "Tap to join"
+    }
+    
+    func setViewForLobbyClosed() {
+        patternLayer.isHidden = true
+        title.text = "LOBBY OPENS IN"
+        subtitle.text = "Lobby opens at 9pm est"
     }
     
     private lazy var gradientLayer: CAGradientLayer = {
@@ -106,11 +116,14 @@ class CountdownPreviewView: CountdownView {
     }
     
     @objc func updateTime(_ elapsed: TimeInterval) {
-        countdown.currentDate = countdown.currentDate.addingTimeInterval(elapsed)
-        self.counter.text = countdown.timeRemaining
         if countdown.isFinished {
-            self.setupLobbyReady()
-            self.countdownDelegate?.statusChanged(isFinished: true)
+            self.title.text = ""
+            self.counter.text = "Opening Lobby..."
+            self.subtitle.text = ""
+            self.countdownTimer?.stop()
+        } else {
+            countdown.currentDate = countdown.currentDate.addingTimeInterval(elapsed)
+            self.counter.text = countdown.timeRemaining
         }
     }
 }

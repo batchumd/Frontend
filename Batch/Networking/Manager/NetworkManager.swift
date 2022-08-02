@@ -58,7 +58,7 @@ struct NetworkManager {
         }
     }
     
-    func addUserToQueue(completion: @escaping (_ error: String?) -> ()) {
+    func addUserToQueue(gender: Gender, completion: @escaping (_ error: String?) -> ()) {
         
         let currentUser = Auth.auth().currentUser
         currentUser?.getIDTokenForcingRefresh(true) { idToken, error in
@@ -68,7 +68,7 @@ struct NetworkManager {
                 return
             }
             
-            router.request(.addUserToQueue, additionalHeaders: ["Authorization": "Bearer \(idToken!)"]) { (data, response, error) in
+            router.request(.addUserToQueue, additionalHeaders: ["Authorization": "Bearer \(idToken!)", "gender": gender.rawValue]) { (data, response, error) in
                 
                 if error != nil {
                     completion("Please check your network connection")
@@ -79,6 +79,39 @@ struct NetworkManager {
                     let result = self.handleNetworkResponse(response)
                     switch result {
                     case .success:
+                        print("User added to the queue!")
+                        completion(nil)
+                            
+                    case .failure(let networkFailureError):
+                        completion(networkFailureError)
+                    }
+                }
+            }
+        }
+    }
+    
+    func removeUserFromQueue(gender: Gender, completion: @escaping (_ error: String?) -> ()) {
+        
+        let currentUser = Auth.auth().currentUser
+        currentUser?.getIDTokenForcingRefresh(true) { idToken, error in
+            
+            if error != nil {
+                completion(NetworkResponse.failed.rawValue)
+                return
+            }
+            
+            router.request(.removeUserFromQueue, additionalHeaders: ["Authorization": "Bearer \(idToken!)", "gender": gender.rawValue]) { (data, response, error) in
+                
+                if error != nil {
+                    completion("Please check your network connection")
+                    return
+                }
+                
+                if let response = response as? HTTPURLResponse {
+                    let result = self.handleNetworkResponse(response)
+                    switch result {
+                    case .success:
+                        print("User removed from the queue!")
                         completion(nil)
                             
                     case .failure(let networkFailureError):

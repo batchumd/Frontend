@@ -18,12 +18,13 @@ enum NetworkEnvironment {
 public enum BatchAPI {
     case getCurrentTime
     case addUserToQueue
+    case removeUserFromQueue
 }
 
 extension BatchAPI: EndPointType {
     
     var baseURL: URL {
-        guard let url = URL(string: "https://us-central1-batch-24ec0.cloudfunctions.net/") else { fatalError("baseURL could not be configured.")}
+        guard let url = URL(string: "https://us-central1-batch-24ec0.cloudfunctions.net/app/") else { fatalError("baseURL could not be configured.")}
         return url
     }
     
@@ -31,6 +32,7 @@ extension BatchAPI: EndPointType {
         switch self {
             case .getCurrentTime: return "getCurrentTime"
             case .addUserToQueue: return "addUserToQueue"
+            case .removeUserFromQueue: return "removeUserFromQueue"
         }
     }
     
@@ -38,6 +40,7 @@ extension BatchAPI: EndPointType {
         switch self {
             case .getCurrentTime: return .get
             case .addUserToQueue: return .post
+            case .removeUserFromQueue: return .post
         }
     }
     
@@ -45,6 +48,7 @@ extension BatchAPI: EndPointType {
         switch self {
             case .getCurrentTime: return .request
             case .addUserToQueue: return .request
+            case .removeUserFromQueue: return .request
         }
     }
     

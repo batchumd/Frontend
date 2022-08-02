@@ -56,8 +56,6 @@ class PhotosInputViewController: RegistrationViewController, UIImagePickerContro
         titleLabel.text = "Add two photos."
         subtitleLabel.text = "Show off your best pics. You can change these later."
         setupView()
-        self.setupGradient()
-        self.animateGradient()
         self.mainStackView.addArrangedSubview(imagesStackView)
         let openImagePickerForImage1 = UITapGestureRecognizer(target: self, action: #selector(self.openImagePicker))
         let openImagePickerForImage2 = UITapGestureRecognizer(target: self, action: #selector(self.openImagePicker))

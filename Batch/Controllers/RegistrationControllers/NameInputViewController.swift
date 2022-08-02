@@ -29,8 +29,6 @@ class NameInputViewController: RegistrationViewController {
         subtitleLabel.text = "This is the name displayed to other users on the app."
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         setupView()
-        self.setupGradient()
-        self.animateGradient()
     }
     
     //MARK: Business Logic

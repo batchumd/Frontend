@@ -13,7 +13,7 @@ class CustomTimer {
     var timer = Timer()
     var handler: (TimeInterval) -> ()
     var elapsedTime = TimeInterval(1.0)
-    var currentBackgroundDate: Date?
+    var dateAtStop: Date?
     var targetController = HomeController.self
     var completionCallback: (() -> Void)!
     
@@ -29,10 +29,12 @@ class CustomTimer {
     }
     
     @objc func startApp(){
-        guard let previousDate = currentBackgroundDate else { return }
-        let difference = Date().timeIntervalSince(previousDate)
-        self.handler(difference)
-        self.start()
+        if !timer.isValid {
+            guard let previousDate = dateAtStop else { return }
+            let difference = Date().timeIntervalSince(previousDate)
+            self.handler(difference)
+            self.start()
+        }
     }
 
     func start(){
@@ -43,7 +45,7 @@ class CustomTimer {
     
     func stop(){
         timer.invalidate();
-        self.currentBackgroundDate = Date()
+        self.dateAtStop = Date()
     }
 
     @objc func updateTime() {

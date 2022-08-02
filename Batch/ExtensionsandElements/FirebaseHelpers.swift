@@ -11,6 +11,7 @@ import FirebaseFirestore
 import FirebaseAuth
 import FirebaseStorage
 import Firebase
+import FirebaseDatabase
 
 protocol FirebaseProtocol {
     func uploadImage(reference: String, image: UIImage, complete:@escaping ()->())
@@ -19,7 +20,6 @@ protocol FirebaseProtocol {
     func fetchUserData(_ uid: String, completionHandler: @escaping (_ userData: User?) -> ())
     func signOutUser()
     func deleteCurrentUser(complete: @escaping (_ error: Error?) -> ())
-    func getCountdownToLive()
     func updateUserData(data: [String: Any], complete: @escaping ()->())
     func addImageToUserData(_ imageURL: String, complete: @escaping ()->())
     func deleteUserImages(url: String?, complete: @escaping () -> ())
@@ -31,14 +31,49 @@ protocol Fetchable {
 
 struct FirebaseHelpers: FirebaseProtocol {
     
-    fileprivate let db = Firestore.firestore()
+    let matchmakingDB = Database.database(url: "https://batch-24ec0-match-queue.firebaseio.com/")
+    
+    fileprivate let firestore = Firestore.firestore()
     
     fileprivate let auth = Auth.auth()
     
     fileprivate let storage = Storage.storage()
+    
+    func listenForLobbyOpen(complete: @escaping (_ lobbyOpen: Bool) -> ()) {
+        matchmakingDB.reference(withPath: "properties").child("lobbyOpen").observe(.value) { snapshot in
+            guard let value = snapshot.value as? Bool else { return }
+            complete(value)
+        }
+    }
+    
+    func listenGamesOngoingStatus(complete: @escaping (_ gamesOngoing: Bool) -> ()) {
+        matchmakingDB.reference(withPath: "properties").child("gamesOngoing").observe(.value) { snapshot in
+            guard let value = snapshot.value as? Bool else { return }
+            complete(value)
+        }
+    }
+    
+    func getGameStartCountdown(complete: @escaping (_ countDown: FirebaseCountdown) -> ()) {
+        matchmakingDB.reference(withPath: "properties").child("lobbyCountdown").observe(.value) { snapshot in
+            let countdown = FirebaseCountdown(snapshot: snapshot)
+            complete(countdown)
+        }
+    }
+    
+    func getNextGameTime(complete: @escaping (_ date: Date) -> ()) {
+        matchmakingDB.reference(withPath: "properties").child("nextGame").getData(completion: { error, snapshot in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            let timeSince = snapshot!.value as! TimeInterval
+            let date = Date(timeIntervalSince1970: timeSince / 1000)
+            complete(date)
+        })
+    }
                          
-    func fetch<Model: Fetchable>(_: Model.Type, id: String, completion: @escaping (DocumentSnapshot) -> Void) {
-            let docRef = db.collection(Model.apiBase).document(id)
+    func fetch<Model: Fetchable>(_: Model.Type, id: String, completion: @escaping (DocumentSnapshot) -> ()) {
+            let docRef = firestore.collection(Model.apiBase).document(id)
             docRef.addSnapshotListener() { (changeSnapshot, error) in
                 if let error = error {
                     print(error)
@@ -74,7 +109,7 @@ struct FirebaseHelpers: FirebaseProtocol {
     
     func addNewUserToDatabase(userData: [String: Any], complete: @escaping ()->()) {
         guard let uid = getUserID() else { return }
-        db.collection("users").document(uid).setData(userData) { err in
+        firestore.collection("users").document(uid).setData(userData) { err in
             if let err = err { fatalError("\(err)") }
             print("Document Written Successfully")
             complete()
@@ -93,10 +128,6 @@ struct FirebaseHelpers: FirebaseProtocol {
                 completionHandler(nil)
             }
         }
-    }
-    
-    func getCountdownToLive() {
-       
     }
     
     func signOutUser() {
@@ -126,7 +157,7 @@ struct FirebaseHelpers: FirebaseProtocol {
                     complete(error)
                     return
                 }
-                db.collection("users").document(uid).delete { error in
+                firestore.collection("users").document(uid).delete { error in
                     if let error = error { complete(error) }
                     print("User data deleted")
                     Switcher.shared.updateRootVC()
@@ -159,7 +190,7 @@ struct FirebaseHelpers: FirebaseProtocol {
         
         guard let uid = getUserID() else { return }
 
-        let userRef = db.collection("users").document(uid)
+        let userRef = firestore.collection("users").document(uid)
         
         userRef.updateData([
             "profileImages": FieldValue.arrayUnion([imageURL])
@@ -172,7 +203,7 @@ struct FirebaseHelpers: FirebaseProtocol {
         
         guard let uid = getUserID() else { return }
 
-        let userRef = db.collection("users").document(uid)
+        let userRef = firestore.collection("users").document(uid)
         
         userRef.updateData([
             "profileImages": FieldValue.arrayRemove([imageURL])
@@ -185,7 +216,7 @@ struct FirebaseHelpers: FirebaseProtocol {
         
         guard let uid = getUserID() else { return }
       
-        let userRef = db.collection("users").document(uid)
+        let userRef = firestore.collection("users").document(uid)
         
         userRef.updateData(data) { (error) in
             if error == nil {

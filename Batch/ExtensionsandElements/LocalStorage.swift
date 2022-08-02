@@ -6,9 +6,17 @@
 //
 
 import Foundation
+import Firebase
+import FirebaseDatabase
 
-protocol UserDelegate: AnyObject {
+protocol LocalStorageDelegate: AnyObject {
     func userDataChanged()
+    func lobbyOpenChanged()
+}
+
+extension LocalStorageDelegate {
+    func lobbyOpenChanged() {}
+    func userDataChanged() {}
 }
 
 class LocalStorage {
@@ -17,14 +25,25 @@ class LocalStorage {
     
     init(){}
     
-    weak var delegate: UserDelegate?
+    weak var delegate: LocalStorageDelegate?
     
     var currentUserData: User? {
         didSet {
             delegate?.userDataChanged()
         }
     }
-
+    
+    var lobbyOpen: Bool? {
+        didSet {
+            delegate?.lobbyOpenChanged()
+        }
+    }
+    
+    var userInQueue: Bool = false
+    
+    var serverDate: Date?
+    
+    var lobbyCountdown: FirebaseCountdown?
     
 //    func registrationData() -> [String: Any]? {
 //        do {

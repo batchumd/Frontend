@@ -6,61 +6,45 @@
 //
 
 import UIKit
+import AVFAudio
 
-class CountdownViewController: ViewControllerWithGradient {
-    
+class CountdownViewController: UIViewController {
+        
     //MARK: UI Elements
-    let countdownView = CountdownMainView()
+    let countdownView = CountdownView(isFullscreen: true)
     
-    let closeButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "close")?.withTintColor(.white), for: .normal)
-        return button
-    }()
-    
-    var notifyButton: UIButton = {
-        if #available(iOS 15.0, *) {
-            var filled = UIButton.Configuration.filled()
-            filled.buttonSize = .large
-            filled.imagePlacement = .leading
-            filled.imagePadding = 5
-            filled.baseBackgroundColor = .white
-            filled.attributedTitle = AttributedString(NSAttributedString(string: "Notify Me", attributes: [
-                    .font: UIFont(name: "Gilroy-ExtraBold", size: 20)!,
-                    .foregroundColor: UIColor(named: "mainColor")!]))
-            filled.image = UIImage(named: "bell")!.withTintColor(UIColor(named: "mainColor")!)
-            let button = UIButton(configuration: filled, primaryAction: nil)
-            let handler: UIButton.ConfigurationUpdateHandler = { button in
-                switch button.state {
-                case .selected:
-                    button.alpha = 1
-                default:
-                    button.alpha = 0.5
-                }
-            }
-            button.configurationUpdateHandler = handler
-            return button
-        } else {
-            return UIButton()
-        }
-    }()
+//    var notifyButton: UIButton = {
+//        if #available(iOS 15.0, *) {
+//            var filled = UIButton.Configuration.filled()
+//            filled.buttonSize = .large
+//            filled.imagePlacement = .leading
+//            filled.imagePadding = 5
+//            filled.baseBackgroundColor = .white
+//            filled.attributedTitle = AttributedString(NSAttributedString(string: "Notify Me", attributes: [
+//                    .font: UIFont(name: "Gilroy-ExtraBold", size: 20)!,
+//                    .foregroundColor: UIColor(named: "mainColor")!]))
+//            filled.image = UIImage(named: "bell")!.withTintColor(UIColor(named: "mainColor")!)
+//            let button = UIButton(configuration: filled, primaryAction: nil)
+//            let handler: UIButton.ConfigurationUpdateHandler = { button in
+//                switch button.state {
+//                case .selected:
+//                    button.alpha = 1
+//                default:
+//                    button.alpha = 0.5
+//                }
+//            }
+//            button.configurationUpdateHandler = handler
+//            return button
+//        } else {
+//            return UIButton()
+//        }
+//    }()
     
     //MARK: UI Lifecycle Methods
-    
-    init(_ date: Date?) {
-        super.init(nibName: nil, bundle: nil)
-        self.tabBarController?.tabBar.isHidden = true
-        self.countdownView.setupCountDown(date)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupGradient()
-        animateGradient()
+        self.tabBarController?.tabBar.isHidden = true
         setupCountdownView()
         setupNavigationBar()
     }
@@ -73,25 +57,17 @@ class CountdownViewController: ViewControllerWithGradient {
     }
     
     fileprivate func setupNavigationBar() {
-        self.navigationItem.setHidesBackButton(true, animated: true)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.closeButton)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: self.notifyButton)
-        notifyButton.addTarget(self, action: #selector(notifyButtonPressed), for: .touchUpInside)
-        closeButton.addTarget(self, action: #selector(dismissViewController), for: .touchUpInside)
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: self.notifyButton)
+//        notifyButton.addTarget(self, action: #selector(notifyButtonPressed), for: .touchUpInside)
     }
-    
-    //MARK: Business Logic
-    @objc fileprivate func dismissViewController() {
-        self.dismiss(animated: true)
-    }
+
+
     
     @objc fileprivate func notifyButtonPressed() {
-        if notifyButton.isSelected {
-            notifyButton.isSelected = false
-        } else {
-            notifyButton.isSelected = true
-        }
+//        if notifyButton.isSelected {
+//            notifyButton.isSelected = false
+//        } else {
+//            notifyButton.isSelected = true
+//        }
     }
-    
 }
-

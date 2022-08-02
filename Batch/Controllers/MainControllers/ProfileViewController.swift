@@ -126,7 +126,7 @@ extension ProfileViewController: PreferencesDelegate {
     }
 }
 
-extension ProfileViewController: UserDelegate {
+extension ProfileViewController: LocalStorageDelegate {
     func userDataChanged() {
         if LocalStorage.shared.currentUserData!.profileImages.isEmpty {
             showPreferences()

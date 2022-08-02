@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewControllerWithGradient: UIViewController, CAAnimationDelegate {
+class NavControllerWithGradient: UINavigationController, CAAnimationDelegate {
     
     let gradient: CAGradientLayer = CAGradientLayer()
     var gradientColorSet: [[CGColor]] = []
@@ -30,14 +30,13 @@ class ViewControllerWithGradient: UIViewController, CAAnimationDelegate {
         self.gradient.startPoint = CGPoint(x: 0, y: 0)
         self.gradient.endPoint = CGPoint(x: 1, y: 1)
         self.view.layer.insertSublayer(gradient, at: 0)
-        
     }
     
     func animateGradient() {
+        gradient.colors = gradientColorSet[colorIndex]
             
-            gradient.colors = gradientColorSet[colorIndex]
-            
-            let gradientAnimation = CABasicAnimation(keyPath: "colors")
+        let gradientAnimation = CABasicAnimation(keyPath: "colors")
+        
             gradientAnimation.duration = 2.0
             
             gradientAnimation.delegate = self
@@ -51,7 +50,7 @@ class ViewControllerWithGradient: UIViewController, CAAnimationDelegate {
             gradientAnimation.isRemovedOnCompletion = false
             
             gradient.add(gradientAnimation, forKey: "colors")
-        }
+    }
         
     func updateColorIndex() {
         if colorIndex < gradientColorSet.count - 1 {
@@ -61,9 +60,10 @@ class ViewControllerWithGradient: UIViewController, CAAnimationDelegate {
         }
     }
     
+    
+    
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        if flag {
-            animateGradient()
-        }
+        animateGradient()
     }
 }
+

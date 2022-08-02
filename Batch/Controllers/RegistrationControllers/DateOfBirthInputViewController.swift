@@ -40,8 +40,6 @@ class DateOfBirthInputViewController: RegistrationViewController {
         informationLabel.text = "We never share your birthdate, just your age."
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         setupView()
-        self.setupGradient()
-        self.animateGradient()
     }
     
     //MARK: Business Logic

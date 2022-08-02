@@ -249,7 +249,7 @@ extension PreferencesViewController: UIImagePickerControllerDelegate, UINavigati
     }
 }
 
-extension PreferencesViewController: UserDelegate {
+extension PreferencesViewController: LocalStorageDelegate {
     func userDataChanged() {
         self.tableView.reloadData()
         self.userPhotosCollectionView.reloadData()

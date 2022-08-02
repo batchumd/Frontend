@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SignedOutViewController: ViewControllerWithGradient {
+class SignedOutViewController: UIViewController {
     
     //MARK: UI Elements
     let logoView: UIImageView = {
@@ -138,8 +138,6 @@ class SignedOutViewController: ViewControllerWithGradient {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.setupGradient()
-        self.animateGradient()
         setupMainStack()
         setupInfoStack()
         setupBackButton()

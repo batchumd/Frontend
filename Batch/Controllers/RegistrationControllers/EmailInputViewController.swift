@@ -66,8 +66,6 @@ class EmailInputViewController: RegistrationViewController {
         informationLabel.text = "We will never share your email with anyone or display it on your profile."
         continueButton.addTarget(self, action: #selector(continueButtonClicked), for: .touchUpInside)
         setupView()
-        self.setupGradient()
-        self.animateGradient()
     }
     
     required init?(coder: NSCoder) {

@@ -33,6 +33,9 @@ class MainViewController: UITabBarController {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(patternImage: UIImage(named: "pattern")!).withAlphaComponent(0.65)
         setupTabBar()
+        FirebaseHelpers().listenForLobbyOpen { lobbyOpen in
+            LocalStorage.shared.lobbyOpen = lobbyOpen
+        }
     }
     
     fileprivate func setupTabBar() {

@@ -28,8 +28,6 @@ class InterestedInInputViewController: RegistrationViewController {
         subtitleLabel.text = "These are the people that you'll play for."
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         setupView()
-        self.setupGradient()
-        self.animateGradient()
         self.setupGenderOptions()
     }
     
