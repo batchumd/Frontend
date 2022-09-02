@@ -9,7 +9,7 @@ import UIKit
 
 class ImageProfileCell: UICollectionViewCell {
     
-    let profileCardView = ProfileCardView()
+    let profileCardView = ProfileCardView(withContent: false)
 
     var imageURL: String? {
         didSet {

@@ -9,13 +9,9 @@ import UIKit
 import AVFAudio
 
 class GamesNavigationController: NavControllerWithGradient {
-    
-    let pitchControl = AVAudioUnitTimePitch()
-    
-    let engine = AVAudioEngine()
-    
-    let countdownVC = CountdownViewController()
-    let openLobbyVC = OpenLobbyViewController()
+                
+    let pointsLabelForBar = PointsLabelBarView(darkMode: true)
+    let schoolViewForBar = SchoolBarView(darkMode: true)
     
     let titleImageView: UIImageView = {
         let imageView = UIImageView()
@@ -35,37 +31,67 @@ class GamesNavigationController: NavControllerWithGradient {
 
     init() {
         super.init(navigationBarClass: nil, toolbarClass: nil)
-        setupNavigationBar()
         setupGradient()
         animateGradient()
-        LocalStorage.shared.delegate = self
-        lobbyOpenChanged()
+        getUserLobbyData()
     }
     
-    fileprivate func setupNavigationBar() {
-        self.navigationItem.setHidesBackButton(true, animated: true)
-        let vcs = [countdownVC, openLobbyVC]
-        vcs.forEach({ vc in
-            vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.closeButton)
-            vc.navigationItem.titleView = titleImageView
-            vc.navigationItem.titleView?.frame = CGRect(x: 0, y: 0, width: 20, height: 5)
-        })
+    fileprivate func setupNavigationBar(vc: UIViewController) {
+        
+        if vc is CountdownViewController {
+            vc.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: schoolViewForBar)
+            vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: closeButton)
+        }
+        
+        if vc is FindGameController {
+            vc.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: schoolViewForBar)
+            vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: pointsLabelForBar)
+        }
+        
+        if vc is GameViewController {
+            vc.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: schoolViewForBar)
+            vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: pointsLabelForBar)
+        }
+        
+        vc.navigationItem.titleView = titleImageView
+        vc.navigationItem.titleView?.frame = CGRect(x: 0, y: 0, width: 20, height: 5)
+        vc.navigationItem.setHidesBackButton(true, animated: false)
         closeButton.addTarget(self, action: #selector(dismissController), for: .touchUpInside)
     }
     
-    func pushToOpenLobby() {
-        playSound(resourceName: "lobbyOpenSound")
-        self.pushViewController(openLobbyVC, animated: false)
+    func pushToCoundownController() {
+        let countdownVC = CountdownViewController()
+        setupNavigationBar(vc: countdownVC)
+        self.pushViewController(countdownVC, animated: false)
+        self.removeAllViewControllers()
     }
     
-    func pushToCoundownController() {
-        playSound(resourceName: "countdown")
-        self.pushViewController(countdownVC, animated: false)
+    func pushToFindGameController(_ gameIDs: [String]) {
+        let findGameVC = FindGameController(gameIDs: gameIDs)
+        self.setupNavigationBar(vc: findGameVC)
+        self.pushViewController(findGameVC, animated: false)
+        self.removeAllViewControllers()
+    }
+    
+    func pushToGameController(_ gameID: String) {
+        let gameVC = GameViewController(gameID: gameID)
+        self.setupNavigationBar(vc: gameVC)
+        self.pushViewController(gameVC, animated: false)
+        self.removeAllViewControllers()
+    }
+    
+    func removeAllViewControllers() {
+        var navigationArray = self.viewControllers // To get all UIViewController stack as Array
+        let temp = navigationArray.last
+        navigationArray.removeAll()
+        navigationArray.append(temp!) //To remove all previous UIViewController except the last one
+        self.navigationController?.viewControllers = navigationArray
     }
     
     @objc fileprivate func dismissController() {
         self.dismiss(animated: true) {
-            if self.visibleViewController == self.openLobbyVC {
+            guard let userInQueue = LocalStorage.shared.userInQueue else { return }
+            if userInQueue {
                 guard let user = LocalStorage.shared.currentUserData else { return }
                 NetworkManager().removeUserFromQueue(gender: user.gender) { error in
                     if let error = error {
@@ -78,74 +104,33 @@ class GamesNavigationController: NavControllerWithGradient {
         }
     }
     
+    fileprivate func getUserLobbyData() {
+        guard let gender = LocalStorage.shared.currentUserData?.gender else { return }
+        
+        DatabaseManager().getUserLobbyData(complete: { data in
+            if let data = data {
+                LocalStorage.shared.userInQueue = true
+                if gender == .bachelorette {
+                    if let gameID = data["game_id"] as? String {
+                        self.pushToGameController(gameID)
+                    }
+                } else if gender == .bachelor {
+                    if let gameOptions = data["game_options"] as? [String] {
+                        self.pushToFindGameController(gameOptions)
+                    }
+                }
+            } else {
+                LocalStorage.shared.userInQueue = false
+            }
+        })
+    }
+    
+    @objc func showCollegeAlert() {
+        self.present(schoolViewForBar.alert, animated: true)
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-}
-
-extension GamesNavigationController: LocalStorageDelegate {
-
-    func lobbyOpenChanged() {
-        guard let lobbyOpen = LocalStorage.shared.lobbyOpen else { return }
-        if lobbyOpen {
-            FirebaseHelpers().getGameStartCountdown { countdown in
-                let endsAt = countdown.startedAt.timeIntervalSince1970 + countdown.seconds
-                let difference = floor(endsAt - Date().timeIntervalSince1970)
-                let seconds = Int(floor(difference))
-                if !(seconds < 0) {
-                    self.openLobbyVC.setupCountdown(countdown)
-                    self.pushToOpenLobby()
-                }
-            }
-        } else {
-            if (visibleViewController == openLobbyVC) {
-                if LocalStorage.shared.userInQueue {
-                    print("Show games")
-                } else {
-                    self.dismiss(animated: true)
-                }
-            } else {
-                self.pushToCoundownController()
-            }
-        }
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        self.stopSound()
-    }
-    
-}
-
-extension GamesNavigationController {
-    fileprivate func playSound(resourceName: String) {
-        do {
-            guard let url = Bundle.main.url(forResource: resourceName, withExtension: "mp3") else { return }
-            engine.stop()
-            let file = try AVAudioFile(forReading: url)
-            let audioPlayer = AVAudioPlayerNode()
-            let audioFormat = file.processingFormat
-            let audioFrameCount = UInt32(file.length)
-            let audioFileBuffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: audioFrameCount)
-            try! file.read(into: audioFileBuffer!)
-            
-            let mainMixer = engine.mainMixerNode
-            engine.attach(audioPlayer)
-            engine.attach(pitchControl)
-            engine.connect(audioPlayer, to: mainMixer, format: audioFileBuffer?.format)
-            engine.connect(audioPlayer, to: pitchControl, format:audioFileBuffer?.format)
-            engine.connect(pitchControl, to: engine.mainMixerNode, format: nil)
-            
-            try engine.start()
-            audioPlayer.play()
-            audioPlayer.rate = 0.40
-            audioPlayer.scheduleBuffer(audioFileBuffer!, at: nil, options: .loops, completionHandler: nil)
-        } catch {
-            print(error)
-        }
-    }
-    
-    fileprivate func stopSound() {
-        engine.stop()
-    }
 }

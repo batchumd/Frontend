@@ -18,9 +18,9 @@ class EmailInputViewController: RegistrationViewController {
     //MARK: UI Elements
     let emailInput: ATCTextField = {
         let textField = ATCTextField()
-        let rightView = UIView(frame: CGRect(x: 0, y: 0, width: 170, height: 40))
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 170, height: 40))
-        label.text = "@terpmail.umd.edu"
+        let rightView = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 40))
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 40))
+        label.text = "@umd.edu"
         rightView.addSubview(label)
         textField.rightView = rightView
         textField.rightViewMode = .always
@@ -78,7 +78,7 @@ class EmailInputViewController: RegistrationViewController {
         
         guard var email = emailInput.text, let password = passwordInput.text else { return }
         
-        email = email + "@terpmail.umd.edu"
+        email = email + "@umd.edu"
                 
         switch self.authType {
             case .register: handleRegistration(email: email, password: password)
@@ -143,7 +143,7 @@ class EmailInputViewController: RegistrationViewController {
             if self.authType == .reAuth {
                 self.navigationController!.popViewController(animated: true)
             } else if self.authType == .signIn {
-                Switcher.shared.updateRootVC()
+                SceneSwitcher.shared.updateRootVC()
             }
         }
     }

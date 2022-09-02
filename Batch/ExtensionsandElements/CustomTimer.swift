@@ -14,7 +14,6 @@ class CustomTimer {
     var handler: (TimeInterval) -> ()
     var elapsedTime = TimeInterval(1.0)
     var dateAtStop: Date?
-    var targetController = HomeController.self
     var completionCallback: (() -> Void)!
     
     init(handler : @escaping (TimeInterval) -> ()) {
@@ -28,7 +27,7 @@ class CustomTimer {
         self.stop() //invalidate timer
     }
     
-    @objc func startApp(){
+    @objc func startApp() {
         if !timer.isValid {
             guard let previousDate = dateAtStop else { return }
             let difference = Date().timeIntervalSince(previousDate)
@@ -38,6 +37,7 @@ class CustomTimer {
     }
 
     func start(){
+        self.handler(0)
         self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
             self?.updateTime()
         }

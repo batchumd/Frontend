@@ -19,6 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 import UIKit
 
 protocol GridLayoutDelegate: AnyObject {
@@ -82,7 +83,7 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
     private var headerAttributesCache: Array<UICollectionViewLayoutAttributes> = []
 
     /// A convenient tuple for working with items
-    private typealias ItemFrame = (section: Int, flexibleIndex: Int, fixedIndex: Int, scale: Int)
+    private typealias ItemFrame = (section: Int, item: Int, flexibleIndex: Int, fixedIndex: Int, scale: Int)
 
     // MARK: - UICollectionView Layout
     override func prepare() {
@@ -141,10 +142,10 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
                     fixedIndex = 0
                     flexibleIndex += 1
                 }
-
+        
                 let itemIndexPath = IndexPath(item: item, section: section)
                 let itemScale = indexableScale(forItemAt: itemIndexPath)
-                let intendedFrame = ItemFrame(section, flexibleIndex, fixedIndex, itemScale)
+                let intendedFrame = ItemFrame(section, item, flexibleIndex, fixedIndex, itemScale)
 
                 // Find a place for the item in the grid
                 let (itemFrame, didFitInOriginalFrame) = nextAvailableFrame(startingAt: intendedFrame)
@@ -211,7 +212,6 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
         } else if scrollDirection == .horizontal, let oldHeight = collectionView?.bounds.height {
             return oldHeight != newBounds.height
         }
-
         return false
     }
 
@@ -235,7 +235,7 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
 
     private func nextAvailableFrame(startingAt originalFrame: ItemFrame) -> (frame: ItemFrame, fitInOriginalFrame: Bool) {
         var flexibleIndex = originalFrame.flexibleIndex, fixedIndex = originalFrame.fixedIndex
-        var newFrame = ItemFrame(originalFrame.section, flexibleIndex, fixedIndex, originalFrame.scale)
+        var newFrame = ItemFrame(originalFrame.section, originalFrame.item, flexibleIndex, fixedIndex, originalFrame.scale)
         while !isSpaceAvailable(for: newFrame) {
             fixedIndex += 1
 
@@ -245,7 +245,7 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
                 flexibleIndex += 1
             }
 
-            newFrame = ItemFrame(originalFrame.section, flexibleIndex, fixedIndex, originalFrame.scale)
+            newFrame = ItemFrame(originalFrame.section, originalFrame.item, flexibleIndex, fixedIndex, originalFrame.scale)
         }
 
         // Fits iff we never had to walk the grid to find a position
@@ -280,9 +280,34 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
 
     private func layoutAttributes(for indexPath: IndexPath, at itemFrame: ItemFrame, with sectionOffset: CGFloat) -> UICollectionViewLayoutAttributes {
         let layoutAttributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-
-        let fixedIndexOffset = CGFloat(itemFrame.fixedIndex) * (itemSpacing + itemFixedDimension)
-        let longitudinalOffset = CGFloat(itemFrame.flexibleIndex) * (itemSpacing + itemFlexibleDimension) + sectionOffset
+        var fixedIndex: CGFloat = 0
+        var flexibleIndex: CGFloat = 0
+        if itemFrame.section == 0 && itemFrame.item == 0 {
+            fixedIndex = 3
+            flexibleIndex = 0
+        }
+        if itemFrame.section == 0 && itemFrame.item == 1 {
+            fixedIndex = 5
+            flexibleIndex = 5
+        }
+        if itemFrame.section == 0 && itemFrame.item == 2 {
+            fixedIndex = 0
+            flexibleIndex = 5
+        }
+        if itemFrame.section == 2 && itemFrame.item == 0 {
+            fixedIndex = 0
+            flexibleIndex = 0
+        }
+        if itemFrame.section == 2 && itemFrame.item == 1 {
+            fixedIndex = 5
+            flexibleIndex = 0
+        }
+        if itemFrame.section == 2 && itemFrame.item == 2 {
+            fixedIndex = 3
+            flexibleIndex = 5
+        }
+        let fixedIndexOffset = fixedIndex * (itemSpacing + itemFixedDimension)
+        let longitudinalOffset = flexibleIndex * (itemSpacing + itemFlexibleDimension) + sectionOffset
         let itemScaledTransverseDimension = itemFixedDimension + (CGFloat(itemFrame.scale) * (itemSpacing + itemFixedDimension))
         let itemScaledLongitudinalDimension = itemFlexibleDimension + (CGFloat(itemFrame.scale) * (itemSpacing + itemFlexibleDimension))
 

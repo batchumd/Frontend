@@ -44,6 +44,7 @@ class ProfileBoxView: UIView {
     override init(frame: CGRect) {
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false
+        self.backgroundColor = .white
         addShadow()
         self.layer.cornerRadius = 25
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -71,6 +72,5 @@ extension UIView {
         layer.shadowOpacity = opacity
         layer.shadowOffset = offset ?? .zero
         layer.shadowRadius = radius
-        backgroundColor = .white
     }
 }

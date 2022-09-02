@@ -13,9 +13,7 @@ class PreferencesViewController: UIViewController {
     let tableView = UITableView(frame: .zero, style: .insetGrouped)
     
     let imagePicker = UIImagePickerController()
-    
-    let backend = FirebaseHelpers()
-    
+        
     var heightConstraint: NSLayoutConstraint?
     
     var preferencesDelegate: PreferencesDelegate?
@@ -84,7 +82,7 @@ class PreferencesViewController: UIViewController {
                     self.showReAuthAlert(title: "Password was incorrect")
                     return
                 }
-                FirebaseHelpers().deleteCurrentUser { error in
+                DatabaseManager().deleteCurrentUser { error in
                     if let error = error {
                         print(error.localizedDescription)
                         return
@@ -96,7 +94,11 @@ class PreferencesViewController: UIViewController {
     }
     
     @objc func handleSignOut() {
-        FirebaseHelpers().signOutUser()
+        DatabaseManager().signOutUser { error in
+            if let error = error {
+                print(error.localizedDescription)
+            }
+        }
     }
 }
 
@@ -104,9 +106,16 @@ extension PreferencesViewController: SelectionDelegate {
 
     func selectionChanged(_ options: [SettingOption], _ type: ProfileSetting) {
         if type == .gender {
-            FirebaseHelpers().updateUserData(data: ["gender": options.first!.rawValue]) {}
+            DatabaseManager().updateUserData(data: ["gender": options.first!.rawValue]) { error in
+                if let error = error {
+                    //Handle error
+                    print(error.localizedDescription)
+                    return
+                }
+            }
         }
     }
+    
 }
 
 extension PreferencesViewController: UITableViewDelegate, UITableViewDataSource {
@@ -162,11 +171,15 @@ extension PreferencesViewController: UITableViewDelegate, UITableViewDataSource 
         case .auth:
             guard let authSetting = AuthSetting(rawValue: indexPath.row) else { return }
             switch authSetting {
-                case .signOut: FirebaseHelpers().signOutUser()
-                case .deleteAccount: showReAuthAlert()
+            case .signOut:
+                DatabaseManager().signOutUser { error in
+                    if let error = error {
+                        print(error.localizedDescription)
+                    }
+                }
+            case .deleteAccount: showReAuthAlert()
             }
         }
-      
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -204,24 +217,26 @@ extension PreferencesViewController: UIImagePickerControllerDelegate, UINavigati
     // MARK: UIImagePickerControllerDelegate Methods
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            guard let uid = backend.getUserID(), let imagesCount = LocalStorage.shared.currentUserData?.profileImages.count else {
+            guard let uid = DatabaseManager.shared.getUserID(), let imagesCount = LocalStorage.shared.currentUserData?.profileImages.count else {
                 return
             }
             let reference = "profileImages/\(uid)\(imagesCount + 1).jpg"
-            self.handleUpload(reference, image: pickedImage) {
-            }
+            self.handleUpload(reference, image: pickedImage)
         }
         
         dismiss(animated: true, completion: nil)
     }
        
         
-    fileprivate func handleUpload(_ reference: String, image: UIImage, complete: @escaping () -> ()) {
+    fileprivate func handleUpload(_ reference: String, image: UIImage) {
         self.userPhotosCollectionView.selectedCell?.startLoadingProgress()
-        backend.uploadImage(reference: reference, image: image) {
-            self.backend.downloadURL(reference: reference) { imageURL in
-                self.backend.addImageToUserData(imageURL) {}
-                complete()
+        DatabaseManager.shared.uploadImage(reference: reference, image: image) {
+            DatabaseManager.shared.downloadURL(reference: reference) { imageURL in
+                DatabaseManager.shared.modifyUserImage(imageURL, delete: false) { error in
+                    if let error = error {
+                        //Handle not uploaded
+                    }
+                }
             }
         }
     }
@@ -234,7 +249,11 @@ extension PreferencesViewController: UIImagePickerControllerDelegate, UINavigati
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (result : UIAlertAction) -> Void in
             self.userPhotosCollectionView.selectedCell?.startLoadingProgress()
             if let imageURL = self.userPhotosCollectionView.selectedCell?.imageURL {
-                FirebaseHelpers().deleteUserImages(url: imageURL) {}
+                DatabaseManager().deleteUserImages(url: imageURL) { error in
+                    if let error = error {
+                        // Handle error deleting user image
+                    }
+                }
             }
         }
         

@@ -7,22 +7,34 @@
 
 import UIKit
 
-class FindGameController: CustomNavController, UICollectionViewDelegate {
+class FindGameController: UIViewController, UICollectionViewDelegate {
+    
+    var statusTimer: CustomTimer?
+    
+    private var collectionViewHeightConstraint: NSLayoutConstraint!
+    
+    var statusCountdown: Countdown?
+    
+    var attemptingToJoin: Bool = false
+    
+    let firebaseHelpers = DatabaseManager()
     
     private var minimumSpacing: CGFloat = 10
 
     private var edgeInsetPadding: CGFloat = 20
     
-    let profiles: [User] = []
-    
+    var gameOptions = [Game]()
+        
     //MARK: UI Elements
+    let activityView = ActivityPopupView()
+    
     let informationLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Finding Bachelorettes..."
+        label.text = "We found some bachelorette's"
         label.font = UIFont(name: "Gilroy-ExtraBold", size: 22)
         label.textAlignment = .center
-        label.textColor = UIColor(named: "customGray")
+        label.textColor = .white
         return label
     }()
     
@@ -32,62 +44,172 @@ class FindGameController: CustomNavController, UICollectionViewDelegate {
         label.text = "Make your pick before the game is full."
         label.font = UIFont(name: "Brown-Bold", size: 15)
         label.textAlignment = .center
-        label.textColor = UIColor(named: "customGray")
+        label.textColor = .white
         return label
     }()
     
     let gameCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     
+    let gameTimerLabel = GameTimerLabel(fontSize: 25, dark: false)
+        
     //MARK: UI Lifecycle Methods
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        gameCollectionView.register(ProfileCardCell.self, forCellWithReuseIdentifier: "result")
-        gameCollectionView.dataSource = self
-        gameCollectionView.delegate = self
-        setupLayout()
-        navigationItem.setRightBarButton(nil, animated: true)
+    
+    init(gameIDs: [String]) {
+        super.init(nibName: nil, bundle: nil)
+        firebaseHelpers.getGameStartCountdown { countDown in
+            self.statusCountdown = countDown
+            self.setupTimer()
+        }
+        self.view.backgroundColor = UIColor(named: "mainColor")
+        self.setupActivityView(title: "Loading Bachelorette's")
+        self.getGameInfo(gameIDs: gameIDs)
+        self.gameCollectionView.register(GameCardCell.self, forCellWithReuseIdentifier: "result")
+        self.gameCollectionView.dataSource = self
+        self.gameCollectionView.delegate = self
+        self.setupLayout()
+        self.listenForCloseGames()
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        collectionViewHeightConstraint.constant = self.gameCollectionView.collectionViewLayout.collectionViewContentSize.height
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
     fileprivate func setupLayout() {
-        view.addSubview(informationLabel)
-        informationLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
-        informationLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        view.addSubview(tipLabel)
-        tipLabel.topAnchor.constraint(equalTo: informationLabel.bottomAnchor, constant: 10).isActive = true
-        tipLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        view.addSubview(gameCollectionView)
-        gameCollectionView.topAnchor.constraint(equalTo: tipLabel.bottomAnchor, constant: 15).isActive = true
-        gameCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        gameCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        gameCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        self.activityView.removeFromSuperview()
+        collectionViewHeightConstraint = self.gameCollectionView.heightAnchor.constraint(equalToConstant: 0)
+        collectionViewHeightConstraint.isActive = true
+        let gameTimerView = UIView()
+        gameTimerView.addSubview(gameTimerLabel)
+        gameTimerLabel.centerInsideSuperView()
+        let stackView = UIStackView(arrangedSubviews: [informationLabel, tipLabel, gameCollectionView, UIView(), gameTimerView, UIView()])
+        stackView.axis = .vertical
+        stackView.distribution = .equalSpacing
+        stackView.spacing = 20
+        view.addSubview(stackView)
+        stackView.anchor(top: self.view.safeAreaLayoutGuide.topAnchor, bottom: self.view.safeAreaLayoutGuide.bottomAnchor, leading: self.view.leadingAnchor, trailing: self.view.trailingAnchor, padding: UIEdgeInsets(top: 20, left: 10, bottom: 20, right: 10))
+    }
+    
+    fileprivate func setupActivityView(title: String) {
+        self.view.subviews.forEach { view in
+            view.removeFromSuperview()
+        }
+        activityView.title = title
+        self.view.addSubview(activityView)
+        activityView.centerInsideSuperView()
+        activityView.widthAnchor.constraint(equalToConstant: 250).isActive = true
+        activityView.heightAnchor.constraint(equalTo: activityView.widthAnchor).isActive = true
+    }
+    
+    //MARK: Business Logic
+    
+    fileprivate func getGameInfo(gameIDs: [String]) {
+        for i in 0 ..< gameIDs.count {
+            let gameID = gameIDs[i]
+            self.firebaseHelpers.fetchGameInfo(gameID, listen: true) { gameInfo in
+                guard var gameInfo = gameInfo else { return }
+                if let x = self.gameOptions.firstIndex(where: {$0.gameID == gameInfo.gameID}) {
+                    // We must copy the host data to the updated data
+                    gameInfo.host = self.gameOptions[x].host
+                    self.gameOptions[x] = gameInfo
+                    let indexPath = IndexPath(item: x, section: 0)
+                    self.gameCollectionView.reloadItems(at: [indexPath])
+                } else {
+                    self.firebaseHelpers.fetchUserData(gameInfo.hostID, listen: false) { userData in
+                        guard let userData = userData else { return }
+                        gameInfo.host = userData
+                        self.gameOptions.append(gameInfo)
+                        let indexPath = IndexPath(item: i, section: 0)
+                        self.gameCollectionView.reloadItems(at: [indexPath])
+                    }
+                }
+            }
+        }
+    }
+    
+    func setupTimer() {
+        self.statusTimer = CustomTimer(handler: { elapsed in
+            self.updateTime(elapsed)
+        })
+    }
+    
+    @objc func updateTime(_ elapsed: TimeInterval) {
+        if statusCountdown != nil {
+            if (statusCountdown!.isFinished) {
+                self.statusTimer?.stop()
+                self.gameTimerLabel.text = "0s"
+            } else {
+                self.statusCountdown!.currentDate = self.statusCountdown!.currentDate + elapsed
+                self.gameTimerLabel.text = self.statusCountdown!.timeRemaining + "s"
+            }
+        }
+    }
+    
+    fileprivate func listenForCloseGames() {
+        firebaseHelpers.listenGamesOngoingStatus(complete: { gamesOngoing in
+            if gamesOngoing && !self.attemptingToJoin {
+                LocalStorage.shared.userInQueue = false
+                self.dismiss(animated: true)
+            }
+        })
     }
     
 }
 
 extension FindGameController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return profiles.count
+        return gameOptions.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "result", for: indexPath as IndexPath) as! ProfileCardCell
-        cell.user = profiles[indexPath.item]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "result", for: indexPath as IndexPath) as! GameCardCell
+        cell.game = gameOptions[indexPath.item]
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let height = collectionView.bounds.size.height - ((((collectionView.bounds.size.width / 2) * 1.7) * 2) - (minimumSpacing + (edgeInsetPadding)))
-        let inset = UIEdgeInsets(top: height, left: 20, bottom: 0, right: 20)
+        let inset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         return inset
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! GameCardCell
+        self.setupActivityView(title: "Joining")
+        self.attemptingToJoin = true
+        guard let game = cell.game else { return }
+        NetworkManager().addUserToGame(gameID: game.gameID) { error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    self.statusTimer?.startApp()
+                    self.setupLayout()
+                    self.attemptingToJoin = false
+                }
+                return
+            }
+            DispatchQueue.main.async {
+                self.statusCountdown = nil
+                guard let nav = self.navigationController as? GamesNavigationController else {
+                    self.present(GameViewController(gameID: game.gameID), animated: true)
+                    return
+                } // can comment later
+                nav.pushToGameController(game.gameID)
+            }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (collectionView.bounds.size.width - (minimumSpacing + (edgeInsetPadding * 2))) / 2
-        return CGSize(width: width, height: width * 1.7)
+        return CGSize(width: width, height: width * 1.55)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

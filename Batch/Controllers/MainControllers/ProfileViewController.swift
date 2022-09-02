@@ -8,6 +8,12 @@
 import UIKit
 
 class ProfileViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    
+    var user: User? {
+        didSet {
+            self.collectionView.reloadData()
+        }
+    }
         
     private var minimumSpacing: CGFloat = 15
         
@@ -17,12 +23,8 @@ class ProfileViewController: UICollectionViewController, UICollectionViewDelegat
         self.collectionView.register(ImageProfileCell.self, forCellWithReuseIdentifier: "image")
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        LocalStorage.shared.delegate = self
-        userDataChanged()
-    }
-    
-    init() {
+    init(user: User?) {
+        self.user = user
         let flowLayout = UICollectionViewFlowLayout()
         super.init(collectionViewLayout: flowLayout)
         self.tabBarItem = UITabBarItem.init(title: nil, image: UIImage(named: "profile"), tag: 1)
@@ -39,39 +41,38 @@ class ProfileViewController: UICollectionViewController, UICollectionViewDelegat
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        guard let user = LocalStorage.shared.currentUserData else { return 0 }
-
-        switch section {
-        case 0: return user.profileImages.isEmpty ? 0 : 1
-        case 1: return 1
-        case 2: return (user.profileImages.count - 1)
-        default:
+        guard let user = user else {
             return 0
+        }
+
+        
+        switch section {
+            case 0: return user.profileImages.isEmpty ? 0 : 1
+            case 1: return 1
+            case 2: return (user.profileImages.count - 1)
+            default: return 0
         }
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        guard let user = LocalStorage.shared.currentUserData else { return UICollectionViewCell() }
-
+    
         switch indexPath.section {
         case 0:
-            
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "lead", for: indexPath as IndexPath) as! LeadProfileCell
-            cell.user = user
+            cell.user = self.user
             cell.preferencesDelegate = self
             return cell
             
         case 1:
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "stats", for: indexPath as IndexPath) as! StatsProfileCell
-            cell.stats = ["won": user.gamesWon, "points": user.points, "rounds": user.roundsPlayed]
+            cell.stats = ["won": self.user?.gamesWon ?? 0, "points": self.user?.points ?? 0, "rounds": self.user?.roundsPlayed ?? 0]
             return cell
             
         case 2:
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "image", for: indexPath as IndexPath) as! ImageProfileCell
-            cell.imageURL = user.profileImages[indexPath.row + 1]
+            cell.imageURL = self.user?.profileImages[indexPath.row + 1]
             return cell
             
         default:
@@ -115,7 +116,7 @@ class ProfileViewController: UICollectionViewController, UICollectionViewDelegat
 
 extension ProfileViewController: PreferencesDelegate {
     func dismissPreferences() {
-        self.viewDidAppear(false)
+        UIApplication.shared.keywindow?.rootViewController?.viewDidAppear(false)
     }
     
     func showPreferences() {
@@ -123,15 +124,6 @@ extension ProfileViewController: PreferencesDelegate {
         preferencesController.preferencesDelegate = self
         let vc = UINavigationController(rootViewController: preferencesController)
         UIApplication.shared.keywindow?.rootViewController?.present(vc, animated: true)
-    }
-}
-
-extension ProfileViewController: LocalStorageDelegate {
-    func userDataChanged() {
-        if LocalStorage.shared.currentUserData!.profileImages.isEmpty {
-            showPreferences()
-        }
-        self.collectionView.reloadData()
     }
 }
 

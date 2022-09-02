@@ -60,6 +60,7 @@ class InviteFriendView: UIView {
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false
         self.layer.cornerRadius = 25
+        self.backgroundColor = .white
         self.addShadow()
         self.addSubview(mainStackView)
         mainStackView.translatesAutoresizingMaskIntoConstraints = false

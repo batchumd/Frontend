@@ -92,14 +92,14 @@ extension MessagesViewController: UICollectionViewDelegateFlowLayout, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = GameViewController(chatID: "lakdsfj")
-//        vc.gameData = Game(chatID: "skadjhfkalf", players: profiles, host: User(name: "Layla", age: 23, image: UIImage(named: "layla")!, points: 233))
-        let transition:CATransition = CATransition()
-        transition.duration = 0.25
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.fade
-        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
-        self.navigationController?.pushViewController(vc, animated: false)
+//        let vc = GameViewController(chatID: "lakdsfj")
+////        vc.gameData = Game(chatID: "skadjhfkalf", players: profiles, host: User(name: "Layla", age: 23, image: UIImage(named: "layla")!, points: 233))
+//        let transition:CATransition = CATransition()
+//        transition.duration = 0.25
+//        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+//        transition.type = CATransitionType.fade
+//        self.navigationController!.view.layer.add(transition, forKey: kCATransition)
+//        self.navigationController?.pushViewController(vc, animated: false)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

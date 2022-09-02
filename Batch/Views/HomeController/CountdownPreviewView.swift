@@ -10,9 +10,16 @@ import UIKit
 
 class CountdownView: UIView {
     
-    var countdown: GameCountdown!
-        
-    var countdownTimer: CustomTimer?
+    var timeRemaining: String? {
+        didSet {
+            if let timeRemaining = timeRemaining {
+                self.acitivityIndicator.removeFromSuperview()
+                self.counter.text = timeRemaining
+            } else {
+                self.setupActivityIndicator()
+            }
+        }
+    }
     
     var isFullscreen: Bool
     
@@ -23,7 +30,7 @@ class CountdownView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
         label.textAlignment = .center
-        label.font = UIFont(name: "Gilroy-ExtraBold", size: 24)
+        label.font = UIFont(name: "Gilroy-ExtraBold", size: 22)
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.2
         label.numberOfLines = 0
@@ -44,9 +51,15 @@ class CountdownView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
         label.textAlignment = .center
-        label.font = UIFont(name: "GorgaGrotesque-Bold", size: 50)
+        label.font = UIFont(name: "GorgaGrotesque-Bold", size: 54)
         return label
     }()
+    
+    let actionView = CountdownActionLabel()
+    
+    lazy var stackView = UIStackView(arrangedSubviews: [title, counter, subtitle])
+
+    let acitivityIndicator = ProgressView(lineWidth: 5, dark: false)
     
     override func layoutSubviews() {
         if !isFullscreen {
@@ -60,45 +73,43 @@ class CountdownView: UIView {
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false
         if isFullscreen { changeViewForFullscreen() }
-        let stackView = UIStackView(arrangedSubviews: [title, counter, subtitle])
+        stackView.setCustomSpacing(9, after: title)
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         self.addSubview(stackView)
-        self.clipsToBounds = true
-        self.layer.cornerRadius = 25
-        stackView.fillSuperView()
+        stackView.fillSuperView(padding: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
         patternLayer.isHidden = true
         patternLayer.contents = UIImage(named: "smaller_celebration")?.cgImage
         patternLayer.contentsGravity = .resizeAspectFill
         layer.insertSublayer(patternLayer, at: 0)
         setViewForLobbyClosed()
+        self.addSubview(actionView)
+        actionView.anchor(top: nil, bottom: self.bottomAnchor, leading: nil, trailing: nil, padding: UIEdgeInsets(top: 0, left: 0, bottom: -12, right: 0))
+        actionView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
     }
     
-    func changeViewForFullscreen() {
+    func setupActivityIndicator() {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        view.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        view.addSubview(acitivityIndicator)
+        acitivityIndicator.fillSuperView()
+        self.addSubview(view)
+        view.centerInsideSuperView()
+        acitivityIndicator.animateStroke()
+        acitivityIndicator.animateRotation()
+    }
+    
+    fileprivate func changeViewForFullscreen() {
         title.font = title.font.withSize(30)
         subtitle.font = subtitle.font.withSize(20)
         counter.font = counter.font.withSize(80)
     }
     
-    func setupCountDown(currentDate: Date, nextGame: Date) {
-        self.countdown = GameCountdown(currentDate: currentDate, targetDate: nextGame)
-        self.updateTime(TimeInterval(0))
-        self.countdownTimer = CustomTimer(handler: { elapsed in
-            self.updateTime(elapsed)
-        })
-    }
-    
-    func setViewForLobbyOpen() {
-        patternLayer.isHidden = false
-        title.text = "IT'S TIME"
-        counter.text = "Lobby Open!"
-        subtitle.text = "Tap to join"
-    }
-    
-    func setViewForLobbyClosed() {
+    fileprivate func setViewForLobbyClosed() {
         patternLayer.isHidden = true
-        title.text = "LOBBY OPENS IN"
-        subtitle.text = "Lobby opens at 9pm est"
+        title.text = "Games Go Live In"
     }
     
     private lazy var gradientLayer: CAGradientLayer = {
@@ -107,6 +118,7 @@ class CountdownView: UIView {
         gradient.startPoint = CGPoint(x: 0, y: 0)
         gradient.endPoint = CGPoint(x: 1, y: 1)
         gradient.colors = [UIColor(red: 204/255, green: 93/255, blue: 237/255, alpha: 1.0).cgColor, UIColor(red: 151/255, green: 59/255, blue: 246/255, alpha: 1.0).cgColor]
+        gradient.cornerRadius = 20
         self.layer.insertSublayer(gradient, at: 0)
         return gradient
     }()
@@ -115,15 +127,5 @@ class CountdownView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func updateTime(_ elapsed: TimeInterval) {
-        if countdown.isFinished {
-            self.title.text = ""
-            self.counter.text = "Opening Lobby..."
-            self.subtitle.text = ""
-            self.countdownTimer?.stop()
-        } else {
-            countdown.currentDate = countdown.currentDate.addingTimeInterval(elapsed)
-            self.counter.text = countdown.timeRemaining
-        }
-    }
 }
+

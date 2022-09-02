@@ -16,7 +16,7 @@ class StatsProfileCell: UICollectionViewCell {
             guard let stats = stats else {return}
             self.statsStackView.wonStatBox.statValue = stats["won"]
             self.statsStackView.pointsStatBox.statValue = stats["points"]
-            self.statsStackView.roundsStatBox.statValue = stats["rounds"]
+            self.statsStackView.gamesPlayedStatBox.statValue = stats["rounds"]
         }
     }
             

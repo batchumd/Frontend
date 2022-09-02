@@ -10,11 +10,12 @@ class ChatPreviewCell: UICollectionViewCell {
 
     var message: Message! {
         didSet {
+            guard let sender = message.sender else { return }
 //            profileImageView.image = message.sender.image
-            nameAgeLabel.text = message.sender.name + ", " + String(message.sender.age)
+            nameAgeLabel.text = sender.name + ", " + String(sender.age)
             contentPreviewLabel.text = message.content
             if #available(iOS 15.0, *) {
-                timeLabel.text = message.time.formatted(.dateTime.month(.abbreviated))
+                timeLabel.text = message.created_at.formatted(.dateTime.month(.abbreviated))
             }
         }
     }

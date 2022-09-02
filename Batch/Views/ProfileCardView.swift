@@ -26,13 +26,16 @@ class ProfileCardView: UIView {
         return label
     }()
     
-    init() {
+    init(withContent: Bool) {
         super.init(frame: .zero)
         self.addSubview(profileImage)
         profileImage.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
         profileImage.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
         profileImage.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         profileImage.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        if withContent {
+            setupContent()
+        }
     }
     
     func setupContent() {
@@ -40,6 +43,7 @@ class ProfileCardView: UIView {
         nameLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -15).isActive = true
         nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15).isActive = true
         setupBottomGradintLayer()
+        setupTopGradientLayer()
     }
     
     required init?(coder: NSCoder) {

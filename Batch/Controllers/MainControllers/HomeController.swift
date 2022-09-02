@@ -8,6 +8,12 @@
 import UIKit
 
 class HomeController: UIViewController {
+    
+    var user: User! {
+        didSet {
+            self.populateProfileBoxWithData()
+        }
+    }
         
     let margin: CGFloat = 30
     
@@ -32,15 +38,19 @@ class HomeController: UIViewController {
     let profileBoxView = ProfileBoxView()
     
     let inviteFriendView = InviteFriendView()
-    
-    override func viewDidAppear(_ animated: Bool) {
-        LocalStorage.shared.delegate = self
-        userDataChanged()
-        lobbyOpenChanged()
+   
+    override func viewWillAppear(_ animated: Bool) {
+        GlobalCountdown.shared.delegate = self
+        self.countdownUpdated()
     }
     
     override func viewDidLoad() {
         setupLayout()
+        if LocalStorage.shared.userInQueue == true {
+            self.countdownView.actionView.joiningStatus = .fetched
+        } else {
+            self.countdownView.actionView.joiningStatus = .notFetched
+        }
     }
     
     init() {
@@ -60,36 +70,27 @@ class HomeController: UIViewController {
         stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: margin).isActive = true
         stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -margin).isActive = true
         stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -margin).isActive = true
-        countdownView.heightAnchor.constraint(equalToConstant: (view.bounds.size.width - (margin * 2)) * 0.5).isActive = true
+        countdownView.heightAnchor.constraint(equalToConstant: (view.bounds.size.width - (margin * 2)) * 0.45).isActive = true
         inviteFriendView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         let showProfileTabGesture = UITapGestureRecognizer(target: self, action: #selector(switchToProfileTab))
         profileBoxView.addGestureRecognizer(showProfileTabGesture)
-        self.addShadowForCountdownParent()
     }
     
     fileprivate func layoutCountdownView() {
         self.countdownParent.addSubview(countdownView)
         countdownView.fillSuperView()
-        let tapShowCountdown = UITapGestureRecognizer(target: self, action: #selector(self.showCountdownViewController))
-        countdownParent.addGestureRecognizer(tapShowCountdown)
-    }
-    
-    func addShadowForCountdownParent() {
-        self.countdownParent.addShadow(radius: 20, offset: CGSize(width: 0, height: 0), opacity: 0.0, color: UIColor(named: "mainColor")!)
     }
     
     //MARK: - Business Logic
     
     @objc func switchToProfileTab() {
-        self.tabBarController?.selectedIndex = 3
+        self.tabBarController?.selectedIndex = 2
     }
     
-    fileprivate func populateProfileBoxWithData(user: User) {
-        
+    func populateProfileBoxWithData() {
         //Get user data from localstorage singleton
-        
         profileBoxView.nameAgeLabel.text = "\(user.name), \(user.age)"
-        profileBoxView.statsStackView.roundsStatBox.statValue = user.roundsPlayed
+        profileBoxView.statsStackView.gamesPlayedStatBox.statValue = user.roundsPlayed
         profileBoxView.statsStackView.wonStatBox.statValue = user.gamesWon
         profileBoxView.statsStackView.pointsStatBox.statValue = user.points
         
@@ -102,61 +103,46 @@ class HomeController: UIViewController {
         }
     }
     
-    @objc fileprivate func showCountdownViewController() {
-        guard let lobbyOpen = LocalStorage.shared.lobbyOpen else { return }
-        let vc = GamesNavigationController()
-        if !lobbyOpen {
-            vc.countdownVC.countdownView.setupCountDown(currentDate: self.countdownView.countdown.currentDate, nextGame: self.countdownView.countdown.targetDate)
-        }
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
-    }
-    
-}
-
-extension HomeController: LocalStorageDelegate {
-    func userDataChanged() {
-        guard let user = LocalStorage.shared.currentUserData else {
-            print("failed to get user data")
-            return
-        }
-        populateProfileBoxWithData(user: user)
-        let navController = self.navigationController as! CustomNavController
-        navController.pointsLabel.text = String(user.points)
-    }
-    
-    func lobbyOpenChanged() {
-        // Grab lobby variable from localstorage
+    @objc func showGamesNavController() {
         
-        guard let lobbyOpen = LocalStorage.shared.lobbyOpen else { return }
+        guard let lobbyState = LocalStorage.shared.lobbyState else { return }
         
-        // Set the shadow opacity if the loby is open
-        self.countdownParent.layer.shadowOpacity = lobbyOpen ? 1.0 : 0.0
-        
-        if lobbyOpen {
-            self.countdownView.countdownTimer?.stop()
-            self.countdownView.setViewForLobbyOpen()
-        } else {
-            self.countdownView.setViewForLobbyClosed()
-            if countdownView.countdownTimer == nil {
-                handleCountdownToNextLobbyOpen()
-            } else {
-                self.countdownView.countdownTimer?.startApp()
-            }
-        }
-    }
-    
-    func handleCountdownToNextLobbyOpen() {
-        NetworkManager().getCurrentTime { date, error in
-            guard let date = date else { return }
-            LocalStorage.shared.serverDate = date
-            FirebaseHelpers().getNextGameTime { nextDate in
+        if lobbyState != .open {
+            // Check the user on the backend
+            self.countdownView.actionView.joiningStatus = .fetching
+            NetworkManager().addUserToQueue { error in
+                if let error = error {
+                    print(error)
+                    self.countdownView.actionView.joiningStatus = .notFetched
+                    return
+                }
                 DispatchQueue.main.async {
-                    self.countdownView.setupCountDown(currentDate: date, nextGame: nextDate)
+                    self.countdownView.actionView.joiningStatus = .fetched
                 }
             }
         }
+        
+        if lobbyState == .waiting {
+            let vc = GamesNavigationController()
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }
+    
     }
+}
+
+extension HomeController: CountdownDelegate {
+    
+    func statusChanged(isFinished: Bool) {
+        if isFinished {
+            self.countdownView.counter.text = "0s"
+        }
+    }
+    
+    func countdownUpdated() {
+        self.countdownView.timeRemaining = GlobalCountdown.shared.countdown?.timeRemaining
+    }
+    
 }
 
 extension Date {

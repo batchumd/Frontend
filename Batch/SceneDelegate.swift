@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Make this scene's window be visible.
         self.window!.makeKeyAndVisible()
         
-        Switcher.shared.updateRootVC()
+        SceneSwitcher.shared.updateRootVC()
         
         guard scene is UIWindowScene else { return }
     }
@@ -58,9 +58,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 
 
-class Switcher {
+class SceneSwitcher {
     
-    static let shared = Switcher()
+    static let shared = SceneSwitcher()
     
     func updateRootVC(){
         
@@ -84,12 +84,13 @@ class Switcher {
 //                registrationController.user = registrationData
 //                uWindow.rootViewController = UINavigationController(rootViewController: registrationController)
 //            } else {
-            guard let uid = FirebaseHelpers().getUserID() else { return }
-            FirebaseHelpers().fetchUserData(uid) { (userData) in
+            guard let uid = DatabaseManager().getUserID() else { return }
+            DatabaseManager().fetchUserData(uid, listen: true) { (userData) in
                 if let userData = userData {
                     LocalStorage.shared.currentUserData = userData
                     if loggedIn == false {
                         uWindow.backgroundColor = .white
+//                        uWindow.rootViewController = MainViewController()
                         uWindow.rootViewController = MainViewController()
                         loggedIn = true
                     }

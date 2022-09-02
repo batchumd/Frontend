@@ -11,12 +11,14 @@ import FirebaseDatabase
 
 protocol LocalStorageDelegate: AnyObject {
     func userDataChanged()
-    func lobbyOpenChanged()
+    func lobbyStateChanged()
+    func userInQueueChanged()
 }
 
 extension LocalStorageDelegate {
-    func lobbyOpenChanged() {}
+    func lobbyStateChanged() {}
     func userDataChanged() {}
+    func userInQueueChanged() {}
 }
 
 class LocalStorage {
@@ -33,18 +35,21 @@ class LocalStorage {
         }
     }
     
-    var lobbyOpen: Bool? {
+    var lobbyState: LobbyState? {
         didSet {
-            delegate?.lobbyOpenChanged()
+            delegate?.lobbyStateChanged()
         }
     }
     
-    var userInQueue: Bool = false
+    var userInQueue: Bool? {
+        didSet {
+            delegate?.userInQueueChanged()
+        }
+    }
     
-    var serverDate: Date?
+    var serverTime: TimeInterval?
     
-    var lobbyCountdown: FirebaseCountdown?
-    
+        
 //    func registrationData() -> [String: Any]? {
 //        do {
 //            let testFromDefaults = UserDefaults.standard.object([String: Any].self, with: "RegistrationData")

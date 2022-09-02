@@ -18,7 +18,9 @@ enum NetworkEnvironment {
 public enum BatchAPI {
     case getCurrentTime
     case addUserToQueue
+    case joinGame
     case removeUserFromQueue
+    case startGame
 }
 
 extension BatchAPI: EndPointType {
@@ -32,7 +34,9 @@ extension BatchAPI: EndPointType {
         switch self {
             case .getCurrentTime: return "getCurrentTime"
             case .addUserToQueue: return "addUserToQueue"
+            case .joinGame: return "joinGame"
             case .removeUserFromQueue: return "removeUserFromQueue"
+            case .startGame: return "startGame"
         }
     }
     
@@ -41,6 +45,8 @@ extension BatchAPI: EndPointType {
             case .getCurrentTime: return .get
             case .addUserToQueue: return .post
             case .removeUserFromQueue: return .post
+            case .joinGame: return .post
+            case .startGame: return .post
         }
     }
     
@@ -49,6 +55,8 @@ extension BatchAPI: EndPointType {
             case .getCurrentTime: return .request
             case .addUserToQueue: return .request
             case .removeUserFromQueue: return .request
+            case .joinGame: return .request
+            case .startGame: return .request
         }
     }
     

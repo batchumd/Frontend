@@ -12,7 +12,7 @@ class InterestedInInputViewController: RegistrationViewController {
     
     var interestedIn: [Gender] = []
     
-    let firebaseHelpers = FirebaseHelpers()
+    let firebaseHelpers = DatabaseManager()
         
     //MARK: UI Elements
     let interestedInOptionsStackView: UIStackView = {
@@ -82,10 +82,15 @@ class InterestedInInputViewController: RegistrationViewController {
             self.displayError(message: "You must select at least one option")
         } else {
             self.user?["interestedIn"] = self.interestedIn.map({$0.rawValue})
-            firebaseHelpers.addNewUserToDatabase(userData: self.user!) {
-                UserDefaults.standard.removeObject(forKey: "RegistrationData")
-                UserDefaults.standard.synchronize()
-                Switcher.shared.updateRootVC()
+            firebaseHelpers.addNewUserToDatabase(userData: self.user!) { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    fatalError()
+                } else {
+                    UserDefaults.standard.removeObject(forKey: "RegistrationData")
+                    UserDefaults.standard.synchronize()
+                    SceneSwitcher.shared.updateRootVC()
+                }
             }
         }
     }

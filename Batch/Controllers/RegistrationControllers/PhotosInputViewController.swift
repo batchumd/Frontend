@@ -10,7 +10,7 @@ import UIKit
 
 class PhotosInputViewController: RegistrationViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    let backend = FirebaseHelpers()
+    let backend = DatabaseManager()
     
     var selectedImageIndex: Int = 0
     
