@@ -15,7 +15,7 @@ class InviteFriendView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor(named: "customGray")
         label.textAlignment = .left
-        label.text = "Invite your friends!"
+        label.text = "Increase your odds to play."
         label.font = UIFont(name: "Gilroy-ExtraBold", size: 19)
         return label
     }()

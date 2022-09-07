@@ -109,7 +109,7 @@ class CountdownView: UIView {
     
     fileprivate func setViewForLobbyClosed() {
         patternLayer.isHidden = true
-        title.text = "Games Go Live In"
+        title.text = "We Are Live In"
     }
     
     private lazy var gradientLayer: CAGradientLayer = {

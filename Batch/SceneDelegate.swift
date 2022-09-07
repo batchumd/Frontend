@@ -91,7 +91,7 @@ class SceneSwitcher {
                     if loggedIn == false {
                         uWindow.backgroundColor = .white
 //                        uWindow.rootViewController = MainViewController()
-                        uWindow.rootViewController = MainViewController()
+                        uWindow.rootViewController = CustomNavController(rootViewController: HomeController())
                         loggedIn = true
                     }
                 }

@@ -82,8 +82,7 @@ class CountdownActionLabel: UIView {
         label.layer.masksToBounds = true
         label.font = UIFont(name: "Brown-bold", size: 17)
         label.textAlignment = .center
-        guard let userData = LocalStorage.shared.currentUserData else { return }
-        label.text = userData.gender == .bachelorette ? "Be The Bachelorette @ 9pm" : "Come play @ 9pm EST"
+        label.text = "Tune in @ 9:00PM EST"
         translatesAutoresizingMaskIntoConstraints = false
         self.addShadow()
     }

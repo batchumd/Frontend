@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import NotificationBannerSwift
 
 class HomeController: UIViewController {
     
@@ -152,5 +153,54 @@ extension Date {
         let month = calendar.component(.month, from: self)
         let day = calendar.component(.day, from: self)
         return Calendar.current.date(from: DateComponents(year: year, month: month, day: day, hour: hour)) ?? Date()
+    }
+}
+
+extension MainViewController: LocalStorageDelegate {
+    
+    func userInQueueChanged() {
+        guard let lobbyState = LocalStorage.shared.lobbyState else { return }
+        guard let userInQueue = LocalStorage.shared.userInQueue else { return }
+        if userInQueue && lobbyState == .waiting {
+            self.homeController.countdownView.actionView.joiningStatus = .fetched
+            let banner = FloatingNotificationBanner(
+                title: "You are checked in for tonight!",
+                subtitle: "We'll notify you when games go live.",
+                titleFont: UIFont(name: "Gilroy-Extrabold", size: 19),
+                subtitleFont: UIFont(name: "Brown-bold", size: 14),
+                style: .info,
+                colors: CustomBannerColors(),
+                opacity: 0.5
+            )
+            banner.show(bannerPosition: .bottom, edgeInsets: UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20), cornerRadius: 16)
+        } else {
+            self.homeController.countdownView.actionView.joiningStatus = .notFetched
+        }
+    }
+    
+    func userDataChanged() {
+        guard let user = LocalStorage.shared.currentUserData else { return }
+        self.homeController.user = user
+        self.profileViewController.user = user
+    }
+    
+    func lobbyStateChanged() {
+        
+        guard let lobbyState = LocalStorage.shared.lobbyState else { return }
+        
+        if lobbyState == .open {
+            NetworkManager().addUserToQueue { error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+            }
+        }
+        
+        if lobbyState == .find {
+            let vc = GamesNavigationController()
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }
     }
 }
