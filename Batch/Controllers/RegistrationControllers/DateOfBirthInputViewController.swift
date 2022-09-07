@@ -24,7 +24,7 @@ class DateOfBirthInputViewController: RegistrationViewController {
         return textField
     }()
     
-    fileprivate let datePicker: UIDatePicker = {
+    lazy var datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .wheels
@@ -40,15 +40,13 @@ class DateOfBirthInputViewController: RegistrationViewController {
         informationLabel.text = "We never share your birthdate, just your age."
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         setupView()
-        self.setupGradient()
-        self.animateGradient()
     }
     
     //MARK: Business Logic
     @objc func continueButtonTapped() {
         
         if ValidityChecker().isBirthdateValid(self.datePicker.date) {
-            self.user?.dob = self.datePicker.date
+            self.user?["dob"] = self.datePicker.date
             self.showNextViewController(PhotosInputViewController())
         } else {
             displayError(message: "You must be 18 to use Batch")

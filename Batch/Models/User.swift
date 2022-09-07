@@ -9,67 +9,81 @@ import Foundation
 import UIKit
 import FirebaseFirestore
 
-struct User: Convertable {
-    var email: String?
-    var name: String?
-    var points: Int?
-    var age: Int?
-    var gender: Gender?
-    var dob: Date?
-    var interestedIn: [Gender]?
-    var profileImages: [String]?
-    var uid: String?
-    var roundsPlayed: Int?
-    var gamesWon: Int?
+
+struct User: Codable {
     
-    init? (from: [String: Any]? = nil) throws {
-        if var from = from {
-            let now = Date()
-            let birthday: Date = (from["dob"] as! Timestamp).dateValue()
-            let calendar = Calendar.current
-            let ageComponents = calendar.dateComponents([.year], from: birthday, to: now)
-            from["age"] = ageComponents.year!
-            from.removeValue(forKey: "dob")
-            let data = try JSONSerialization.data(withJSONObject: from, options: .prettyPrinted)
-            let decoder = JSONDecoder()
-            self = try decoder.decode(Self.self, from: data)
-        }
-    }
-}
-
-protocol Convertable: Codable {
-
-}
-
-extension Convertable {
+    var uid: String
+    var email: String
+    var name: String
+    var points: Int
     
-    func convertToDict() -> Dictionary<String, Any>? {
-
-        var dict: Dictionary<String, Any>? = nil
-
-        do {
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(self)
-            dict = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, Any>
-            
-        } catch {
-            print(error)
-        }
-
-        return dict
+    var age: Int {
+        let now = Date()
+        let calendar = Calendar.current
+        let ageComponents = calendar.dateComponents([.year], from: Date(timeIntervalSince1970: self.dob), to: now)
+        return ageComponents.year ?? 0
     }
     
-    func saveToDefaults(forKey: String, complete: @escaping () -> ()) {
-        let encoder = JSONEncoder()
-        do {
-            let json = try encoder.encode(self)
-            UserDefaults.standard.set(json, forKey: forKey)
-        } catch {
-            print(error)
+    var gender: Gender
+    var dob: TimeInterval
+    var profileImages: [String]
+    var roundsPlayed: Int
+    var gamesWon: Int
+    
+    var isHost: Bool?
+    
+    init (from: [String: Any]) throws {
+        
+        var from = from
+        
+        if from.contains(where: {$0.key == "dob"}) {
+            let dob: Date = (from["dob"] as! Timestamp).dateValue()
+            from["dob"] = dob.timeIntervalSince1970
         }
-        complete()
+        
+        let data = try JSONSerialization.data(withJSONObject: from, options: .prettyPrinted)
+        let decoder = JSONDecoder()
+        let user = try decoder.decode(Self.self, from: data)
+        self = user
+        
     }
+                
 }
+
+//protocol Convertable: Codable {
+//
+//}
+//
+//extension Convertable {
+//
+//    func convertToDict() -> Dictionary<String, Any>? {
+//
+//        var dict: Dictionary<String, Any>? = nil
+//
+//        do {
+//            let encoder = JSONEncoder()
+//            let data = try encoder.encode(self)
+//            dict = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, Any>
+//
+//        } catch {
+//            print(error)
+//        }
+//
+//        return dict
+//    }
+//
+//    func saveToDefaults(forKey: String, complete: @escaping () -> ()) {
+//        let encoder = JSONEncoder()
+//        do {
+//            let json = try encoder.encode(self)
+//            UserDefaults.standard.set(json, forKey: forKey)
+//
+//        } catch {
+//            print(error)
+//        }
+//        complete()
+//    }
+//}
 
 extension User: Fetchable {
     static var apiBase: String { return "users" }

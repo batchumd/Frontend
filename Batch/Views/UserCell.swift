@@ -12,8 +12,8 @@ class UserCell: UICollectionViewCell {
     var user: User! {
         didSet {
 //            profileImageView.image = user.image
-            nameAgeLabel.text = user.name! + ", " + String(user.age!)
-            pointsLabel.text = String(user.points!)
+            nameAgeLabel.text = user.name + ", " + String(user.age)
+            pointsLabel.text = String(user.points)
         }
     }
     

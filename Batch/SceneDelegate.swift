@@ -23,16 +23,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Make this scene's window be visible.
         self.window!.makeKeyAndVisible()
         
-        Switcher.updateRootVC()
+        SceneSwitcher.shared.updateRootVC()
         
         guard scene is UIWindowScene else { return }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
-        // Called as the scene is being released by the system.
-        // This occurs shortly after the scene enters the background, or when its session is discarded.
-        // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
+        
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -61,25 +58,61 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 
 
-class Switcher {
+class SceneSwitcher {
     
-    static func updateRootVC(){
+    static let shared = SceneSwitcher()
+    
+    func updateRootVC(){
         
-        let navController = UINavigationController()
-        navController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
-        navController.navigationBar.shadowImage = UIImage()
-        navController.view.backgroundColor = .white
+//        let
+//
+//        let navController = UINavigationController()
+//        navController.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+//        navController.navigationBar.shadowImage = UIImage()
+//        navController.view.backgroundColor = .white
         
         let status = Auth.auth().currentUser != nil
-
+        
+        var loggedIn = false
+        
+        let window = UIApplication.shared.keywindow
+        guard let uWindow = window else { return }
+        
         if (status == true) {
-            navController.viewControllers = [MainViewController()]
+//            if let registrationData = LocalStorage.shared.registrationData() {
+//                let registrationController = currentRegistrationController(registrationData)
+//                registrationController.user = registrationData
+//                uWindow.rootViewController = UINavigationController(rootViewController: registrationController)
+//            } else {
+            guard let uid = DatabaseManager().getUserID() else { return }
+            DatabaseManager().fetchUserData(uid, listen: true) { (userData) in
+                if let userData = userData {
+                    LocalStorage.shared.currentUserData = userData
+                    if loggedIn == false {
+                        uWindow.backgroundColor = .white
+//                        uWindow.rootViewController = MainViewController()
+                        uWindow.rootViewController = CustomNavController(rootViewController: HomeController())
+                        loggedIn = true
+                    }
+                }
+            }
         } else {
-           navController.viewControllers = [SignedOutViewController()]
+            let navForLogin = NavControllerWithGradient(rootViewController: SignedOutViewController())
+            navForLogin.setupGradient()
+            navForLogin.animateGradient()
+            uWindow.rootViewController = navForLogin
         }
-        
-        UIApplication.shared.keywindow?.rootViewController = navController
-        
+    
+        UIView.transition(with: uWindow, duration: 0.3, options: [.transitionCrossDissolve], animations: {}, completion: nil)
+    }
+    
+    func currentRegistrationController(_ registrationData: [String: Any]) -> RegistrationViewController {
+        if registrationData["name"] == nil { return NameInputViewController() } else
+        if registrationData["dob"] == nil { return DateOfBirthInputViewController() } else
+        if registrationData["profileImages"] == nil { return PhotosInputViewController() } else
+        if registrationData["gender"] == nil { return GenderInputViewController() } else
+        if registrationData["interestedIn"] == nil { return InterestedInInputViewController() } else
+        { return NameInputViewController() }
     }
     
 }

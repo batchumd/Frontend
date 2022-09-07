@@ -10,7 +10,7 @@ import UIKit
 
 class PhotosInputViewController: RegistrationViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    let backend = FirebaseHelpers()
+    let backend = DatabaseManager()
     
     var selectedImageIndex: Int = 0
     
@@ -56,8 +56,6 @@ class PhotosInputViewController: RegistrationViewController, UIImagePickerContro
         titleLabel.text = "Add two photos."
         subtitleLabel.text = "Show off your best pics. You can change these later."
         setupView()
-        self.setupGradient()
-        self.animateGradient()
         self.mainStackView.addArrangedSubview(imagesStackView)
         let openImagePickerForImage1 = UITapGestureRecognizer(target: self, action: #selector(self.openImagePicker))
         let openImagePickerForImage2 = UITapGestureRecognizer(target: self, action: #selector(self.openImagePicker))
@@ -72,7 +70,7 @@ class PhotosInputViewController: RegistrationViewController, UIImagePickerContro
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.imagesStackView.layoutIfNeeded()
-        self.imagesStackView.heightAnchor.constraint(equalToConstant: self.firstImageView.frame.size.width).isActive = true
+        self.imagesStackView.heightAnchor.constraint(equalToConstant: self.firstImageView.frame.size.width * 1.5).isActive = true
     }
     
     //MARK: Business Logic
@@ -122,30 +120,29 @@ class PhotosInputViewController: RegistrationViewController, UIImagePickerContro
         let imageUploadGroup = DispatchGroup()
         
         self.continueButton.disable()
+        
+        var imageURLs = [String]()
 
         for (index,image) in imagesToUpload.enumerated() {
             imageUploadGroup.enter()
             let reference = "profileImages/\(uid)\(String(index)).jpg"
-            handleUpload(reference, image: image) {
+            handleUpload(reference, image: image) { imageURL in
+                imageURLs.append(imageURL)
                 imageUploadGroup.leave()
             }
         }
         
         imageUploadGroup.notify(queue: .main) {
+            self.user?["profileImages"] = imageURLs
             self.continueButton.enable()
             self.showNextViewController(GenderInputViewController())
         }
     }
         
-    fileprivate func handleUpload(_ reference: String, image: UIImage, complete: @escaping () -> ()) {
+    fileprivate func handleUpload(_ reference: String, image: UIImage, complete: @escaping (_ imageURL: String) -> ()) {
         self.backend.uploadImage(reference: reference, image: image) {
             self.backend.downloadURL(reference: reference) { imageURL in
-                if self.user?.profileImages != nil {
-                    self.user?.profileImages!.append(imageURL)
-                } else {
-                    self.user?.profileImages = [imageURL]
-                }
-                complete()
+                complete(imageURL)
             }
         }
     }

@@ -12,7 +12,7 @@ class InterestedInInputViewController: RegistrationViewController {
     
     var interestedIn: [Gender] = []
     
-    let firebaseHelpers = FirebaseHelpers()
+    let firebaseHelpers = DatabaseManager()
         
     //MARK: UI Elements
     let interestedInOptionsStackView: UIStackView = {
@@ -28,8 +28,6 @@ class InterestedInInputViewController: RegistrationViewController {
         subtitleLabel.text = "These are the people that you'll play for."
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         setupView()
-        self.setupGradient()
-        self.animateGradient()
         self.setupGenderOptions()
     }
     
@@ -40,7 +38,7 @@ class InterestedInInputViewController: RegistrationViewController {
                 filled.buttonSize = .large
                 filled.cornerStyle = .large
                 filled.baseBackgroundColor = .white
-                filled.attributedTitle = AttributedString(NSAttributedString(string: gender.pluralized.capitalizingFirstLetter(), attributes: [
+                filled.attributedTitle = AttributedString(NSAttributedString(string: gender.rawValue.capitalizingFirstLetter(), attributes: [
                         .font: UIFont(name: "Gilroy-ExtraBold", size: 20)!,
                         .foregroundColor: UIColor(named: "mainColor")!]))
                 let button = UIButton(configuration: filled, primaryAction: nil)
@@ -73,9 +71,8 @@ class InterestedInInputViewController: RegistrationViewController {
     
     fileprivate func getGenderFromIndex(_ index: Int) -> Gender? {
         switch index {
-            case 0: return .male
-            case 1: return .female
-            case 2: return .nonbinary
+            case 0: return .bachelor
+            case 1: return .bachelorette
             default: return nil
         }
     }
@@ -84,9 +81,16 @@ class InterestedInInputViewController: RegistrationViewController {
         if self.interestedIn.count == 0 {
             self.displayError(message: "You must select at least one option")
         } else {
-            self.user?.interestedIn = self.interestedIn
-            firebaseHelpers.addNewUserToDatabase(userData: self.user!) {
-                Switcher.updateRootVC()
+            self.user?["interestedIn"] = self.interestedIn.map({$0.rawValue})
+            firebaseHelpers.addNewUserToDatabase(userData: self.user!) { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    fatalError()
+                } else {
+                    UserDefaults.standard.removeObject(forKey: "RegistrationData")
+                    UserDefaults.standard.synchronize()
+                    SceneSwitcher.shared.updateRootVC()
+                }
             }
         }
     }

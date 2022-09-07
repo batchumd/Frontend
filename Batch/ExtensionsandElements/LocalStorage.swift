@@ -6,6 +6,20 @@
 //
 
 import Foundation
+import Firebase
+import FirebaseDatabase
+
+protocol LocalStorageDelegate: AnyObject {
+    func userDataChanged()
+    func lobbyStateChanged()
+    func userInQueueChanged()
+}
+
+extension LocalStorageDelegate {
+    func lobbyStateChanged() {}
+    func userDataChanged() {}
+    func userInQueueChanged() {}
+}
 
 class LocalStorage {
     
@@ -13,17 +27,40 @@ class LocalStorage {
     
     init(){}
     
-    func currentUserData() -> User? {
-        do {
-            let id = FirebaseHelpers().getUserID()
-            if let data = UserDefaults.standard.object(forKey: "User\(id!)Key") as? Data {
-                let decoder = JSONDecoder()
-                return try decoder.decode(User.self, from: data)
-            }
+    weak var delegate: LocalStorageDelegate?
+    
+    var currentUserData: User? {
+        didSet {
+            delegate?.userDataChanged()
         }
-        catch {
-            print("Couldn't Fetch User Data")
-        }
-        return nil
     }
+    
+    var lobbyState: LobbyState? {
+        didSet {
+            delegate?.lobbyStateChanged()
+        }
+    }
+    
+    var userInQueue: Bool? {
+        didSet {
+            delegate?.userInQueueChanged()
+        }
+    }
+    
+    var serverTime: TimeInterval?
+    
+        
+//    func registrationData() -> [String: Any]? {
+//        do {
+//            let testFromDefaults = UserDefaults.standard.object([String: Any].self, with: "RegistrationData")
+//            if let data = UserDefaults.standard.object(forKey: "RegistrationData") as? Data {
+//                let decoder = JSONDecoder()
+//                return try decoder.decode([String: Any].self, from: data)
+//            }
+//        }
+//        catch {
+//            print("Couldn't Fetch User Data")
+//        }
+//        return nil
+//    }
 }

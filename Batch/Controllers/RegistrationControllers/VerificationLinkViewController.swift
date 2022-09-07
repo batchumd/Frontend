@@ -21,8 +21,6 @@ class VerificationLinkViewController: RegistrationViewController {
         informationLabel.text = "This link allows us to confirm your status as a UMD student."
         setupView()
         continueButton.addTarget(self, action: #selector(showNameInputController), for: .touchUpInside)
-        self.setupGradient()
-        self.animateGradient()
         let loadingIndicatorContainer = UIView()
         self.mainStackView.insertArrangedSubview(loadingIndicatorContainer, at: 2)
         self.loadingIndicator.heightAnchor.constraint(equalToConstant: 75).isActive = true
